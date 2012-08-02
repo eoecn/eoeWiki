@@ -1,4 +1,4 @@
-package com.eoe.wiki.db;
+package cn.eoe.wiki.db;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;

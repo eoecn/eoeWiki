@@ -1,14 +1,8 @@
-package com.eoe.wiki.activity;
-
-import com.eoe.wiki.R;
-import com.eoe.wiki.R.layout;
-import com.eoe.wiki.R.menu;
+package cn.eoe.wiki.activity;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
+import cn.eoe.wiki.R;
 /**
  * 应用程序的主界面
  * @author <a href="mailto:kris1987@qq.com">Kris.lee</a>

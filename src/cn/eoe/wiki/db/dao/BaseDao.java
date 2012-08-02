@@ -1,4 +1,4 @@
-package com.eoe.wiki.db.dao;
+package cn.eoe.wiki.db.dao;
 /**
  * 所有dao的基类，所有的dao都应该继承此类
  * @author <a href="mailto:kris1987@qq.com">Kris.lee</a>

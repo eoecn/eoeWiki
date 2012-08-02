@@ -1,4 +1,4 @@
-package com.eoe.wiki.db;
+package cn.eoe.wiki.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

@@ -1,4 +1,4 @@
-package com.eoe.wiki.db;
+package cn.eoe.wiki.db;
 /**
  * 所有cloumn的基类。可以定义一些共有的东西
  * @author <a href="mailto:kris1987@qq.com">Kris.lee</a>

@@ -1,4 +1,4 @@
-package com.eoe.wiki;
+package cn.eoe.wiki;
 
 import android.app.Application;
 /**

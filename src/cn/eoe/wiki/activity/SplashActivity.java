@@ -1,4 +1,4 @@
-package com.eoe.wiki.activity;
+package cn.eoe.wiki.activity;
 
 /**启动的欢迎界面。
  * 

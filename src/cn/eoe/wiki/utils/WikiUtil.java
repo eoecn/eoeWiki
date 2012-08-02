@@ -1,4 +1,4 @@
-package com.eoe.wiki.utils;
+package cn.eoe.wiki.utils;
 /**
  * 工具类，主要是提供一些与wiki有密切关系的类。
  * @author <a href="mailto:kris1987@qq.com">Kris.lee</a>

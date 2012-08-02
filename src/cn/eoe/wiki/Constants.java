@@ -1,10 +1,10 @@
-package com.eoe.wiki;
+package cn.eoe.wiki;
 /**
- * 手于配置我们的应用程序
+ * 主要是定义一些全局的静态变量
  * @author <a href="mailto:kris1987@qq.com">Kris.lee</a>
  * @data  2012-8-2
  * @version 1.0.0
  */
-public class AppConfig {
+public class Constants {
 
 }
