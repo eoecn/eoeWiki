@@ -12,22 +12,22 @@ src
 ========
 存放的是我们的代码
 
-=包介绍=
-==com.eoe.wiki==
++包介绍
+++com.eoe.wiki
 存放一些静态变量，或者是周期与整个应用程序一致的类与变量
 
-==com.eoe.wiki.activity==
+++com.eoe.wiki.activity
 存放我们的activity类，所有的activity都必需继承至BaseActivity（继承到TabActivity等的除外）。
 
 这样做主要是为了方便我们在BaseActivity中初始化一些所有页面共有的一些内容
 
-==com.eoe.wiki.db==
+++com.eoe.wiki.db
 存放的是我们的db 有关的东西。包括helper and provider，及所有数据库的表实体。所有的表实体（column）必需继承BaseClumn类.
 
-==com.eoe.wiki.db.dao==
+++com.eoe.wiki.db.dao
 存放的是我们的dao 有关的东西。所有的Dao必需继承BaseDao类.Dao的作用是提供一个操作数据库的中间层。
 
-==com.eoe.wiki.utils==
+++com.eoe.wiki.utils
 存放所有的工具类。里面的方法最好都是statis的。以便应用程序可以直接调用。
 
 res
