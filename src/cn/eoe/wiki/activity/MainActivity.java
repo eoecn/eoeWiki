@@ -1,27 +1,129 @@
 package cn.eoe.wiki.activity;
 
+import android.app.ActivityGroup;
+import android.app.LocalActivityManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
+import android.view.View;
+import android.view.ViewGroup;
 import cn.eoe.wiki.R;
+import cn.eoe.wiki.WikiApplication;
+import cn.eoe.wiki.utils.L;
+import cn.eoe.wiki.utils.WikiUtil;
+import cn.eoe.wiki.view.SliderLayer;
+import cn.eoe.wiki.view.SliderEntity;
+
 /**
  * 应用程序的主界面
+ * 
  * @author <a href="mailto:kris1987@qq.com">Kris.lee</a>
- * @data  2012-8-2
+ * @data 2012-8-5
  * @version 1.0.0
  */
-public class MainActivity extends BaseActivity {
+public class MainActivity extends ActivityGroup implements
+		SliderLayer.Listener {
+	
+	private static WikiApplication 	mWikiApplication;
+	private  	MainActivity 		mMainActivity;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-    }
+	private LocalActivityManager 	mActivityManager;
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
-    }
+	private SliderLayer 			mSliderLayers;
 
-    
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		mWikiApplication = WikiApplication.getApplication();
+		mMainActivity = this;
+		mWikiApplication.setMainActivity(mMainActivity);
+		setContentView(R.layout.main);
+
+		mActivityManager = getLocalActivityManager();
+
+		mSliderLayers = (SliderLayer) findViewById(R.id.animation_layout);
+		mSliderLayers.setListener(this);
+
+		int sceenWidth = WikiUtil.getSceenWidth(mMainActivity);
+		ViewGroup layerOne = (ViewGroup) findViewById(R.id.animation_layout_one);
+		ViewGroup layerTwo = (ViewGroup) findViewById(R.id.animation_layout_two);
+		ViewGroup layerThree = (ViewGroup) findViewById(R.id.animation_layout_three);
+		mSliderLayers.addLayer(new SliderEntity(layerOne, 0, sceenWidth, 0));
+		mSliderLayers.addLayer(new SliderEntity(layerTwo, 10, sceenWidth - 40, 10));
+		mSliderLayers.addLayer(new SliderEntity(layerThree, 0, sceenWidth - 20, 0));
+
+		Intent intent = new Intent(this, CategorysActivity.class);
+		showView(0, intent);
+	}
+
+	public void showView(final int index, Intent intent) {
+		System.out.println("ready to show:" + index);
+		if (intent.getFlags() == 0) {
+			// 这里用不用标志都无所谓了，我们给了不了不同的id ,则都会去重新生成一个
+			// 这样就可以把flag解放出来可以让intent携带更多的数据
+			// 但是要注意，如果是自己定义的flag，则保证与系统的不一至，所以还是不建议使用此方法来携带参数
+			// the FLASG_ACTIVITY_CLEAR_TOP is the detals flags
+			// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		}
+		intent.putExtra("index", index);
+		// 这里id是最关键的，不能重复。
+		// 如果看过一个wiki想快速加载，我们只能通过读取数据库来实现。
+		// 我们不想通过保存上一次的activity来作一个快速的显示，因为页面可能有一些的改动。
+		// 而后那样我们这里的处理步骤也是会复杂一点的
+		String id = String.valueOf(System.currentTimeMillis());
+		View view = mActivityManager.startActivity(id, intent).getDecorView();
+		ViewGroup currentView = mSliderLayers.getLayer(index);
+		currentView.removeAllViews();
+		currentView.addView(view);
+		// if the index ==0 , no need to open .
+		if (index == 0)
+			return;
+		view.post(new Runnable() {
+			@Override
+			public void run() {
+				mSliderLayers.openSidebar(index);
+			}
+		});
+	}
+
+	@Override
+	public void onBackPressed() {
+		int index = mSliderLayers.openingLayerIndex();
+		System.out.println("onBackPressed index:" + index);
+		if (index > 0) {
+			mSliderLayers.closeSidebar(index);
+		} else {
+			//发送一个广播，通知其它所有的页面，要结束该应用程序了。
+			//baseActivity里面接收这个广播，并作相应的处理。
+			//这也是为什么要求所有的activity都必需直接或者间隔继承于baseactivity的原因
+			sendBroadcast(new Intent(BaseActivity.ACTION_EXIT));
+			finish();
+		}
+	}
+
+	/* Callback of AnimationLayout.Listener to monitor status of Sidebar */
+	@Override
+	public void onSidebarOpened() {
+		L.d( "opened");
+	}
+
+	/* Callback of AnimationLayout.Listener to monitor status of Sidebar */
+	@Override
+	public void onSidebarClosed() {
+		L.d("opened");
+	}
+
+	/* Callback of AnimationLayout.Listener to monitor status of Sidebar */
+	@Override
+	public boolean onContentTouchedWhenOpening() {
+		// the content area is touched when sidebar opening, close sidebar
+		L.d( "going to close sidebar");
+		mSliderLayers.closeSidebar(mSliderLayers.openingLayerIndex());
+		return true;
+	}
+	public SliderLayer getSliderLayer()
+	{
+		return mSliderLayers;
+	}
 }

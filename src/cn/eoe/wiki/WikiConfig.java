@@ -13,7 +13,7 @@ import cn.eoe.wiki.utils.L;
  * @data  2012-8-2
  * @version 1.0.0
  */
-public class AppConfig {
+public class WikiConfig {
 	/**
 	 * the switch of the debug .<br>
 	 * if turn on (true), will print the log in the console,<br>

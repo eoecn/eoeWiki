@@ -6,7 +6,7 @@ import java.io.RandomAccessFile;
 
 import android.text.TextUtils;
 import android.util.Log;
-import cn.eoe.wiki.AppConfig;
+import cn.eoe.wiki.WikiConfig;
 import cn.eoe.wiki.Constants;
 
 /**
@@ -23,7 +23,7 @@ public class L {
 	
 	public static void p(String log)
 	{
-		if(AppConfig.isDebug())
+		if(WikiConfig.isDebug())
 		{
 
 			System.out.println(log);
@@ -72,7 +72,7 @@ public class L {
 		{
 			return;
 		}
-		if(AppConfig.isDebug())
+		if(WikiConfig.isDebug())
 		{
 
 			switch (level) {
@@ -93,7 +93,7 @@ public class L {
 				break;
 			}
 		}
-		if(AppConfig.isPersistLog())
+		if(WikiConfig.isPersistLog())
 		{
 			ThreadPoolUtil.execute(new Runnable() {
 				
