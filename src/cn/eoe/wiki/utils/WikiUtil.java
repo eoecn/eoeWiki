@@ -241,4 +241,8 @@ public class WikiUtil {
 		}
 		return beforeNum;
 	}
+	public static int getResourceColor(int resId, Context context)
+	{
+		return context.getResources().getColor(resId);
+	}
 }

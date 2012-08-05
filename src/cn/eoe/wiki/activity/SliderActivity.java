@@ -1,6 +1,5 @@
 package cn.eoe.wiki.activity;
 
-import cn.eoe.wiki.WikiApplication;
 import android.os.Bundle;
 
 /**

@@ -1,35 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dip">
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button" />
-    
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#f00fff"
-        android:textSize="40sp"
-        android:textStyle="bold"
-        android:text="Come on!" 
-        android:layout_marginTop="20dip"/>
-    
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#f00fff"
-        android:textSize="40sp"
-        android:textStyle="bold"
-        android:text="Come on!" 
-        android:layout_marginTop="20dip"/>
-
-
-</LinearLayout>
+    android:orientation="vertical">
+	<LinearLayout android:id="@+id/category_title"
+	    android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:layout_alignParentTop="true">
+	    <TextView android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="EOE WIKI"
+    		android:textColor="@color/green"
+    		android:textSize="30sp"/>
+	    
+		<View android:layout_width="match_parent"
+	    	android:layout_height="1dip"
+	    	android:background="@color/low_grey"/>
+	</LinearLayout>
+	<ScrollView android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:layout_below="@+id/category_title">
+		<LinearLayout android:layout_width="match_parent"
+    		android:layout_height="wrap_content"
+    		android:orientation="vertical">
+		    <RelativeLayout android:layout_width="match_parent"
+	    		android:layout_height="wrap_content">
+		        <Button android:layout_width="wrap_content"
+	    			android:layout_height="wrap_content"
+	    			android:id="@+id/btn_search"
+	    			android:text="Search"
+	    			android:focusable="true"
+	    			android:focusableInTouchMode="true"
+	    			android:layout_alignParentRight="true"/>
+		        
+		        <EditText android:layout_width="match_parent"
+	    			android:layout_height="wrap_content"
+	    			android:layout_toLeftOf="@+id/btn_search"
+	    			android:id="@+id/et_search"/>
+		    </RelativeLayout>
+		    <LinearLayout android:layout_width="match_parent"
+    			android:layout_height="wrap_content"
+    			android:orientation="vertical"
+    			android:id="@+id/layout_category"
+    			android:gravity="center_horizontal"></LinearLayout>
+	    </LinearLayout>
+	</ScrollView>
+</RelativeLayout>

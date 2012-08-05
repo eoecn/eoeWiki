@@ -1,5 +1,7 @@
 package cn.eoe.wiki.activity;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,8 +17,9 @@ import cn.eoe.wiki.WikiApplication;
  */
 public class BaseActivity extends Activity {
 	public static final String 		ACTION_EXIT = "cn.eoe.wiki.ACTION_EXIT";
-	protected WikiApplication mWikiApplication;
-	protected BaseActivity mContext;
+	protected WikiApplication 	mWikiApplication= null;
+	protected BaseActivity 		mContext		= null;
+	public 	ObjectMapper 		mObjectMapper 	= null;
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
@@ -28,6 +31,7 @@ public class BaseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		mContext = this;
 		mWikiApplication = WikiApplication.getApplication();
+		mObjectMapper = new ObjectMapper();
 		registerReceiver(exitReceiver, new IntentFilter(ACTION_EXIT));
 	}
 

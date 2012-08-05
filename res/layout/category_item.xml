@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:text="EOE WIKI"
+	android:textColor="@color/green"
+	android:textSize="25sp"
+	android:id="@+id/tv_category_name"
+	android:singleLine="true"
+	android:ellipsize="end"/>

@@ -26,60 +26,30 @@ public class HttpManager {
 	 * a call back instance
 	 */
 	private ITransaction			mTransaction;
-	private String 					mUrl;
-	/**
-	 * request data
-	 */
-	private Map<String,String> 		mRequestData;
-	private Map<String,File> 		mUploadFiles;
+	private HttpUrl 				mUrl;
 	/**
 	 * http method , get ,post , put ,delete
 	 */
 	private int 				method;
 	
-	public HttpManager(String url,Map<String,String> requestData)
+	public HttpManager(HttpUrl url)
 	{
-		this( url, requestData,null);
+		this( url,null);
 	}
-	public HttpManager(String url,Map<String,String> requestData,ITransaction transaction)
+	public HttpManager(HttpUrl url, ITransaction transaction)
 	{
-		this(url, requestData, GET,transaction);
+		this(url, GET,transaction);
 	}
-	public HttpManager(String url,Map<String,String> requestData,int method,ITransaction transaction)
-	{
-		this(url, requestData, null, method, transaction);
-	}
-	public HttpManager(String url,Map<String,String> requestData,Map<String,File> uploadData,int method,ITransaction transaction)
+	public HttpManager(HttpUrl url, int method,ITransaction transaction)
 	{
 		this.mTransaction 	= transaction;
 		this.mUrl 			= url;
-		this.mRequestData 	= requestData;
-		this.mUploadFiles= uploadData;
 		this.method 		= method;
 	}
 	
 	
 	public void setmTransaction(ITransaction mTransaction) {
 		this.mTransaction = mTransaction;
-	}
-	
-	public void setRequestData(Map<String, String> requestData) {
-		this.mRequestData = requestData;
-	}
-	
-	public Map<String, String> getmRequestData() {
-		return mRequestData;
-	}
-	public void setmRequestData(Map<String, String> mRequestData) {
-		this.mRequestData = mRequestData;
-	}
-	
-	
-	public Map<String, File> getmUploadFiles() {
-		return mUploadFiles;
-	}
-	public void setmUploadFiles(Map<String, File> mUploadFiles) {
-		this.mUploadFiles = mUploadFiles;
 	}
 	/**
 	 * start a transaction in a new thread
@@ -92,18 +62,19 @@ public class HttpManager {
 			{
 				long begin = System.currentTimeMillis();
 				String response = null;
+				String url = mUrl.generateUrl();
 				switch (method) {
 				case GET:
-					response = HttpUtil.get(mUrl, mRequestData);
+					response = HttpUtil.get(url, mUrl.getParams());
 					break;
 				case POST:
-					response = HttpUtil.post(mUrl, mRequestData);
+					response = HttpUtil.post(url, mUrl.getParams());
 					break;
 				case PUT:
-					response = HttpUtil.put(mUrl, mRequestData);
+					response = HttpUtil.put(url, mUrl.getParams());
 					break;
 				case DELETE:
-					response = HttpUtil.delete(mUrl, mRequestData);
+					response = HttpUtil.delete(url, mUrl.getParams());
 					break;
 				}
 				long end = System.currentTimeMillis();
@@ -116,10 +87,6 @@ public class HttpManager {
 			@Override
 			public void run() {
 				try {
-					if(mRequestData==null)
-					{
-						mRequestData = new HashMap<String, String>();
-					}
 					request();
 				} catch (IllegalStateException e) {
 					L.e("IllegalStateException", e);
