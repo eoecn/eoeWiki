@@ -31,6 +31,7 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 	private Button			mBtnAbout;
 	private Button			mBtnRecommand;
 	private Button			mBtnFeedback;
+	private Button			mBtnRecent;
 	
 	private String			mCategoryUrl;
 
@@ -58,10 +59,12 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		mBtnAbout=(Button)findViewById(R.id.btn_about);
 		mBtnRecommand=(Button)findViewById(R.id.btn_recommand);
 		mBtnFeedback=(Button)findViewById(R.id.btn_feedback);
+		mBtnRecent=(Button)findViewById(R.id.btn_recent);
 		mBtnSearch.setOnClickListener(this);
 		mBtnAbout.setOnClickListener(this);
 		mBtnRecommand.setOnClickListener(this);
 		mBtnFeedback.setOnClickListener(this);
+		mBtnRecent.setOnClickListener(this);
 	}
 
 	void initData() {
@@ -138,6 +141,8 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		case R.id.btn_recommand:
 			break;
 		case R.id.btn_feedback:
+			break;
+		case R.id.btn_recent:
 			break;
 		default:
 			break;
