@@ -20,7 +20,10 @@ package cn.eoe.wiki.view;
 
 // update the package name to match your app
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -41,7 +44,7 @@ public class SliderLayer extends ViewGroup {
 
     protected List<SliderEntity> mListLayers;
     protected Animation mAnimation;
-    protected Listener mListener;
+    protected Set<SliderListener> mListeners;
 
     private int mOpenLayerIndex =0;
     
@@ -53,6 +56,7 @@ public class SliderLayer extends ViewGroup {
     public SliderLayer(Context context, AttributeSet attrs) {
         super(context, attrs);
         mListLayers = new ArrayList<SliderEntity>();
+        mListeners = new HashSet<SliderListener>();
     }
     public void addLayer(SliderEntity layer)
     {
@@ -108,8 +112,9 @@ public class SliderLayer extends ViewGroup {
         super.measureChildren(w, h);
     }
 
-    public void setListener(Listener l) {
-        mListener = l;
+    public void addSliderListener(SliderListener l) {
+    	L.d("add a slider listener");
+        mListeners.add(l);
     }
 
     /* to see if the Sidebar is visible */
@@ -117,7 +122,6 @@ public class SliderLayer extends ViewGroup {
         return mOpenLayerIndex;
     }
     public void openSidebar(int index) {
-    	L.d("openSidebar:"+index);
     	if(index <= mOpenLayerIndex)
     	{
     		L.e("index must greater than the opening layer index");
@@ -135,7 +139,7 @@ public class SliderLayer extends ViewGroup {
 //    	 View belowLayer = getBelowLayerView(index);
     	 L.d("try to open:"+index);
          mAnimation = new TranslateAnimation(0, -(layer.closeX-layer.openX), 0, 0);
-         mAnimation.setAnimationListener(new CloseListener( layer.view));
+         mAnimation.setAnimationListener(new OpenListener( layer.view));
 
          mAnimation.setDuration(DURATION);
          mAnimation.setFillAfter(true);
@@ -185,8 +189,8 @@ public class SliderLayer extends ViewGroup {
         public void onAnimationEnd(Animation animation) {
             iContent.clearAnimation();
             requestLayout();
-            if (mListener != null) {
-                mListener.onSidebarOpened();
+            for(SliderListener l:mListeners) {
+                l.onSidebarOpened();
             }
         }
     }
@@ -206,12 +210,12 @@ public class SliderLayer extends ViewGroup {
         public void onAnimationEnd(Animation animation) {
             iContent.clearAnimation();
             requestLayout();
-            if (mListener != null) {
-                mListener.onSidebarClosed();
+            for(SliderListener l:mListeners) {
+                l.onSidebarClosed();
             }
         }
     }
-    public interface Listener {
+    public interface SliderListener {
         public void onSidebarOpened();
         public void onSidebarClosed();
         public boolean onContentTouchedWhenOpening();

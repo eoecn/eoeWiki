@@ -1,8 +1,14 @@
 <resources>
 
     <string name="app_name">EoeWiki</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="button_search">搜索</string>
+    <string name="tip_get_data_error">抱歉，获取数据失败，请重试。</string>
+    <string name="tip_search_key">关键字</string>
+    <string name="tip_loading">拼命为你加载中...</string>
+    <string name="tip_get_category_error">抱歉，获取目录失败，请重试。</string>
+    <string name="button_try_again">重试</string>
+    <string name="tip_about">关于</string>
+    <string name="tip_recommand">推荐</string>
+    <string name="tip_feedback">反馈</string>
 
 </resources>

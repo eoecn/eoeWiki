@@ -328,7 +328,6 @@ public class HttpUtil {
 			result = EntityUtils.toString(entity);
 		}
 		entity.consumeContent(); // consume or destroy the entity content
-		L.i("result:"+result);
 		return result;
 	}
 	private static String encodeSpecCharacters(String url)

@@ -6,7 +6,8 @@
 	<LinearLayout android:id="@+id/category_title"
 	    android:layout_width="match_parent"
     	android:layout_height="wrap_content"
-    	android:layout_alignParentTop="true">
+    	android:layout_alignParentTop="true"
+    	android:orientation="vertical">
 	    <TextView android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
     		android:text="EOE WIKI"
@@ -14,12 +15,13 @@
     		android:textSize="30sp"/>
 	    
 		<View android:layout_width="match_parent"
-	    	android:layout_height="1dip"
-	    	android:background="@color/low_grey"/>
+	    	android:layout_height="5dip"
+	    	android:background="@color/green"/>
 	</LinearLayout>
 	<ScrollView android:layout_width="match_parent"
     	android:layout_height="match_parent"
-    	android:layout_below="@+id/category_title">
+    	android:layout_below="@+id/category_title"
+    	android:layout_above="@+id/layout_functions">
 		<LinearLayout android:layout_width="match_parent"
     		android:layout_height="wrap_content"
     		android:orientation="vertical">
@@ -28,7 +30,7 @@
 		        <Button android:layout_width="wrap_content"
 	    			android:layout_height="wrap_content"
 	    			android:id="@+id/btn_search"
-	    			android:text="Search"
+	    			android:text="@string/button_search"
 	    			android:focusable="true"
 	    			android:focusableInTouchMode="true"
 	    			android:layout_alignParentRight="true"/>
@@ -36,6 +38,7 @@
 		        <EditText android:layout_width="match_parent"
 	    			android:layout_height="wrap_content"
 	    			android:layout_toLeftOf="@+id/btn_search"
+	    			android:hint="@string/tip_search_key"
 	    			android:id="@+id/et_search"/>
 		    </RelativeLayout>
 		    <LinearLayout android:layout_width="match_parent"
@@ -45,4 +48,27 @@
     			android:gravity="center_horizontal"></LinearLayout>
 	    </LinearLayout>
 	</ScrollView>
+	<LinearLayout android:id="@+id/layout_functions"
+	    android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:layout_alignParentBottom="true"
+    	android:orientation="horizontal"
+    	android:paddingLeft="10dip"
+    	android:paddingRight="10dip">
+	    <Button android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="@string/tip_about"
+    		android:layout_weight="1"
+    		android:id="@+id/btn_about"/>
+	    <Button android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="@string/tip_recommand"
+    		android:layout_weight="1"
+    		android:id="@+id/btn_recommand"/>
+	    <Button android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="@string/tip_feedback"
+    		android:layout_weight="1"
+    		android:id="@+id/btn_feedback"/>
+	</LinearLayout>
 </RelativeLayout>

@@ -1,11 +1,12 @@
 package cn.eoe.wiki.listener;
 
-import cn.eoe.wiki.activity.SliderActivity;
-import cn.eoe.wiki.json.CategoryChild;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import cn.eoe.wiki.activity.CategorysActivity;
+import cn.eoe.wiki.activity.MainActivity;
+import cn.eoe.wiki.activity.SubCategorysActivity;
+import cn.eoe.wiki.json.CategoryChild;
 
 /**
  * listener for the category
@@ -15,10 +16,10 @@ import android.view.View.OnClickListener;
  */
 public class CategoryListener implements OnClickListener {
 
-	SliderActivity context;
+	CategorysActivity context;
 	private CategoryChild category;
 	
-	public CategoryListener(SliderActivity context,CategoryChild category)
+	public CategoryListener(CategorysActivity context,CategoryChild category)
 	{
 		this.context = context;
 		this.category = category;
@@ -26,11 +27,9 @@ public class CategoryListener implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		new AlertDialog.Builder(context)
-		.setTitle("Tip")
-		.setMessage(category.getUri())
-		.setNegativeButton("Cancel", null)
-		.show();
+		Intent intent = new Intent (context,SubCategorysActivity.class);
+		intent.putExtra(SubCategorysActivity.KEY_CATEGORY, category);
+		context.getmMainActivity().showView(1, intent);
 	}
 	
 }

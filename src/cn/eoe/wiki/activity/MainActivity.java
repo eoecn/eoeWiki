@@ -2,17 +2,17 @@ package cn.eoe.wiki.activity;
 
 import android.app.ActivityGroup;
 import android.app.LocalActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.WikiApplication;
 import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
-import cn.eoe.wiki.view.SliderLayer;
 import cn.eoe.wiki.view.SliderEntity;
+import cn.eoe.wiki.view.SliderLayer;
 
 /**
  * 应用程序的主界面
@@ -21,8 +21,7 @@ import cn.eoe.wiki.view.SliderEntity;
  * @data 2012-8-5
  * @version 1.0.0
  */
-public class MainActivity extends ActivityGroup implements
-		SliderLayer.Listener {
+public class MainActivity extends ActivityGroup {
 	
 	private static WikiApplication 	mWikiApplication;
 	private  	MainActivity 		mMainActivity;
@@ -42,7 +41,6 @@ public class MainActivity extends ActivityGroup implements
 		mActivityManager = getLocalActivityManager();
 
 		mSliderLayers = (SliderLayer) findViewById(R.id.animation_layout);
-		mSliderLayers.setListener(this);
 
 		int sceenWidth = WikiUtil.getSceenWidth(mMainActivity);
 		ViewGroup layerOne = (ViewGroup) findViewById(R.id.animation_layout_one);
@@ -52,12 +50,11 @@ public class MainActivity extends ActivityGroup implements
 		mSliderLayers.addLayer(new SliderEntity(layerTwo, 10, sceenWidth - 40, 10));
 		mSliderLayers.addLayer(new SliderEntity(layerThree, 0, sceenWidth - 20, 0));
 
-		Intent intent = new Intent(this, CategorysActivity.class);
+		Intent intent = new Intent(this, MainCategorysActivity.class);
 		showView(0, intent);
 	}
 
 	public void showView(final int index, Intent intent) {
-		System.out.println("ready to show:" + index);
 		if (intent.getFlags() == 0) {
 			// 这里用不用标志都无所谓了，我们给了不了不同的id ,则都会去重新生成一个
 			// 这样就可以把flag解放出来可以让intent携带更多的数据
@@ -82,46 +79,42 @@ public class MainActivity extends ActivityGroup implements
 		view.post(new Runnable() {
 			@Override
 			public void run() {
+				//为什么要在这里才进行打开这个动作 
+				//如果直接在addview后执行此动作，会造成在动画的时候又在绘图
+				//界面就会乱掉
 				mSliderLayers.openSidebar(index);
 			}
 		});
 	}
 
 	@Override
-	public void onBackPressed() {
-		int index = mSliderLayers.openingLayerIndex();
-		System.out.println("onBackPressed index:" + index);
-		if (index > 0) {
-			mSliderLayers.closeSidebar(index);
-		} else {
-			//发送一个广播，通知其它所有的页面，要结束该应用程序了。
-			//baseActivity里面接收这个广播，并作相应的处理。
-			//这也是为什么要求所有的activity都必需直接或者间隔继承于baseactivity的原因
-			sendBroadcast(new Intent(BaseActivity.ACTION_EXIT));
-			finish();
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		L.e("MainActivity dispatchKeyEvent:"+event.getKeyCode());
+		int keyCode = event.getKeyCode();
+		int keyAction = event.getAction();
+		
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_BACK:
+			L.e("MainActivity　keyAction:"+keyAction);
+			if( keyAction == KeyEvent.ACTION_DOWN)
+			{
+
+				int index = mSliderLayers.openingLayerIndex();
+				if (index > 0) {
+					mSliderLayers.closeSidebar(index);
+				} else {
+					//发送一个广播，通知其它所有的页面，要结束该应用程序了。
+					//baseActivity里面接收这个广播，并作相应的处理。
+					//这也是为什么要求所有的activity都必需直接或者间隔继承于baseactivity的原因
+					sendBroadcast(new Intent(BaseActivity.ACTION_EXIT));
+					finish();
+				}
+				return true;
+			}
 		}
+		return super.dispatchKeyEvent(event);
 	}
-
-	/* Callback of AnimationLayout.Listener to monitor status of Sidebar */
-	@Override
-	public void onSidebarOpened() {
-		L.d( "opened");
-	}
-
-	/* Callback of AnimationLayout.Listener to monitor status of Sidebar */
-	@Override
-	public void onSidebarClosed() {
-		L.d("opened");
-	}
-
-	/* Callback of AnimationLayout.Listener to monitor status of Sidebar */
-	@Override
-	public boolean onContentTouchedWhenOpening() {
-		// the content area is touched when sidebar opening, close sidebar
-		L.d( "going to close sidebar");
-		mSliderLayers.closeSidebar(mSliderLayers.openingLayerIndex());
-		return true;
-	}
+	
 	public SliderLayer getSliderLayer()
 	{
 		return mSliderLayers;

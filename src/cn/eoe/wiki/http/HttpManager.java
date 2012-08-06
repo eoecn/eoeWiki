@@ -1,6 +1,5 @@
 package cn.eoe.wiki.http;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,24 +25,29 @@ public class HttpManager {
 	 * a call back instance
 	 */
 	private ITransaction			mTransaction;
-	private HttpUrl 				mUrl;
+	private String 					mUrl;
+	/**
+	 * request data
+	 */
+	private Map<String,String> 		mRequestData;
 	/**
 	 * http method , get ,post , put ,delete
 	 */
 	private int 				method;
 	
-	public HttpManager(HttpUrl url)
+	public HttpManager(String url,Map<String,String> requestData)
 	{
-		this( url,null);
+		this( url, requestData,null);
 	}
-	public HttpManager(HttpUrl url, ITransaction transaction)
+	public HttpManager(String url,Map<String,String> requestData,ITransaction transaction)
 	{
-		this(url, GET,transaction);
+		this(url, requestData, GET,transaction);
 	}
-	public HttpManager(HttpUrl url, int method,ITransaction transaction)
+	public HttpManager(String url,Map<String,String> requestData,int method,ITransaction transaction)
 	{
 		this.mTransaction 	= transaction;
 		this.mUrl 			= url;
+		this.mRequestData 	= requestData;
 		this.method 		= method;
 	}
 	
@@ -51,6 +55,18 @@ public class HttpManager {
 	public void setmTransaction(ITransaction mTransaction) {
 		this.mTransaction = mTransaction;
 	}
+	
+	public void setRequestData(Map<String, String> requestData) {
+		this.mRequestData = requestData;
+	}
+	
+	public Map<String, String> getmRequestData() {
+		return mRequestData;
+	}
+	public void setmRequestData(Map<String, String> mRequestData) {
+		this.mRequestData = mRequestData;
+	}
+	
 	/**
 	 * start a transaction in a new thread
 	 * @throws TrasactionException
@@ -62,19 +78,18 @@ public class HttpManager {
 			{
 				long begin = System.currentTimeMillis();
 				String response = null;
-				String url = mUrl.generateUrl();
 				switch (method) {
 				case GET:
-					response = HttpUtil.get(url, mUrl.getParams());
+					response = HttpUtil.get(mUrl, mRequestData);
 					break;
 				case POST:
-					response = HttpUtil.post(url, mUrl.getParams());
+					response = HttpUtil.post(mUrl, mRequestData);
 					break;
 				case PUT:
-					response = HttpUtil.put(url, mUrl.getParams());
+					response = HttpUtil.put(mUrl, mRequestData);
 					break;
 				case DELETE:
-					response = HttpUtil.delete(url, mUrl.getParams());
+					response = HttpUtil.delete(mUrl, mRequestData);
 					break;
 				}
 				long end = System.currentTimeMillis();
@@ -87,6 +102,10 @@ public class HttpManager {
 			@Override
 			public void run() {
 				try {
+					if(mRequestData==null)
+					{
+						mRequestData = new HashMap<String, String>();
+					}
 					request();
 				} catch (IllegalStateException e) {
 					L.e("IllegalStateException", e);

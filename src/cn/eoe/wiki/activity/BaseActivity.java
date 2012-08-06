@@ -20,11 +20,6 @@ public class BaseActivity extends Activity {
 	protected WikiApplication 	mWikiApplication= null;
 	protected BaseActivity 		mContext		= null;
 	public 	ObjectMapper 		mObjectMapper 	= null;
-	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		super.onBackPressed();
-	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

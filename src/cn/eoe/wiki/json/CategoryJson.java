@@ -1,6 +1,5 @@
 package cn.eoe.wiki.json;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -8,15 +7,16 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class CategoryJson {
-	@JsonProperty("date")
-	private String date;
+	@JsonProperty("version")
+	private String version;
 	@JsonProperty("content")
 	private List<CategoryChild> contents;
-	public String getDate() {
-		return date;
+	
+	public String getVersion() {
+		return version;
 	}
-	public void setDate(String date) {
-		this.date = date;
+	public void setVersion(String version) {
+		this.version = version;
 	}
 	public List<CategoryChild> getContents() {
 		return contents;

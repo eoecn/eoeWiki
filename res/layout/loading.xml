@@ -6,14 +6,15 @@
     android:gravity="center">
 
 	    <ProgressBar
-	        android:id="@+id/progressBar1"
+	        android:id="@+id/progressBar"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content" />
 	    
 	    <TextView android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
-    		android:text="Loading"
-    		android:textColor="@color/green"
-    		android:textSize="22sp"
-    		android:layout_marginLeft="10dip"/>
+    		android:text="@string/tip_loading"
+    		android:textColor="@color/black"
+    		android:textSize="18sp"
+    		android:layout_marginLeft="10dip"
+    		android:id="@+id/textView"/>
 </LinearLayout>

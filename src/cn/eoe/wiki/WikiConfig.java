@@ -25,6 +25,8 @@ public class WikiConfig {
 	 * @path /sdcard/MatchMove/logs/YYMMDD_log
 	 */
 	private static boolean persistLog 	= false;
+	
+	private static String	mainCategoruUrl = null;
 
 	public static boolean 	init = false;
 	
@@ -45,6 +47,9 @@ public class WikiConfig {
 			L.e("Debug:"+debug);
 			persistLog = Boolean.valueOf(properties.getProperty("persistLog"));
 			L.e("persistLog:"+persistLog);
+
+			mainCategoruUrl = properties.getProperty("mainCategoruUrl");
+			L.e("mainCategoruUrl:"+mainCategoruUrl);
 			init = true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -59,4 +64,9 @@ public class WikiConfig {
 	public static boolean isPersistLog() {
 		return persistLog;
 	}
+
+	public static String getMainCategoruUrl() {
+		return mainCategoruUrl;
+	}
+	
 }
