@@ -10,5 +10,6 @@
     <string name="tip_about">关于</string>
     <string name="tip_recommand">推荐</string>
     <string name="tip_feedback">反馈</string>
+    <string name="button_recent_update">最近更新</string>
 
 </resources>

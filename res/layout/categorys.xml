@@ -41,6 +41,12 @@
 	    			android:hint="@string/tip_search_key"
 	    			android:id="@+id/et_search"/>
 		    </RelativeLayout>
+		    
+	        <Button android:layout_width="match_parent"
+    			android:layout_height="wrap_content"
+    			android:id="@+id/btn_recent"
+    			android:gravity="left"
+    			android:text="@string/button_recent_update"/>
 		    <LinearLayout android:layout_width="match_parent"
     			android:layout_height="wrap_content"
     			android:orientation="vertical"
