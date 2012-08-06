@@ -1,7 +1,7 @@
-﻿eoeWiki
+﻿EoeWiki
 =======
 
-eoeandroid wiki android客户端
+Eoeandroid Wiki Android客户端
 
 ref:
 http://www.eoeandroid.com/thread-187739-1-1.html
