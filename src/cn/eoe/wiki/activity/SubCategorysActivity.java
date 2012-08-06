@@ -13,6 +13,7 @@ import android.widget.TextView;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.json.CategoryChild;
 import cn.eoe.wiki.json.CategoryJson;
+import cn.eoe.wiki.listener.SubCategoryListener;
 import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.SliderLayer;
@@ -117,7 +118,7 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 						L.d("tvChild font:"+tvChild.getTextSize());
 						tvChild.setTextSize(tvChild.getTextSize()*2/5);
 						tvChild.setTextColor(WikiUtil.getResourceColor(R.color.black, mContext));
-//						tvChild.setOnClickListener();
+						tvChild.setOnClickListener(new SubCategoryListener(categorysChild.getName(), SubCategorysActivity.this));
 						mCategoryLayout.addView(tvChild);
 					}
 				}
