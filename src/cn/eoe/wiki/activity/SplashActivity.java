@@ -42,6 +42,7 @@ public class SplashActivity extends BaseActivity {
 				}
 				Intent intent = new Intent(mContext, MainActivity.class);
 				startActivity(intent);
+				//I just wanna test whether it's my branch?
 				finish();
 			}
 		});
