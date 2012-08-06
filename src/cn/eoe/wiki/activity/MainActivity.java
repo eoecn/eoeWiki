@@ -44,8 +44,11 @@ public class MainActivity extends ActivityGroup {
 
 		int sceenWidth = WikiUtil.getSceenWidth(mMainActivity);
 		ViewGroup layerOne = (ViewGroup) findViewById(R.id.animation_layout_one);
+		layerOne.setPadding(10,10, 50, 10);
 		ViewGroup layerTwo = (ViewGroup) findViewById(R.id.animation_layout_two);
+		layerTwo.setPadding(10, 10, 30, 10);
 		ViewGroup layerThree = (ViewGroup) findViewById(R.id.animation_layout_three);
+		layerThree.setPadding(10, 10, 10, 10);
 		mSliderLayers.addLayer(new SliderEntity(layerOne, 0, sceenWidth, 0));
 		mSliderLayers.addLayer(new SliderEntity(layerTwo, 10, sceenWidth - 40, 10));
 		mSliderLayers.addLayer(new SliderEntity(layerThree, 0, sceenWidth - 20, 0));

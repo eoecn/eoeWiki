@@ -27,6 +27,8 @@
         <activity android:name=".activity.SubCategorysActivity"></activity>
         <activity android:name=".activity.RecommendActivity"></activity>
         <activity android:name=".activity.SearchActivity"></activity>
+        
+        <provider android:authorities="cn.eoe.wiki.provider" android:name=".db.DatabaseProvider"></provider>
     </application>
 
 </manifest>
