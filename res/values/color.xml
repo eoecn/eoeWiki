@@ -9,8 +9,12 @@
       <color name="green">#81bb11</color>
       <color name="yellow">#ff0</color>
       <color name="low_grey">#999</color>
+      <color name="deep_grey">#f1f1f1</color>
       <color name="deep_blue">#2e4176</color>
-      <color name="sky_blue">#09f</color>
+      <color name="sky_blue">#09f</color> 
+      
+      <color name="blue_line">#26A8D7</color>
+      <color name="grey_stroke">#c1c1c1</color>
       
 </resources>
 

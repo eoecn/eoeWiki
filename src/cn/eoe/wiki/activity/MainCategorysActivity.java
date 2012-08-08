@@ -1,12 +1,17 @@
 package cn.eoe.wiki.activity;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import cn.eoe.wiki.R;
@@ -14,6 +19,7 @@ import cn.eoe.wiki.WikiConfig;
 import cn.eoe.wiki.json.CategoryChild;
 import cn.eoe.wiki.json.CategoryJson;
 import cn.eoe.wiki.listener.CategoryListener;
+import cn.eoe.wiki.listener.CategoryTitleListener;
 import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
 /**
@@ -28,20 +34,23 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 	private LayoutInflater 	mInflater;
 	private Button			mBtnSearch;
 
-	private Button			mBtnAbout;
-	private Button			mBtnRecommand;
-	private Button			mBtnFeedback;
-	private Button			mBtnRecent;
+	private LinearLayout			mLayoutAbout;
+	private LinearLayout			mLayoutRecommand;
+	private LinearLayout			mLayoutFeedback;
+	private Button					mBtnRecent;
+	private ImageView				mIvFavorite;
 	
-	private String			mCategoryUrl;
+	private String					mCategoryUrl;
 
-	private boolean			mProgressVisible;
+	private boolean					mProgressVisible;
+	private Set<CategoryChild> 		mCloseCategorys;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.categorys);
 		mInflater = LayoutInflater.from(mContext);
 		mCategoryUrl = WikiConfig.getMainCategoruUrl();
+		mCloseCategorys = new HashSet<CategoryChild>();
 		initComponent();
 		initData();
 	}
@@ -56,15 +65,17 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		mBtnSearch=(Button)findViewById(R.id.btn_search);
 		mBtnSearch.requestFocus();
 
-		mBtnAbout=(Button)findViewById(R.id.btn_about);
-		mBtnRecommand=(Button)findViewById(R.id.btn_recommand);
-		mBtnFeedback=(Button)findViewById(R.id.btn_feedback);
+		mLayoutAbout=(LinearLayout)findViewById(R.id.layout_about);
+		mLayoutRecommand=(LinearLayout)findViewById(R.id.layout_recommand);
+		mLayoutFeedback=(LinearLayout)findViewById(R.id.layout_feedback);
 		mBtnRecent=(Button)findViewById(R.id.btn_recent);
+		mIvFavorite=(ImageView)findViewById(R.id.iv_favorite);
 		mBtnSearch.setOnClickListener(this);
-		mBtnAbout.setOnClickListener(this);
-		mBtnRecommand.setOnClickListener(this);
-		mBtnFeedback.setOnClickListener(this);
+		mLayoutAbout.setOnClickListener(this);
+		mLayoutRecommand.setOnClickListener(this);
+		mLayoutFeedback.setOnClickListener(this);
 		mBtnRecent.setOnClickListener(this);
+		mIvFavorite.setOnClickListener(this);
 	}
 
 	void initData() {
@@ -95,8 +106,37 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		btnTryAgain.setOnClickListener(this);
 		mCategoryLayout.addView(viewError);
 	}
+	
 	@Override
 	protected void generateCategorys(CategoryJson responseObject)
+	{
+		generateCategorys(responseObject, null);
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.btn_try_again:
+			getCategory(mCategoryUrl);
+			break;
+		case R.id.btn_search:
+			break;
+		case R.id.layout_about:
+			break;
+		case R.id.layout_recommand:
+			break;
+		case R.id.layout_feedback:
+			break;
+		case R.id.btn_recent:
+			break;
+		case R.id.iv_favorite:
+			break;
+		default:
+			break;
+		}
+	}
+
+	public void generateCategorys(CategoryJson responseObject,CategoryChild operCategory)
 	{
 		List<CategoryChild> categorys =  responseObject.getContents();
 		if(categorys!=null)
@@ -108,44 +148,64 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 			{
 				TextView tv = (TextView)mInflater.inflate(R.layout.category_item, null);
 				tv.setText(category.getName());
+				tv.setOnClickListener(new CategoryTitleListener(this,category));
 				mCategoryLayout.addView(tv);
-				List<CategoryChild> categorysChildren =  category.getChildren();
-				if(categorysChildren!=null)
+				if(operCategory==null || !mCloseCategorys.contains(category))
 				{
-					for(CategoryChild categorysChild:categorysChildren)
+					//if operCategory==null ,it means the first
+					//mCloseCategorys.contains(category) this category is close
+					tv.setBackgroundResource(R.drawable.btn_grey_blue_top);
+				
+					List<CategoryChild> categorysChildren =  category.getChildren();
+					if(categorysChildren!=null)
 					{
-						TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
-						tvChild.setText(categorysChild.getName());
-						tvChild.setPadding(50, 0, 0, 0);
-						L.d("tvChild font:"+tvChild.getTextSize());
-						tvChild.setTextSize(tvChild.getTextSize()*2/5);
-						tvChild.setTextColor(WikiUtil.getResourceColor(R.color.black, mContext));
-						tvChild.setOnClickListener(new CategoryListener(this, categorysChild));
-						mCategoryLayout.addView(tvChild);
+	//					for(CategoryChild categorysChild:categorysChildren)
+						int size = categorysChildren.size();
+						for (int i = 0; i < size; i++)
+						{
+							CategoryChild categorysChild = categorysChildren.get(i);
+							TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
+							tvChild.setText(categorysChild.getName());
+							tvChild.setPadding(tvChild.getPaddingLeft()+WikiUtil.dip2px(mContext, 20), tvChild.getPaddingTop(), tvChild.getPaddingRight(), tvChild.getPaddingBottom());
+							L.d("tvChild font:"+tvChild.getTextSize());
+							tvChild.setTextSize(tvChild.getTextSize()*3/5);
+							tvChild.setTextColor(WikiUtil.getResourceColor(R.color.black, mContext));
+							tvChild.setOnClickListener(new CategoryListener(this, categorysChild));
+							if(i==(size-1))
+							{
+								tvChild.setBackgroundResource(R.drawable.btn_white_blue_bottom);
+							}
+							else
+							{
+								tvChild.setBackgroundResource(R.drawable.btn_white_blue);
+							}
+							mCategoryLayout.addView(tvChild);
+						}
 					}
 				}
+				else
+				{
+					tv.setBackgroundResource(R.drawable.btn_grey_blue);
+				}
+
+				TextView blankView = new TextView(mContext);
+				blankView.setHeight(WikiUtil.dip2px(mContext, 8));
+				mCategoryLayout.addView(blankView);
 			}
 		}
 	}
+	
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.btn_try_again:
-			getCategory(mCategoryUrl);
-			break;
-		case R.id.btn_search:
-			break;
-		case R.id.btn_about:
-			break;
-		case R.id.btn_recommand:
-			break;
-		case R.id.btn_feedback:
-			break;
-		case R.id.btn_recent:
-			break;
-		default:
-			break;
+	public void refreshCategory(CategoryChild category)
+	{
+		if(mCloseCategorys.contains(category))
+		{
+			mCloseCategorys.remove(category);
 		}
+		else
+		{
+			mCloseCategorys.add(category);
+		}
+		generateCategorys(responseObject, category);
 	}
 }

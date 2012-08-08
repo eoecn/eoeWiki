@@ -8,14 +8,14 @@ import org.codehaus.jackson.annotate.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class CategoryJson {
 	@JsonProperty("version")
-	private String version;
+	private int version;
 	@JsonProperty("content")
 	private List<CategoryChild> contents;
 	
-	public String getVersion() {
+	public int getVersion() {
 		return version;
 	}
-	public void setVersion(String version) {
+	public void setVersion(int version) {
 		this.version = version;
 	}
 	public List<CategoryChild> getContents() {
