@@ -138,11 +138,8 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 						tvChild.setText(categorysChild.getName());
 						tvChild.setPadding(50, 0, 0, 0);
 						tvChild.setTextColor(WikiUtil.getResourceColor(R.color.black, mContext));
-<<<<<<< HEAD
 						tvChild.setOnClickListener(new SubCategoryListener(categorysChild.getUri(), SubCategorysActivity.this));
 						mCategoryLayout.addView(tvChild);
-=======
-//						tvChild.setOnClickListener();
 						if(i==(size-1))
 						{
 							tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_bottom);
@@ -152,7 +149,6 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 							tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_nocorners);
 						}
 						categoryLayout.addView(tvChild);
->>>>>>> ac75f893c04b5d6357e343caeaa496fe44b95f4d
 					}
 				}
 			}
