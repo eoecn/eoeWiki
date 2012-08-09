@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.LinearLayout.LayoutParams;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.json.CategoryChild;
 import cn.eoe.wiki.json.CategoryJson;
@@ -103,22 +104,49 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 			
 			for(CategoryChild category:categorys)
 			{
-				TextView tv = (TextView)mInflater.inflate(R.layout.category_item, null);
+				LinearLayout categoryLayout = new LinearLayout(mContext);
+				categoryLayout.setOrientation(LinearLayout.VERTICAL);
+				LayoutParams titleParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+				int paddind = WikiUtil.dip2px(mContext, 1);
+				categoryLayout.setPadding(paddind, paddind, paddind, paddind);
+				categoryLayout.setLayoutParams(titleParams);
+				categoryLayout.setBackgroundResource(R.drawable.btn_grey_blue_stroke);
+				mCategoryLayout.addView(categoryLayout);
+				
+				TextView tv = (TextView)mInflater.inflate(R.layout.category_title, null);
 				tv.setText(category.getName());
-				mCategoryLayout.addView(tv);
+				tv.setBackgroundResource(R.drawable.btn_grey_blue_nostroke_top);
+				
+				categoryLayout.addView(tv);
 				List<CategoryChild> categorysChildren =  category.getChildren();
 				if(categorysChildren!=null)
 				{
-					for(CategoryChild categorysChild:categorysChildren)
+					int size = categorysChildren.size();
+					for (int i = 0; i < size; i++)
 					{
+						//add the line first
+						View lineView = new View(mContext);
+						LayoutParams blankParams = new LayoutParams(LayoutParams.MATCH_PARENT, WikiUtil.dip2px(mContext, 1));
+						lineView.setLayoutParams(blankParams);
+						lineView.setBackgroundResource(R.color.grey_stroke);
+						categoryLayout.addView(lineView);
+						//add the text
+						CategoryChild categorysChild = categorysChildren.get(i);
+						
 						TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
 						tvChild.setText(categorysChild.getName());
 						tvChild.setPadding(50, 0, 0, 0);
-						L.d("tvChild font:"+tvChild.getTextSize());
-						tvChild.setTextSize(tvChild.getTextSize()*2/5);
 						tvChild.setTextColor(WikiUtil.getResourceColor(R.color.black, mContext));
 //						tvChild.setOnClickListener();
-						mCategoryLayout.addView(tvChild);
+						if(i==(size-1))
+						{
+							tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_bottom);
+						}
+						else
+						{
+							tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_nocorners);
+						}
+						categoryLayout.addView(tvChild);
 					}
 				}
 			}

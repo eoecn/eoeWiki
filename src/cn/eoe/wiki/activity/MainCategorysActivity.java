@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.WikiConfig;
@@ -146,15 +148,24 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 			
 			for(CategoryChild category:categorys)
 			{
-				TextView tv = (TextView)mInflater.inflate(R.layout.category_item, null);
+				LinearLayout categoryLayout = new LinearLayout(mContext);
+				categoryLayout.setOrientation(LinearLayout.VERTICAL);
+				LayoutParams titleParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+				int paddind = WikiUtil.dip2px(mContext, 1);
+				categoryLayout.setPadding(paddind, paddind, paddind, paddind);
+				categoryLayout.setLayoutParams(titleParams);
+				categoryLayout.setBackgroundResource(R.drawable.btn_grey_blue_stroke);
+				mCategoryLayout.addView(categoryLayout);
+				
+				TextView tv = (TextView)mInflater.inflate(R.layout.category_title, null);
 				tv.setText(category.getName());
 				tv.setOnClickListener(new CategoryTitleListener(this,category));
-				mCategoryLayout.addView(tv);
+				categoryLayout.addView(tv);
 				if(operCategory==null || !mCloseCategorys.contains(category))
 				{
 					//if operCategory==null ,it means the first
 					//mCloseCategorys.contains(category) this category is close
-					tv.setBackgroundResource(R.drawable.btn_grey_blue_top);
+					tv.setBackgroundResource(R.drawable.btn_grey_blue_nostroke_top);
 				
 					List<CategoryChild> categorysChildren =  category.getChildren();
 					if(categorysChildren!=null)
@@ -163,33 +174,37 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 						int size = categorysChildren.size();
 						for (int i = 0; i < size; i++)
 						{
+							//add the line first
+							View lineView = new View(mContext);
+							LayoutParams blankParams = new LayoutParams(LayoutParams.MATCH_PARENT, WikiUtil.dip2px(mContext, 1));
+							lineView.setLayoutParams(blankParams);
+							lineView.setBackgroundResource(R.color.grey_stroke);
+							categoryLayout.addView(lineView);
+							//add the text
 							CategoryChild categorysChild = categorysChildren.get(i);
 							TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
 							tvChild.setText(categorysChild.getName());
-							tvChild.setPadding(tvChild.getPaddingLeft()+WikiUtil.dip2px(mContext, 20), tvChild.getPaddingTop(), tvChild.getPaddingRight(), tvChild.getPaddingBottom());
-							L.d("tvChild font:"+tvChild.getTextSize());
-							tvChild.setTextSize(tvChild.getTextSize()*3/5);
-							tvChild.setTextColor(WikiUtil.getResourceColor(R.color.black, mContext));
 							tvChild.setOnClickListener(new CategoryListener(this, categorysChild));
 							if(i==(size-1))
 							{
-								tvChild.setBackgroundResource(R.drawable.btn_white_blue_bottom);
+								tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_bottom);
 							}
 							else
 							{
-								tvChild.setBackgroundResource(R.drawable.btn_white_blue);
+								tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_nocorners);
 							}
-							mCategoryLayout.addView(tvChild);
+							categoryLayout.addView(tvChild);
 						}
 					}
 				}
 				else
 				{
-					tv.setBackgroundResource(R.drawable.btn_grey_blue);
+					tv.setBackgroundResource(R.drawable.btn_grey_blue_nostroke);
 				}
 
-				TextView blankView = new TextView(mContext);
-				blankView.setHeight(WikiUtil.dip2px(mContext, 8));
+				View blankView = new View(mContext);
+				LayoutParams blankParams = new LayoutParams(LayoutParams.MATCH_PARENT, WikiUtil.dip2px(mContext, 8));
+				blankView.setLayoutParams(blankParams);
 				mCategoryLayout.addView(blankView);
 			}
 		}
