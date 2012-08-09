@@ -3,7 +3,7 @@
     android:id="@+id/animation_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:background="@color/deep_grey">
     <LinearLayout
         android:id="@+id/animation_layout_one"
         android:layout_width="match_parent"

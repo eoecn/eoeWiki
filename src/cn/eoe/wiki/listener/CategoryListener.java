@@ -16,7 +16,7 @@ import cn.eoe.wiki.json.CategoryChild;
  */
 public class CategoryListener implements OnClickListener {
 
-	CategorysActivity context;
+	private CategorysActivity context;
 	private CategoryChild category;
 	
 	public CategoryListener(CategorysActivity context,CategoryChild category)

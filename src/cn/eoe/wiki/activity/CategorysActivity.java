@@ -22,6 +22,8 @@ public abstract class CategorysActivity extends SliderActivity{
 	private static final int	HANDLER_DISPLAY_CATEGORY 	= 0x0001;
 	private static final int	HANDLER_GET_CATEGORY_ERROR 	= 0x0002;
 	
+	protected CategoryJson responseObject = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -72,10 +74,9 @@ public abstract class CategorysActivity extends SliderActivity{
 
 		@Override
 		public void transactionOver(String result) {
-			
-			CategoryJson responseObject;
 			try {
 				responseObject = mObjectMapper.readValue(result, new TypeReference<CategoryJson>() { });
+				L.e("version:"+responseObject.getVersion());
 				mHandler.obtainMessage(HANDLER_DISPLAY_CATEGORY, responseObject).sendToTarget();
 			} catch (Exception e) {
 				L.e("getGiftsTransaction exception", e);

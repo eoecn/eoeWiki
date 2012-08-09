@@ -5,39 +5,30 @@ import java.util.Map;
 
 import android.net.Uri;
 
-public class WikiColumn extends DatabaseColumn {
+public class FavoriteColumn extends DatabaseColumn {
 
-    /**
+	/**
      * This table's name
      */
-    public static final String 		TABLE_NAME 		= "wiki";
+    public static final String 		TABLE_NAME 		= "favorite";
     
-    public static final String		PAGEID			="pageid";
-    public static final String		NAME			="name";
-    public static final String		TITLE			="title";
+    public static final String		WIKIID			="wikiid";
     /**
-     * 是保存wiki的路径
+     * 0 is valid<br>
+     * 1 is invalid
      */
-    public static final String 		PATH			="path";
-    public static final String		DESCRIPTION		="description";
-    /**
-     *  这个uri是本wiki的uri
-     */
-    public static final String		URI				="uri";
+    public static final String 		STATUS			="status";
     
     public static final String[]	COLUMNS			= new String[]{
-    	_ID,PAGEID,NAME,PATH,DESCRIPTION,URI,DATE_ADD,DATE_MODIFY
+    	_ID,WIKIID,STATUS,DATE_ADD,DATE_MODIFY
     };
     
     public static final Uri 		CONTENT_URI 	= Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
     private static final Map<String, String> mColumnsMap = new HashMap<String, String>();
     static {
 		mColumnsMap.put(_ID, "integer primary key autoincrement not null");
-		mColumnsMap.put(PAGEID, "integer not null");
-		mColumnsMap.put(NAME, "text not null");
-		mColumnsMap.put(PATH, "text not null");
-		mColumnsMap.put(DESCRIPTION, "text not null");
-		mColumnsMap.put(URI, "text not null");
+		mColumnsMap.put(WIKIID, "text not null");
+		mColumnsMap.put(STATUS, "integer default 0 ");
 		mColumnsMap.put(DATE_ADD, "localtime");
 		mColumnsMap.put(DATE_MODIFY, "localtime");
     };
