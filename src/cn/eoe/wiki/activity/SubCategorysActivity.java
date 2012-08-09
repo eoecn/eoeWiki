@@ -118,7 +118,7 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 						L.d("tvChild font:"+tvChild.getTextSize());
 						tvChild.setTextSize(tvChild.getTextSize()*2/5);
 						tvChild.setTextColor(WikiUtil.getResourceColor(R.color.black, mContext));
-						tvChild.setOnClickListener(new SubCategoryListener(categorysChild.getName(), SubCategorysActivity.this));
+						tvChild.setOnClickListener(new SubCategoryListener(categorysChild.getUri(), SubCategorysActivity.this));
 						mCategoryLayout.addView(tvChild);
 					}
 				}
