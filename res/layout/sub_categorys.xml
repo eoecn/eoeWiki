@@ -19,15 +19,12 @@
     		android:textColor="@color/green"
     		android:textSize="30sp"
     		android:layout_toRightOf="@+id/btn_back"/>
-	    
-		<View android:layout_width="match_parent"
-	    	android:layout_height="5dip"
-	    	android:background="@color/green"
-	    	android:layout_below="@+id/btn_back"/>
 	</RelativeLayout>
 	<ScrollView android:layout_width="match_parent"
     	android:layout_height="match_parent"
-    	android:layout_below="@+id/category_title">
+    	android:layout_below="@+id/category_title"
+    	android:fadingEdge="none"
+    	android:scrollbars="none">
 		<LinearLayout android:layout_width="match_parent"
     		android:layout_height="wrap_content"
     		android:orientation="vertical">
@@ -35,6 +32,8 @@
     			android:layout_height="wrap_content"
     			android:orientation="vertical"
     			android:id="@+id/layout_category"
+    			android:paddingLeft="10dip"
+    			android:paddingRight="10dip"
     			android:gravity="center_horizontal"></LinearLayout>
 	    </LinearLayout>
 	</ScrollView>
