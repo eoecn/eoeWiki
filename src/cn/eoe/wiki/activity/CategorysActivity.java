@@ -43,7 +43,6 @@ public abstract class CategorysActivity extends SliderActivity{
 	{
 		if(TextUtils.isEmpty(url))
 			throw new IllegalArgumentException("You must give a not empty url.");
-		System.out.println(url);
 		HttpManager manager = new HttpManager(url,null, HttpManager.GET, getCategorysTransaction);
 		manager.start();
 	}
