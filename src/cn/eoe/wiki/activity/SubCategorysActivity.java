@@ -4,10 +4,12 @@ import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
@@ -26,13 +28,18 @@ import cn.eoe.wiki.view.SliderLayer.SliderListener;
  */
 public class SubCategorysActivity extends CategorysActivity implements OnClickListener,SliderListener{
 	public static final		String 	KEY_CATEGORY		= "category";
+	public static final		String 	KEY_PARENT_TITLE	= "parent_title";
 	
 	private LinearLayout	mCategoryLayout;
 	private LayoutInflater 	mInflater;
-	private Button			mBtnBack;
+	private ImageView		mIvBack;
+	private TextView		mTvParentName;
+	private TextView		mTvTitleName;
+	private TextView		mTvDescription;
 	
 	private boolean			mProgressVisible;
 	private CategoryChild	mParentCategory;
+	private String			mParentName;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,9 +51,10 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 			throw new NullPointerException("Must give a CategoryChild in the intent");
 		}
 		mParentCategory = intent.getParcelableExtra(KEY_CATEGORY);
-		if(mParentCategory==null)
+		mParentName = intent.getStringExtra(KEY_PARENT_TITLE);
+		if(mParentCategory==null || TextUtils.isEmpty(mParentName))
 		{
-			throw new NullPointerException("Must give a CategoryChild in the intent");
+			throw new NullPointerException("Must give a CategoryChild and the parent name in the intent");
 		}
 		getmMainActivity().getSliderLayer().addSliderListener(this);
 		initComponent();
@@ -60,12 +68,18 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 	}
 
 	void initComponent() {
+		mTvParentName = (TextView)findViewById(R.id.tv_title_parent);
+		mTvTitleName = (TextView)findViewById(R.id.tv_title);
+		mTvDescription = (TextView)findViewById(R.id.tv_description);
 		mCategoryLayout = (LinearLayout)findViewById(R.id.layout_category);
-		mBtnBack=(Button)findViewById(R.id.btn_back);
-		mBtnBack.setOnClickListener(this);
+		mIvBack=(ImageView)findViewById(R.id.iv_back);
+		mIvBack.setOnClickListener(this);
 	}
 
 	void initData() {
+		mTvParentName.setText(mParentName);
+		mTvTitleName.setText(mParentCategory.getName());
+		mTvDescription.setText(mParentCategory.getDescription());
 		showProgressLayout();
 	}
 	
@@ -135,8 +149,6 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 						
 						TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
 						tvChild.setText(categorysChild.getName());
-						tvChild.setPadding(50, 0, 0, 0);
-						tvChild.setTextColor(WikiUtil.getResourceColor(R.color.black, mContext));
 //						tvChild.setOnClickListener();
 						if(i==(size-1))
 						{
@@ -149,6 +161,11 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 						categoryLayout.addView(tvChild);
 					}
 				}
+
+				View blankView = new View(mContext);
+				LayoutParams blankParams = new LayoutParams(LayoutParams.MATCH_PARENT, WikiUtil.dip2px(mContext, 8));
+				blankView.setLayoutParams(blankParams);
+				mCategoryLayout.addView(blankView);
 			}
 		}
 	}
@@ -159,7 +176,7 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 		case R.id.btn_try_again:
 			getCategory(mParentCategory.getUri());
 			break;
-		case R.id.btn_back:
+		case R.id.iv_back:
 			SliderLayer layer = getmMainActivity().getSliderLayer();
 			layer.closeSidebar(layer.openingLayerIndex());
 			break;

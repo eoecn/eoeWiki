@@ -1,7 +1,9 @@
 package cn.eoe.wiki.db.dao;
 
 import android.content.Context;
+import android.database.Cursor;
 import cn.eoe.wiki.db.WikiColumn;
+import cn.eoe.wiki.db.entity.WikiEntity;
 /**
  * WikiDao<br>
  * 操作wiki相关的数据
@@ -15,4 +17,14 @@ public class WikiDao extends GeneralDao<WikiColumn> {
 		super(new WikiColumn(), context);
 	}
 
+	public WikiEntity getWikiByPageId(String pageid)
+	{
+		WikiEntity entity = new WikiEntity();
+		Cursor cursor = queryByParameter(WikiColumn.PAGEID, pageid);
+		if(cursor!=null && cursor.moveToFirst())
+		{
+			entity.setId(cursor.getLong(cursor.getColumnIndex(WikiColumn._ID)));
+		}
+		return entity;
+	}
 }

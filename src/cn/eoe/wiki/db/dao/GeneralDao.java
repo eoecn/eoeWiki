@@ -16,8 +16,8 @@ import cn.eoe.wiki.utils.SqliteWrapper;
  */
 public class GeneralDao<T extends DatabaseColumn> {
 	public T tableClass;
-	private Context context;
-	private Uri uri;
+	protected Context context;
+	protected Uri uri;
 	
 	public GeneralDao(T tableClass,Context context)
 	{

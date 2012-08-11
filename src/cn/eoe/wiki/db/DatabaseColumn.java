@@ -24,12 +24,13 @@ public abstract class DatabaseColumn implements BaseColumns{
 	/**
 	 * The version of current database
 	 */
-	public static final int 		DATABASE_VERSION 	= 1;
+	public static final int 		DATABASE_VERSION 	= 3;
 	/**
 	 * Classes's name extends from this class.
 	 */
 	public static final String[] 	SUBCLASSES			= new String[] { 
-			"cn.eoe.wiki.db.CountryColumns"
+			"cn.eoe.wiki.db.WikiColumn",
+			"cn.eoe.wiki.db.FavoriteColumn",
 		};
 
 	/**

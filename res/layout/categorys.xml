@@ -29,10 +29,13 @@
     	android:layout_below="@+id/category_title"
     	android:layout_above="@+id/layout_functions"
     	android:fadingEdge="none"
-    	android:scrollbars="none">
+    	android:scrollbars="none"
+    	android:layout_marginTop="2dip">
 		<LinearLayout android:layout_width="match_parent"
     		android:layout_height="wrap_content"
-    		android:orientation="vertical">
+    		android:orientation="vertical"
+   			android:paddingLeft="10dip"
+   			android:paddingRight="10dip">
 		    <RelativeLayout android:layout_width="match_parent"
 	    		android:layout_height="wrap_content"
 	    		android:padding="10dip">
@@ -40,7 +43,6 @@
 	    			android:layout_height="wrap_content"
 	    			android:id="@+id/btn_search"
 	    			android:focusable="true"
-	    			android:padding="0dip"
 	    			android:focusableInTouchMode="true"
 	    			android:layout_alignParentRight="true"
 	    			android:background="@drawable/btn_search"
@@ -51,9 +53,9 @@
 	    			android:layout_toLeftOf="@+id/btn_search"
 	    			android:hint="@string/tip_search_key"
 	    			android:id="@+id/et_search"
+	    			android:layout_marginRight="5dip"
 	    			android:background="@drawable/search_border"
-	    			android:layout_centerVertical="true"
-	    			android:layout_marginRight="10dip"/>
+	    			android:layout_centerVertical="true"/>
 		    </RelativeLayout>
 		    
 	        <Button android:layout_width="match_parent"
@@ -61,20 +63,19 @@
     			android:id="@+id/btn_recent"
     			android:textColor="@drawable/font_blue_white"
     			android:gravity="left"
-    			android:layout_margin="10dip"
-    			android:paddingTop="5dip"
-    			android:paddingBottom="5dip"
-    			android:paddingLeft="10dip"
-    			android:paddingRight="10dip"
     			android:text="@string/button_recent_update"
     			android:textSize="20sp"
+    			android:layout_marginTop="5dip"
+    			android:layout_marginBottom="5dip"
+    			android:paddingLeft="10dip"
+    			android:paddingTop="5dip"
+    			android:paddingBottom="5dip"
     			android:background="@drawable/btn_grey_blue_stroke"/>
 		    <LinearLayout android:layout_width="match_parent"
     			android:layout_height="wrap_content"
     			android:orientation="vertical"
     			android:id="@+id/layout_category"
-    			android:paddingLeft="10dip"
-    			android:paddingRight="10dip"
+    			android:layout_marginTop="5dip"
     			android:gravity="center_horizontal"></LinearLayout>
 	    </LinearLayout>
 	</ScrollView>
