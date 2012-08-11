@@ -80,10 +80,11 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	};
 	
 	private void generateWiki(WikiDetailJson pWikiDetailJson){
-		System.out.println("I am come here" +pWikiDetailJson.getDisplayTitle());
-		System.out.println("I am title"+pWikiDetailJson.getTitle());
-		System.out.println("I am revid" +pWikiDetailJson.getRevid());
-		System.out.println("I am parse"+pWikiDetailJson.getParse());
+		String html = pWikiDetailJson.getParse().getText().getHtml();
+		System.out.println("I am parse:"+pWikiDetailJson.getParse());
+		System.out.println("I am getTitle:"+pWikiDetailJson.getParse().getTitle());
+
+		System.out.println("I am html:"+html);
 	}
 	
 	private void getWikiError(String pError){
