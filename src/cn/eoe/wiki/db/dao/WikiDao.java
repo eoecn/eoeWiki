@@ -17,6 +17,11 @@ public class WikiDao extends GeneralDao<WikiColumn> {
 		super(new WikiColumn(), context);
 	}
 
+	/**
+	 * get the wiki by the page id 
+	 * @param pageid
+	 * @return
+	 */
 	public WikiEntity getWikiByPageId(String pageid)
 	{
 		WikiEntity entity = new WikiEntity();
@@ -24,6 +29,11 @@ public class WikiDao extends GeneralDao<WikiColumn> {
 		if(cursor!=null && cursor.moveToFirst())
 		{
 			entity.setId(cursor.getLong(cursor.getColumnIndex(WikiColumn._ID)));
+			entity.setAddDate(cursor.getString(cursor.getColumnIndex(WikiColumn.DATE_ADD)));
+			entity.setModifyDate(cursor.getString(cursor.getColumnIndex(WikiColumn.DATE_MODIFY)));
+			entity.setPageId(cursor.getString(cursor.getColumnIndex(WikiColumn.PAGEID)));
+			entity.setPath(cursor.getString(cursor.getColumnIndex(WikiColumn.PATH)));
+			entity.setUri(cursor.getString(cursor.getColumnIndex(WikiColumn.URI)));
 		}
 		return entity;
 	}
