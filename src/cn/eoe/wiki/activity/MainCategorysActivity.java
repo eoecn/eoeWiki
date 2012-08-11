@@ -184,7 +184,7 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 							CategoryChild categorysChild = categorysChildren.get(i);
 							TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
 							tvChild.setText(categorysChild.getName());
-							tvChild.setOnClickListener(new CategoryListener(this, categorysChild));
+							tvChild.setOnClickListener(new CategoryListener(this, categorysChild,category.getName()));
 							if(i==(size-1))
 							{
 								tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_bottom);

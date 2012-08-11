@@ -4,7 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.net.Uri;
-
+/**
+ * wiki的数据表
+ * @author <a href="mailto:kris1987@qq.com">Kris.lee</a>
+ * @data  2012-8-11
+ * @version 1.0.0
+ */
 public class WikiColumn extends DatabaseColumn {
 
     /**
@@ -13,20 +18,18 @@ public class WikiColumn extends DatabaseColumn {
     public static final String 		TABLE_NAME 		= "wiki";
     
     public static final String		PAGEID			="pageid";
-    public static final String		NAME			="name";
-    public static final String		TITLE			="title";
     /**
      * 是保存wiki的路径
      */
     public static final String 		PATH			="path";
-    public static final String		DESCRIPTION		="description";
+    public static final String		VERSION			="version";
     /**
      *  这个uri是本wiki的uri
      */
     public static final String		URI				="uri";
     
     public static final String[]	COLUMNS			= new String[]{
-    	_ID,PAGEID,NAME,PATH,DESCRIPTION,URI,DATE_ADD,DATE_MODIFY
+    	_ID,PAGEID,VERSION,PATH,URI,DATE_ADD,DATE_MODIFY
     };
     
     public static final Uri 		CONTENT_URI 	= Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
@@ -34,9 +37,8 @@ public class WikiColumn extends DatabaseColumn {
     static {
 		mColumnsMap.put(_ID, "integer primary key autoincrement not null");
 		mColumnsMap.put(PAGEID, "integer not null");
-		mColumnsMap.put(NAME, "text not null");
+		mColumnsMap.put(VERSION, "text not null");
 		mColumnsMap.put(PATH, "text not null");
-		mColumnsMap.put(DESCRIPTION, "text not null");
 		mColumnsMap.put(URI, "text not null");
 		mColumnsMap.put(DATE_ADD, "localtime");
 		mColumnsMap.put(DATE_MODIFY, "localtime");

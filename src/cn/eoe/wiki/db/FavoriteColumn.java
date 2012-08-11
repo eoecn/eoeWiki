@@ -4,7 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.net.Uri;
-
+/**
+ * 存放收藏wiki的数据表
+ * @author <a href="mailto:kris1987@qq.com">Kris.lee</a>
+ * @data  2012-8-11
+ * @version 1.0.0
+ */
 public class FavoriteColumn extends DatabaseColumn {
 
 	/**

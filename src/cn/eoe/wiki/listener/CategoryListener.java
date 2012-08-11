@@ -16,19 +16,22 @@ import cn.eoe.wiki.json.CategoryChild;
  */
 public class CategoryListener implements OnClickListener {
 
-	private CategorysActivity context;
-	private CategoryChild category;
+	private CategorysActivity 	context;
+	private CategoryChild 		category;
+	private String				parentName;
 	
-	public CategoryListener(CategorysActivity context,CategoryChild category)
+	public CategoryListener(CategorysActivity context,CategoryChild category,String parentName)
 	{
 		this.context = context;
 		this.category = category;
+		this.parentName = parentName;
 	}
 
 	@Override
 	public void onClick(View v) {
 		Intent intent = new Intent (context,SubCategorysActivity.class);
 		intent.putExtra(SubCategorysActivity.KEY_CATEGORY, category);
+		intent.putExtra(SubCategorysActivity.KEY_PARENT_TITLE, parentName);
 		context.getmMainActivity().showView(1, intent);
 	}
 	
