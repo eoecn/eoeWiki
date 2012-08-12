@@ -153,6 +153,7 @@ public abstract class CategorysActivity extends SliderActivity{
 			}
 			else
 			{
+				L.d("can not get the content from the db");
 				mHandler.sendEmptyMessage(HANDLER_LOAD_CATEGORY_NET);
 			}
 			return null;

@@ -116,6 +116,7 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_try_again:
+			showProgressLayout();
 			getCategory(mCategoryUrl);
 			break;
 		case R.id.btn_search:

@@ -183,6 +183,7 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_try_again:
+			showProgressLayout();
 			getCategory(mParentCategory.getUri());
 			break;
 		case R.id.iv_back:
