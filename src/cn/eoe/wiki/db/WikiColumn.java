@@ -28,16 +28,12 @@ public class WikiColumn extends DatabaseColumn {
      */
     public static final String		URI				="uri";
     
-    public static final String[]	COLUMNS			= new String[]{
-    	_ID,PAGEID,VERSION,PATH,URI,DATE_ADD,DATE_MODIFY
-    };
-    
     public static final Uri 		CONTENT_URI 	= Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
     private static final Map<String, String> mColumnsMap = new HashMap<String, String>();
     static {
 		mColumnsMap.put(_ID, "integer primary key autoincrement not null");
 		mColumnsMap.put(PAGEID, "integer not null");
-		mColumnsMap.put(VERSION, "text not null");
+		mColumnsMap.put(VERSION, "integer not null");
 		mColumnsMap.put(PATH, "text not null");
 		mColumnsMap.put(URI, "text not null");
 		mColumnsMap.put(DATE_ADD, "localtime");

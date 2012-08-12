@@ -119,7 +119,7 @@ public class HttpUtil {
 	 */
 	public static String get(String url, Map<String, String> data) throws IllegalStateException, ClientProtocolException, HttpResponseException, IOException {
 		HttpGet request = null;
-
+		L.d("request url:"+url);
 		if (data == null || data.isEmpty()) {
 			request = new HttpGet(url);
 		} else {

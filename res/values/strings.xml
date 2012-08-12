@@ -13,4 +13,5 @@
     <string name="button_recent_update">最近更新</string>
 
     <string name="tip_android_title">Android-安卓</string>
+    <string name="tip_no_category">杯具，没有可以显示的目录！</string>
 </resources>

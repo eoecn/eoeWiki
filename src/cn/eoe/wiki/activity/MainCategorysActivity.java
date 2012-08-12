@@ -4,14 +4,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -22,7 +19,6 @@ import cn.eoe.wiki.json.CategoryChild;
 import cn.eoe.wiki.json.CategoryJson;
 import cn.eoe.wiki.listener.CategoryListener;
 import cn.eoe.wiki.listener.CategoryTitleListener;
-import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
 /**
  * 用来处理最外层分类的界面
@@ -99,11 +95,12 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		mProgressVisible = false;
 		
 		View viewError = mInflater.inflate(R.layout.loading_error, null);
+		LayoutParams errorParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		errorParams.topMargin = WikiUtil.dip2px(mContext, 10);
+		viewError.setLayoutParams(errorParams);
+		
 		TextView tvErrorTip =  (TextView)viewError.findViewById(R.id.tv_error_tip);
 		tvErrorTip.setText(showText);
-		tvErrorTip.setTextColor(WikiUtil.getResourceColor(R.color.red, mContext));
-		
-
 		Button btnTryAgain =  (Button)viewError.findViewById(R.id.btn_try_again);
 		btnTryAgain.setOnClickListener(this);
 		mCategoryLayout.addView(viewError);
@@ -140,12 +137,11 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 
 	public void generateCategorys(CategoryJson responseObject,CategoryChild operCategory)
 	{
+		mCategoryLayout.removeAllViews();
+		mProgressVisible = false;
 		List<CategoryChild> categorys =  responseObject.getContents();
 		if(categorys!=null)
 		{
-			mCategoryLayout.removeAllViews();
-			mProgressVisible = false;
-			
 			for(CategoryChild category:categorys)
 			{
 				LinearLayout categoryLayout = new LinearLayout(mContext);
@@ -208,6 +204,14 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 				mCategoryLayout.addView(blankView);
 			}
 		}
+		else
+		{
+			View noCategoryView = mInflater.inflate(R.layout.no_category, null);
+			LayoutParams noCategoryParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+			noCategoryParams.topMargin = WikiUtil.dip2px(mContext, 10);
+			noCategoryView.setLayoutParams(noCategoryParams);
+			mCategoryLayout.addView(noCategoryView);
+		}
 	}
 	
 
@@ -221,6 +225,5 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		{
 			mCloseCategorys.add(category);
 		}
-		generateCategorys(responseObject, category);
 	}
 }

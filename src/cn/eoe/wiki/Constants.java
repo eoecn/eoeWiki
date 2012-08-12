@@ -2,7 +2,7 @@ package cn.eoe.wiki;
 
 import java.io.File;
 
-import cn.eoe.wiki.utils.WikiUtil;
+import cn.eoe.wiki.utils.FileUtil;
 
 /**
  * 主要是定义一些全局的静态变量
@@ -14,7 +14,7 @@ public class Constants {
 
 	public static final String  APP_NAME			= "eoeWiki";
 
-	public static  		String		EXTERNAL_DIR 		= WikiUtil.getExternalStoragePath()+File.separator+APP_NAME;
+	public static  		String		EXTERNAL_DIR 		= FileUtil.getExternalStoragePath()+File.separator+APP_NAME;
 	public static  		String		CACHE_DIR 			= EXTERNAL_DIR+File.separator+"cache";
 	public static  		String		LOGS_DIR 			= EXTERNAL_DIR+File.separator+"logs";
 

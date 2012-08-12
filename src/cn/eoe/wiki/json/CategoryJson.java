@@ -10,6 +10,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class CategoryJson {
 	@JsonProperty("version")//key值
 	private int version;//value值
+	@JsonProperty("pageid")
+	private String pageId;
 	@JsonProperty("content")
 	private List<CategoryChild> contents;
 	
@@ -24,6 +26,12 @@ public class CategoryJson {
 	}
 	public void setContents(List<CategoryChild> contents) {
 		this.contents = contents;
+	}
+	public String getPageId() {
+		return pageId;
+	}
+	public void setPageId(String pageId) {
+		this.pageId = pageId;
 	}
 	
 }

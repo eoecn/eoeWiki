@@ -6,19 +6,19 @@ package cn.eoe.wiki.db.entity;
  * @version 1.0.0
  */
 public class DataBaseEntity {
-	private String addDate;
-	private String modifyDate;
+	private long addDate;
+	private long modifyDate;
 	private long   id;
-	public String getAddDate() {
+	public long getAddDate() {
 		return addDate;
 	}
-	public void setAddDate(String addDate) {
+	public void setAddDate(long addDate) {
 		this.addDate = addDate;
 	}
-	public String getModifyDate() {
+	public long getModifyDate() {
 		return modifyDate;
 	}
-	public void setModifyDate(String modifyDate) {
+	public void setModifyDate(long modifyDate) {
 		this.modifyDate = modifyDate;
 	}
 	public long getId() {

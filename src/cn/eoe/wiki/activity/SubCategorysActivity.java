@@ -17,6 +17,7 @@ import cn.eoe.wiki.R;
 import cn.eoe.wiki.json.CategoryChild;
 import cn.eoe.wiki.json.CategoryJson;
 import cn.eoe.wiki.listener.SubCategoryListener;
+import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.SliderLayer;
 import cn.eoe.wiki.view.SliderLayer.SliderListener;
@@ -72,8 +73,8 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 		mTvTitleName = (TextView)findViewById(R.id.tv_title);
 		mTvDescription = (TextView)findViewById(R.id.tv_description);
 		mCategoryLayout = (LinearLayout)findViewById(R.id.layout_category);
-		mIvBack=(ImageView)findViewById(R.id.iv_back);
-		mIvBack.setOnClickListener(this);
+//		mIvBack=(ImageView)findViewById(R.id.iv_back);
+//		mIvBack.setOnClickListener(this);
 	}
 
 	void initData() {
@@ -97,11 +98,12 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 		mProgressVisible = false;
 		
 		View viewError = mInflater.inflate(R.layout.loading_error, null);
+		LayoutParams errorParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		errorParams.topMargin = WikiUtil.dip2px(mContext, 10);
+		viewError.setLayoutParams(errorParams);
+		
 		TextView tvErrorTip =  (TextView)viewError.findViewById(R.id.tv_error_tip);
 		tvErrorTip.setText(showText);
-		tvErrorTip.setTextColor(WikiUtil.getResourceColor(R.color.red, mContext));
-		
-
 		Button btnTryAgain =  (Button)viewError.findViewById(R.id.btn_try_again);
 		btnTryAgain.setOnClickListener(this);
 		mCategoryLayout.addView(viewError);
@@ -109,13 +111,11 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 	@Override
 	protected void generateCategorys(CategoryJson responseObject)
 	{
-//		if(WikiConfig.isDebug()) return;
+		mCategoryLayout.removeAllViews();
+		mProgressVisible = false;
 		List<CategoryChild> categorys =  responseObject.getContents();
 		if(categorys!=null)
 		{
-			mCategoryLayout.removeAllViews();
-			mProgressVisible = false;
-			
 			for(CategoryChild category:categorys)
 			{
 				LinearLayout categoryLayout = new LinearLayout(mContext);
@@ -149,8 +149,6 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 						
 						TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
 						tvChild.setText(categorysChild.getName());
-						tvChild.setPadding(50, 0, 0, 0);
-						tvChild.setTextColor(WikiUtil.getResourceColor(R.color.black, mContext));
 						tvChild.setOnClickListener(new SubCategoryListener(categorysChild.getUri(), SubCategorysActivity.this));
 						if(i==(size-1))
 						{
@@ -170,6 +168,14 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 				blankView.setLayoutParams(blankParams);
 				mCategoryLayout.addView(blankView);
 			}
+		}
+		else
+		{
+			View noCategoryView = mInflater.inflate(R.layout.no_category, null);
+			LayoutParams noCategoryParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+			noCategoryParams.topMargin = WikiUtil.dip2px(mContext, 10);
+			noCategoryView.setLayoutParams(noCategoryParams);
+			mCategoryLayout.addView(noCategoryView);
 		}
 	}
 
