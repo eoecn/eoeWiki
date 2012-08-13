@@ -8,11 +8,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import cn.eoe.wiki.R;
+import cn.eoe.wiki.db.dao.UpdateDao;
 import cn.eoe.wiki.db.dao.WikiDao;
+import cn.eoe.wiki.db.entity.UpdateEntity;
 import cn.eoe.wiki.db.entity.WikiEntity;
 import cn.eoe.wiki.http.HttpManager;
 import cn.eoe.wiki.http.ITransaction;
 import cn.eoe.wiki.json.CategoryJson;
+import cn.eoe.wiki.utils.DateUtil;
 import cn.eoe.wiki.utils.FileUtil;
 import cn.eoe.wiki.utils.L;
 /**
@@ -27,15 +30,18 @@ public abstract class CategorysActivity extends SliderActivity{
 	private static final int	HANDLER_LOAD_CATEGORY_ERROR = 0x0002;
 	private static final int	HANDLER_LOAD_CATEGORY_DB 	= 0x0003;
 	private static final int	HANDLER_LOAD_CATEGORY_NET 	= 0x0004;
+	private static final int	HANDLER_refresh_CATEGORY_NET= 0x0005;
 	
-	protected CategoryJson mResponseObject = null;
-	private String 			mUrl = null;
-	private WikiDao			mWikiDao = null;
+	protected CategoryJson 	mResponseObject 	= null;
+	private String 			mUrl 				= null;
+	private WikiDao			mWikiDao 			= null;
+	private UpdateDao		mWikiUpdateDao 		= null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mWikiDao = new WikiDao(mContext);
+		mWikiUpdateDao = new UpdateDao(mContext);
 	}
 
 	@Override
@@ -58,33 +64,51 @@ public abstract class CategorysActivity extends SliderActivity{
 	}
 	
 	
-	private void saveWikiCategory(int version,String pageid,String result)
+	private boolean saveWikiCategory(int version,String pageid,String result)
 	{
 		if(!FileUtil.isExternalStorageEnable())//no dscard , return
-			return;
+			return false;
 		WikiEntity entity = new WikiEntity();
 		entity.setPageId(pageid);
 		entity.setUri(mUrl);
 		entity.setVersion(version);
 		try {
-			mWikiDao.saveOrUpdateWiki(entity,result);
+			return mWikiDao.saveOrUpdateWiki(entity,result);
 		} catch (Exception e) {
 			L.e("save failed",e);
 		}
-		
+		return false;
 	}
 	
 	abstract void getCategorysError(String showText);
 	abstract void generateCategorys(CategoryJson responseObject);
 	
-	
+	/**
+	 * mapper the string to the json bean
+	 * @param result
+	 * @param fromNet
+	 */
 	private void mapperJson(String result,boolean fromNet)
 	{
 		try {
 			mResponseObject = mObjectMapper.readValue(result, new TypeReference<CategoryJson>() { });
 			L.e("version:"+mResponseObject.getVersion());
-			//save category
-			saveWikiCategory(mResponseObject.getVersion(),mResponseObject.getPageId(), result);
+			if(fromNet)
+			{
+				//if it is load from net ,save category
+				saveWikiCategory(mResponseObject.getVersion(),mResponseObject.getPageId(), result);
+			}
+			else
+			{
+				//check the net wiki
+				UpdateEntity updateEntity = mWikiUpdateDao.getWikiUpdateByUrl(mUrl);
+				long current = System.currentTimeMillis();
+				if((current-updateEntity.getUpdateDate())>DateUtil.DAY_MILLIS)
+				{
+					//check the new wiki every day
+					mHandler.sendEmptyMessage(HANDLER_refresh_CATEGORY_NET);
+				}
+			}
 			mHandler.obtainMessage(HANDLER_DISPLAY_CATEGORY, mResponseObject).sendToTarget();
 		} catch (Exception e) {
 			L.e("getCategorysTransaction exception", e);
@@ -117,8 +141,10 @@ public abstract class CategorysActivity extends SliderActivity{
 				new LoadCategoryFromDb().execute(mUrl);
 				break;
 			case HANDLER_LOAD_CATEGORY_NET:
-				HttpManager manager = new HttpManager(mUrl,null, HttpManager.GET, getCategorysTransaction);
-				manager.start();
+				new HttpManager(mUrl,null, HttpManager.GET, getCategorysTransaction).start();
+				break;
+			case HANDLER_refresh_CATEGORY_NET:
+				new HttpManager(mUrl,null, HttpManager.GET, refreshCategorysTransaction).start();
 				break;
 			default:
 				break;
@@ -139,6 +165,27 @@ public abstract class CategorysActivity extends SliderActivity{
 		@Override
 		public void transactionException(int erroCode,String result, Exception e) {
 			mHandler.obtainMessage(HANDLER_LOAD_CATEGORY_ERROR).sendToTarget();
+		}
+	};
+
+	public ITransaction refreshCategorysTransaction = new ITransaction() {
+		
+
+		@Override
+		public void transactionOver(String result) {
+			L.d("refresh the category from the net");
+			try {
+				CategoryJson responseObject = mObjectMapper.readValue(result, new TypeReference<CategoryJson>() { });
+				//save category
+				saveWikiCategory(responseObject.getVersion(),responseObject.getPageId(), result);
+			}catch (Exception e) {
+				L.e("refresh category error[mapper json]");
+			}
+		}
+		
+		@Override
+		public void transactionException(int erroCode,String result, Exception e) {
+			L.e("Refresh the category exception:"+erroCode);
 		}
 	};
 	class LoadCategoryFromDb extends AsyncTask<String, Integer, Boolean>

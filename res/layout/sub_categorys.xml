@@ -11,10 +11,10 @@
     		android:layout_height="wrap_content"
     		android:id="@+id/btn_back"
     		android:paddingLeft="15dip"
-    		android:paddingRight="15dip"
+    		android:paddingRight="10dip"
     		android:paddingTop="7dip"
     		android:scaleType="center"
-    		android:src="@drawable/btn_home_ico"
+    		android:src="@drawable/ico_home"
     		android:background="@drawable/btn_home_bg"
     		android:layout_alignTop="@+id/vertical_reparator"
     		android:layout_alignBottom="@+id/vertical_reparator"/>

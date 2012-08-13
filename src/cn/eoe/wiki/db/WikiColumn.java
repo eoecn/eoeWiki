@@ -15,7 +15,7 @@ public class WikiColumn extends DatabaseColumn {
     /**
      * This table's name
      */
-    public static final String 		TABLE_NAME 		= "wiki";
+    public static final String 		TABLE_NAME 		= "wikis";
     
     public static final String		PAGEID			="pageid";
     /**

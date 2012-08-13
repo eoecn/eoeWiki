@@ -1,7 +1,5 @@
 package cn.eoe.wiki.db.dao;
 
-import java.io.File;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -20,8 +18,11 @@ import cn.eoe.wiki.utils.L;
  */
 public class WikiDao extends GeneralDao<WikiColumn> {
 
+	private UpdateDao updateDao = null;
+	
 	public WikiDao(Context context) {
 		super(new WikiColumn(), context);
+		updateDao = new UpdateDao(context);
 	}
 
 	/**
@@ -81,6 +82,7 @@ public class WikiDao extends GeneralDao<WikiColumn> {
 					if(version< entity.getVersion() || !FileUtil.isFileExist(path))
 					{
 						//一种是版本有变化了，还有一种是文件不存在
+						L.e("need to update the wiki table");
 						entity.setId(id);
 						if(entity.saveWikiFile(content))
 						{
@@ -89,6 +91,7 @@ public class WikiDao extends GeneralDao<WikiColumn> {
 							//can find a wiki data and save success,then try to update
 							return updateWiki(entity);
 						}
+						L.e("save the content failed");
 					}
 					//No need to update
 					return false;
@@ -114,7 +117,7 @@ public class WikiDao extends GeneralDao<WikiColumn> {
 	 */
 	public boolean saveWiki(WikiEntity entity) throws WikiArgumentException
 	{
-		L.d("begin to save the wiki");
+		L.d("begin to save the wiki:"+entity.getPageId());
 		String pageid = entity.getPageId();
 		if(TextUtils.isEmpty(pageid))
 		{
@@ -146,7 +149,7 @@ public class WikiDao extends GeneralDao<WikiColumn> {
 	 */
 	public boolean updateWiki(WikiEntity entity) throws WikiArgumentException
 	{
-		L.d("begin to update the wiki");
+		L.d("begin to update the wiki:"+entity.getPageId());
 		long id = entity.getId();
 		if(id<=0)
 		{
@@ -161,6 +164,7 @@ public class WikiDao extends GeneralDao<WikiColumn> {
 		entity.setAddDate(0);
 		if(update(change2ContentValues(entity))>0)
 		{
+			updateDao.refreshUpdateTime(entity.getUri());
 			return true;
 		}
 		return false;
