@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.umeng.fb.UMFeedbackService;
+
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -24,6 +27,7 @@ import cn.eoe.wiki.listener.CategoryListener;
 import cn.eoe.wiki.listener.CategoryTitleListener;
 import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
+import cn.eoe.wiki.view.AboutDialog;
 /**
  * 用来处理最外层分类的界面
  * @author <a href="mailto:kris1987@qq.com">Kris.lee</a>
@@ -41,7 +45,7 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 	private LinearLayout			mLayoutFeedback;
 	private Button					mBtnRecent;
 	private ImageView				mIvFavorite;
-	
+	private AboutDialog 			aboutDialog;
 	private String					mCategoryUrl;
 
 	private boolean					mProgressVisible;
@@ -66,7 +70,8 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		mCategoryLayout = (LinearLayout)findViewById(R.id.layout_category);
 		mBtnSearch=(Button)findViewById(R.id.btn_search);
 		mBtnSearch.requestFocus();
-
+		
+		aboutDialog = new AboutDialog(this);
 		mLayoutAbout=(LinearLayout)findViewById(R.id.layout_about);
 		mLayoutRecommand=(LinearLayout)findViewById(R.id.layout_recommand);
 		mLayoutFeedback=(LinearLayout)findViewById(R.id.layout_feedback);
@@ -124,10 +129,13 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		case R.id.btn_search:
 			break;
 		case R.id.layout_about:
+			aboutDialog.show();
 			break;
 		case R.id.layout_recommand:
+			recommandToFriend();
 			break;
 		case R.id.layout_feedback:
+			UMFeedbackService.openUmengFeedbackSDK(this);
 			break;
 		case R.id.btn_recent:
 			break;
@@ -136,6 +144,16 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		default:
 			break;
 		}
+	}
+	
+	public void recommandToFriend(){
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("text/plain");
+		intent.putExtra(Intent.EXTRA_TEXT,
+			getResources().getString(R.string.content_recommand));
+	
+		Intent itn = Intent.createChooser(intent, "推荐给好友");
+		startActivity(itn);
 	}
 
 	public void generateCategorys(CategoryJson responseObject,CategoryChild operCategory)

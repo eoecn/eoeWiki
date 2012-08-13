@@ -2,6 +2,9 @@ package cn.eoe.wiki.activity;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.update.UmengUpdateAgent;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -24,6 +27,9 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		MobclickAgent.updateOnlineConfig(this);
+		MobclickAgent.onError(this);
+		UmengUpdateAgent.update(this);
 		mContext = this;
 		mWikiApplication = WikiApplication.getApplication();
 		mObjectMapper = new ObjectMapper();
@@ -39,11 +45,14 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		MobclickAgent.onResume(this);
+
 	}
 
 	@Override
