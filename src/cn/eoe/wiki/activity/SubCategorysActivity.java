@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
@@ -17,7 +17,6 @@ import cn.eoe.wiki.R;
 import cn.eoe.wiki.json.CategoryChild;
 import cn.eoe.wiki.json.CategoryJson;
 import cn.eoe.wiki.listener.SubCategoryListener;
-import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.SliderLayer;
 import cn.eoe.wiki.view.SliderLayer.SliderListener;
@@ -33,7 +32,7 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 	
 	private LinearLayout	mCategoryLayout;
 	private LayoutInflater 	mInflater;
-	private ImageView		mIvBack;
+	private ImageButton		mBtnBack;
 	private TextView		mTvParentName;
 	private TextView		mTvTitleName;
 	private TextView		mTvDescription;
@@ -73,8 +72,8 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 		mTvTitleName = (TextView)findViewById(R.id.tv_title);
 		mTvDescription = (TextView)findViewById(R.id.tv_description);
 		mCategoryLayout = (LinearLayout)findViewById(R.id.layout_category);
-//		mIvBack=(ImageView)findViewById(R.id.iv_back);
-//		mIvBack.setOnClickListener(this);
+		mBtnBack=(ImageButton)findViewById(R.id.btn_back);
+		mBtnBack.setOnClickListener(this);
 	}
 
 	void initData() {
@@ -186,7 +185,7 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 			showProgressLayout();
 			getCategory(mParentCategory.getUri());
 			break;
-		case R.id.iv_back:
+		case R.id.btn_back:
 			SliderLayer layer = getmMainActivity().getSliderLayer();
 			layer.closeSidebar(layer.openingLayerIndex());
 			break;

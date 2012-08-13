@@ -13,6 +13,7 @@ import cn.eoe.wiki.db.entity.WikiEntity;
 import cn.eoe.wiki.http.HttpManager;
 import cn.eoe.wiki.http.ITransaction;
 import cn.eoe.wiki.json.CategoryJson;
+import cn.eoe.wiki.utils.FileUtil;
 import cn.eoe.wiki.utils.L;
 /**
  * 用来处理最外层分类的界面
@@ -59,6 +60,8 @@ public abstract class CategorysActivity extends SliderActivity{
 	
 	private void saveWikiCategory(int version,String pageid,String result)
 	{
+		if(!FileUtil.isExternalStorageEnable())//no dscard , return
+			return;
 		WikiEntity entity = new WikiEntity();
 		entity.setPageId(pageid);
 		entity.setUri(mUrl);
