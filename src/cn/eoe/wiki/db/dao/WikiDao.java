@@ -134,7 +134,8 @@ public class WikiDao extends GeneralDao<WikiColumn> {
 		}
 		
 		if(insert(change2ContentValues(entity))!=null)
-		{		
+		{
+			updateDao.addOrUpdateTime(entity.getUri());
 			return true;
 		}
 		return false;
@@ -164,7 +165,7 @@ public class WikiDao extends GeneralDao<WikiColumn> {
 		entity.setAddDate(0);
 		if(update(change2ContentValues(entity))>0)
 		{
-			updateDao.refreshUpdateTime(entity.getUri());
+			updateDao.addOrUpdateTime(entity.getUri());
 			return true;
 		}
 		return false;
@@ -183,6 +184,9 @@ public class WikiDao extends GeneralDao<WikiColumn> {
 			entity.setPath(cursor.getString(cursor.getColumnIndex(WikiColumn.PATH)));
 			entity.setUri(cursor.getString(cursor.getColumnIndex(WikiColumn.URI)));
 			entity.setVersion(cursor.getInt(cursor.getColumnIndex(WikiColumn.VERSION)));
+		}
+		if(cursor!=null)
+		{
 			cursor.close();
 		}
 		return entity;

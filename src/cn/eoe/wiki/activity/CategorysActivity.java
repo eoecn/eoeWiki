@@ -30,7 +30,7 @@ public abstract class CategorysActivity extends SliderActivity{
 	private static final int	HANDLER_LOAD_CATEGORY_ERROR = 0x0002;
 	private static final int	HANDLER_LOAD_CATEGORY_DB 	= 0x0003;
 	private static final int	HANDLER_LOAD_CATEGORY_NET 	= 0x0004;
-	private static final int	HANDLER_refresh_CATEGORY_NET= 0x0005;
+	private static final int	HANDLER_REFRESH_CATEGORY_NET= 0x0005;
 	
 	protected CategoryJson 	mResponseObject 	= null;
 	private String 			mUrl 				= null;
@@ -102,11 +102,20 @@ public abstract class CategorysActivity extends SliderActivity{
 			{
 				//check the net wiki
 				UpdateEntity updateEntity = mWikiUpdateDao.getWikiUpdateByUrl(mUrl);
-				long current = System.currentTimeMillis();
-				if((current-updateEntity.getUpdateDate())>DateUtil.DAY_MILLIS)
+				if(updateEntity!=null)
 				{
-					//check the new wiki every day
-					mHandler.sendEmptyMessage(HANDLER_refresh_CATEGORY_NET);
+					long current = System.currentTimeMillis();
+					if((current-updateEntity.getUpdateDate())>DateUtil.DAY_MILLIS)
+					{
+						L.d("need to refreah the cache:"+mUrl);
+						//check the new wiki every day
+						mHandler.sendEmptyMessage(HANDLER_REFRESH_CATEGORY_NET);
+					}
+				}
+				else
+				{
+					//如果这次是多缓存中读取的，但是去没有一个update的时候，则更新update数据库
+					mWikiUpdateDao.addOrUpdateTime(mUrl);
 				}
 			}
 			mHandler.obtainMessage(HANDLER_DISPLAY_CATEGORY, mResponseObject).sendToTarget();
@@ -143,7 +152,7 @@ public abstract class CategorysActivity extends SliderActivity{
 			case HANDLER_LOAD_CATEGORY_NET:
 				new HttpManager(mUrl,null, HttpManager.GET, getCategorysTransaction).start();
 				break;
-			case HANDLER_refresh_CATEGORY_NET:
+			case HANDLER_REFRESH_CATEGORY_NET:
 				new HttpManager(mUrl,null, HttpManager.GET, refreshCategorysTransaction).start();
 				break;
 			default:

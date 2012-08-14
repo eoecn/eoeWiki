@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.text.TextUtils;
+import android.widget.TextView;
 import cn.eoe.wiki.db.UpdateColumn;
+import cn.eoe.wiki.db.WikiArgumentException;
 import cn.eoe.wiki.db.WikiColumn;
 import cn.eoe.wiki.db.entity.UpdateEntity;
 import cn.eoe.wiki.utils.L;
@@ -32,16 +34,60 @@ public class UpdateDao extends GeneralDao<UpdateColumn> {
 		return buildWikiUpdateEntity(cursor);
 	}
 	/**
+	 * 如果能从数据库是找到就是更新。否则为insert
+	 * @param url
+	 * @return
+	 */
+	public boolean addOrUpdateTime(String url)
+	{
+		L.d("add or update time:"+url);
+		if(TextUtils.isEmpty(url))
+			throw new IllegalArgumentException("Need a url param");
+		UpdateEntity entity = getWikiUpdateByUrl(url);
+		if(entity==null)
+		{
+			//Add
+			saveTime(url);
+		}
+		else
+		{
+			//update
+			updateTime(entity);
+		}
+		return true;
+	}
+	/**
+	 * save the url update time
+	 * @param url
+	 * @return
+	 */
+	public boolean saveTime(String url)
+	{
+		L.d("save the update time:"+url);
+		if(TextUtils.isEmpty(url))
+			throw new IllegalArgumentException("Need a valid url");
+		UpdateEntity entity = new UpdateEntity();
+		entity.setUri(url);
+		long current = System.currentTimeMillis();
+		entity.setUpdateDate(current);
+		entity.setModifyDate(current);
+		entity.setAddDate(current);
+		if(insert(change2ContentValues(entity))!=null)
+		{
+			return true;
+		}
+		return false;
+	}
+	/**
 	 * refreah the update time
 	 * @param url
 	 * @return
 	 */
-	public boolean refreshUpdateTime(String url)
+	public boolean updateTime(UpdateEntity entity)
 	{
-		L.d("refresh the update time:"+url);
-		if(TextUtils.isEmpty(url))
-			return false;
-		UpdateEntity entity = getWikiUpdateByUrl(url);
+		if(entity==null)
+			throw new IllegalArgumentException("Need a valid UpdateEntity");
+		L.d("refresh the update time:"+entity.getUri());
 		long current = System.currentTimeMillis();
 		entity.setUpdateDate(current);
 		entity.setModifyDate(current);
@@ -63,6 +109,9 @@ public class UpdateDao extends GeneralDao<UpdateColumn> {
 			entity.setModifyDate(cursor.getLong(cursor.getColumnIndex(UpdateColumn.DATE_MODIFY)));
 			entity.setUpdateDate(cursor.getLong(cursor.getColumnIndex(UpdateColumn.DATE_UPDATE)));
 			entity.setUri(cursor.getString(cursor.getColumnIndex(UpdateColumn.URI)));
+		}
+		if(cursor!=null)
+		{
 			cursor.close();
 		}
 		return entity;
