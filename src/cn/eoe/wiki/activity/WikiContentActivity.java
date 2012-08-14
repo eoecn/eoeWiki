@@ -88,7 +88,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
                   + "text/html; charset=utf-8" + "/>" + "<body>"
                   + html + "</body></html>";
         mWebView.loadData(html1, "text/html","utf-8");
-        mWebView.setBackgroundResource(R.drawable.page3);
+        mWebView.setBackgroundColor(R.color.deep_grey);
 	}
 	
 	private void getWikiError(String pError){
