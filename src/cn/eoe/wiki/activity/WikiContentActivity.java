@@ -1,7 +1,5 @@
 package cn.eoe.wiki.activity;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 
 import org.codehaus.jackson.type.TypeReference;
 
@@ -9,16 +7,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.http.HttpManager;
 import cn.eoe.wiki.http.ITransaction;
-import cn.eoe.wiki.json.CategoryJson;
 import cn.eoe.wiki.json.WikiDetailJson;
 import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.view.SliderLayer.SliderListener;
@@ -94,6 +88,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
                   + "text/html; charset=utf-8" + "/>" + "<body>"
                   + html + "</body></html>";
         mWebView.loadData(html1, "text/html","utf-8");
+        mWebView.setBackgroundResource(R.drawable.page3);
 	}
 	
 	private void getWikiError(String pError){
