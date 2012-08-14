@@ -1,5 +1,8 @@
 package cn.eoe.wiki.activity;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
 import org.codehaus.jackson.type.TypeReference;
 
 import android.content.Intent;
@@ -9,6 +12,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import cn.eoe.wiki.R;
@@ -28,6 +32,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private String mUri;
 	
 	protected WikiDetailJson responseObject = null;
+	private WebView mWebView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +44,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 			throw new NullPointerException("Must give a Wiki Uri in the intent");
 		}
 		mUri = intent.getStringExtra(WIKI_CONTENT);
-		if(intent == null){
+		if(mUri == null){
 			throw new NullPointerException("Must give a Wiki Uri in the intent");
 		}
 		getmMainActivity().getSliderLayer().addSliderListener(this);
@@ -48,6 +53,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	}
 
 	void initComponent() {
+		mWebView = (WebView)findViewById(R.id.wiki_detail_content);
 	}
 	
 	void initData(){
@@ -56,7 +62,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 	void getWikiDetail()
 	{
-		System.out.println("This is URI" +mUri);
 		HttpManager manager = new HttpManager(mUri,null, HttpManager.GET, getWikiDetailTransaction);
 		manager.start();
 	}
@@ -81,10 +86,14 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 	private void generateWiki(WikiDetailJson pWikiDetailJson){
 		String html = pWikiDetailJson.getParse().getText().getHtml();
-		System.out.println("I am parse:"+pWikiDetailJson.getParse());
-		System.out.println("I am getTitle:"+pWikiDetailJson.getParse().getTitle());
-
-		System.out.println("I am html:"+html);
+		String html1 = "<!DOCTYPE html PUBLIC "
+                  + "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                  + "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+                  + ">" + "<html xmlns=" + "http://www.w3.org/1999/xhtml" + ">"
+                  + "<head>" + "<meta http-equiv=" + "Content-Type" + " content="
+                  + "text/html; charset=utf-8" + "/>" + "<body>"
+                  + html + "</body></html>";
+        mWebView.loadData(html1, "text/html","utf-8");
 	}
 	
 	private void getWikiError(String pError){
@@ -96,11 +105,10 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		@Override
 		public void transactionOver(String result) {
 			try {
-				System.out.println("I am result"+result);
 				responseObject = mObjectMapper.readValue(result, new TypeReference<WikiDetailJson>() { });
 				mHandler.obtainMessage(HANDLER_DISPLAY_WIKIDETAIL, responseObject).sendToTarget();
 			} catch (Exception e) {
-				L.e("getGiftsTransaction exception", e);
+				L.e("getWikiDetailTransaction exception", e);
 				mHandler.obtainMessage(HANDLER_GET_WIKIDETAIL_ERROR).sendToTarget();
 			}
 		}
