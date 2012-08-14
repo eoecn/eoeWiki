@@ -15,7 +15,6 @@ import cn.eoe.wiki.utils.ThreadPoolUtil;
 public class SplashActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.splash);
 		initComponent();
@@ -37,7 +36,7 @@ public class SplashActivity extends BaseActivity {
 			public void run() {
 				FileUtil.initExternalDir(true);
 				try {
-					Thread.sleep(500);
+					Thread.sleep(2000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
