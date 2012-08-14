@@ -7,29 +7,76 @@
         android:minSdkVersion="8"
         android:targetSdkVersion="8" />
 
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-	
-    <application android:name="WikiApplication"
-        android:icon="@drawable/ic_launcher"
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-        <activity android:name=".activity.SplashActivity">
-            <intent-filter>
+        android:name="WikiApplication"
+        android:theme="@style/AppTheme" >
+        <activity android:name=".activity.SplashActivity" >
+            <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity"></activity>
-        <activity android:name=".activity.AboutActivity"></activity>
-        <activity android:name=".activity.MainCategorysActivity"></activity>
-        <activity android:name=".activity.SubCategorysActivity"></activity>
-        <activity android:name=".activity.RecommendActivity"></activity>
-        <activity android:name=".activity.SearchActivity"></activity>
-        <activity android:name=".activity.WikiContentActivity"></activity>
-        
-        <provider android:authorities="cn.eoe.wiki.provider" android:name=".db.DatabaseProvider"></provider>
+        <activity android:name=".activity.MainActivity" >
+        </activity>
+        <activity android:name=".activity.AboutActivity" >
+        </activity>
+        <activity android:name=".activity.MainCategorysActivity" >
+        </activity>
+        <activity android:name=".activity.SubCategorysActivity" >
+        </activity>
+        <activity android:name=".activity.RecommendActivity" >
+        </activity>
+        <activity android:name=".activity.SearchActivity" >
+        </activity>
+        <activity android:name=".activity.WikiContentActivity" >
+        </activity>
+
+        <provider
+            android:authorities="cn.eoe.wiki.provider"
+            android:name=".db.DatabaseProvider" >
+        </provider>
+
+        <!-- umeng sdk started -->
+        <activity
+            android:name="com.umeng.fb.ui.SendFeedback"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name="com.umeng.fb.ui.FeedbackConversations" />
+        <activity
+            android:configChanges="keyboard"
+            android:name="com.umeng.fb.ui.FeedbackConversation" />
+		<!-- umeng auto update service -->
+        <service
+            android:exported="true"
+            android:name="com.umeng.common.net.DownloadingService"
+            android:process=":DownloadingService" >
+        </service>
+
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="50222a485270156f4e000003" >
+        </meta-data>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="default" />
+        <!-- umeng sdk ended -->
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.READ_LOGS" >
+    </uses-permission>
 
 </manifest>

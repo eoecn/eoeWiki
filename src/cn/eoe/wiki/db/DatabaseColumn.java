@@ -24,13 +24,14 @@ public abstract class DatabaseColumn implements BaseColumns{
 	/**
 	 * The version of current database
 	 */
-	public static final int 		DATABASE_VERSION 	= 5;
+	public static final int 		DATABASE_VERSION 	= 8;
 	/**
 	 * Classes's name extends from this class.
 	 */
 	public static final String[] 	SUBCLASSES			= new String[] { 
 			"cn.eoe.wiki.db.WikiColumn",
 			"cn.eoe.wiki.db.FavoriteColumn",
+			"cn.eoe.wiki.db.UpdateColumn"
 		};
 
 	/**
@@ -60,7 +61,7 @@ public abstract class DatabaseColumn implements BaseColumns{
 	 * @return A String array contains the columns' name.
 	 */
 	public String[] getColumns() {
-		return getTableMap().values().toArray(new String[0]);
+		return getTableMap().keySet().toArray(new String[0]);
 	}
 
 	/**

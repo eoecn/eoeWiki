@@ -3,6 +3,7 @@ package cn.eoe.wiki.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import cn.eoe.wiki.R;
+import cn.eoe.wiki.utils.FileUtil;
 import cn.eoe.wiki.utils.ThreadPoolUtil;
 
 /**启动的欢迎界面。
@@ -14,7 +15,6 @@ import cn.eoe.wiki.utils.ThreadPoolUtil;
 public class SplashActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.splash);
 		initComponent();
@@ -34,8 +34,9 @@ public class SplashActivity extends BaseActivity {
 		ThreadPoolUtil.execute(new Runnable() {
 			@Override
 			public void run() {
+				FileUtil.initExternalDir(true);
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(2000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

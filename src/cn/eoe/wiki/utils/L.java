@@ -138,7 +138,7 @@ public class L {
 			File logFile = new File(fileName);
 			if(!logFile.exists())
 			{
-				WikiUtil.initExternalDir(false);
+				FileUtil.initExternalDir(false);
 				logFile.createNewFile();
 			}
 			raf = new RandomAccessFile(fileName, "rw");

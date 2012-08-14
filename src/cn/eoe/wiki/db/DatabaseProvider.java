@@ -22,11 +22,15 @@ import cn.eoe.wiki.utils.L;
 public class DatabaseProvider extends ContentProvider {
 
 	private static final int 		WIKI 		= 1;
+	private static final int 		UPDATE 		= 2;
+	private static final int 		FAVORITE 	= 3;
 	private DatabaseHelper 			mDBHelper = null;
 	private static final UriMatcher URIMATCHER;
 	static {
 		URIMATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 		URIMATCHER.addURI(DatabaseColumn.AUTHORITY, WikiColumn.TABLE_NAME,	WIKI);
+		URIMATCHER.addURI(DatabaseColumn.AUTHORITY, UpdateColumn.TABLE_NAME,	UPDATE);
+		URIMATCHER.addURI(DatabaseColumn.AUTHORITY, FavoriteColumn.TABLE_NAME,	FAVORITE);
 	}
 
 	@Override
@@ -36,7 +40,14 @@ public class DatabaseProvider extends ContentProvider {
 		switch (witch) {
 		case WIKI:
 			count = delete(WikiColumn.TABLE_NAME, selection, selectionArgs);
-
+			notifyChange(uri);
+			break;
+		case UPDATE:
+			count = delete(UpdateColumn.TABLE_NAME, selection, selectionArgs);
+			notifyChange(uri);
+			break;
+		case FAVORITE:
+			count = delete(FavoriteColumn.TABLE_NAME, selection, selectionArgs);
 			notifyChange(uri);
 			break;
 		default:
@@ -58,6 +69,12 @@ public class DatabaseProvider extends ContentProvider {
 		case WIKI:
 			rowId = insert(WikiColumn.TABLE_NAME, null, values);
 			break;
+		case UPDATE:
+			rowId = insert(UpdateColumn.TABLE_NAME, null, values);
+			break;
+		case FAVORITE:
+			rowId = insert(FavoriteColumn.TABLE_NAME, null, values);
+			break;
 		default:
 			break;
 		}
@@ -66,6 +83,14 @@ public class DatabaseProvider extends ContentProvider {
 			switch (witch) {
 			case WIKI:
 				rowUri = ContentUris.withAppendedId(WikiColumn.CONTENT_URI,
+						rowId);
+				break;
+			case UPDATE:
+				rowUri = ContentUris.withAppendedId(UpdateColumn.CONTENT_URI,
+						rowId);
+				break;
+			case FAVORITE:
+				rowUri = ContentUris.withAppendedId(FavoriteColumn.CONTENT_URI,
 						rowId);
 				break;
 			}
@@ -95,6 +120,14 @@ public class DatabaseProvider extends ContentProvider {
 			c = query(WikiColumn.TABLE_NAME, projection, selection,
 					selectionArgs, null, null, sortOrder);
 			break;
+		case UPDATE:
+			c = query(UpdateColumn.TABLE_NAME, projection, selection,
+					selectionArgs, null, null, sortOrder);
+			break;
+		case FAVORITE:
+			c = query(FavoriteColumn.TABLE_NAME, projection, selection,
+					selectionArgs, null, null, sortOrder);
+			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -111,6 +144,16 @@ public class DatabaseProvider extends ContentProvider {
 		switch (URIMATCHER.match(uri)) {
 		case WIKI:
 			count = update(WikiColumn.TABLE_NAME, values, selection,
+					selectionArgs);
+			notifyChange(uri);
+			break;
+		case UPDATE:
+			count = update(UpdateColumn.TABLE_NAME, values, selection,
+					selectionArgs);
+			notifyChange(uri);
+			break;
+		case FAVORITE:
+			count = update(FavoriteColumn.TABLE_NAME, values, selection,
 					selectionArgs);
 			notifyChange(uri);
 			break;

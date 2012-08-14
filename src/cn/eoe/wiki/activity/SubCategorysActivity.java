@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
@@ -32,7 +32,7 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 	
 	private LinearLayout	mCategoryLayout;
 	private LayoutInflater 	mInflater;
-	private ImageView		mIvBack;
+	private ImageButton		mBtnBack;
 	private TextView		mTvParentName;
 	private TextView		mTvTitleName;
 	private TextView		mTvDescription;
@@ -72,8 +72,8 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 		mTvTitleName = (TextView)findViewById(R.id.tv_title);
 		mTvDescription = (TextView)findViewById(R.id.tv_description);
 		mCategoryLayout = (LinearLayout)findViewById(R.id.layout_category);
-		mIvBack=(ImageView)findViewById(R.id.iv_back);
-		mIvBack.setOnClickListener(this);
+		mBtnBack=(ImageButton)findViewById(R.id.btn_back);
+		mBtnBack.setOnClickListener(this);
 	}
 
 	void initData() {
@@ -97,11 +97,12 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 		mProgressVisible = false;
 		
 		View viewError = mInflater.inflate(R.layout.loading_error, null);
+		LayoutParams errorParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		errorParams.topMargin = WikiUtil.dip2px(mContext, 10);
+		viewError.setLayoutParams(errorParams);
+		
 		TextView tvErrorTip =  (TextView)viewError.findViewById(R.id.tv_error_tip);
 		tvErrorTip.setText(showText);
-		tvErrorTip.setTextColor(WikiUtil.getResourceColor(R.color.red, mContext));
-		
-
 		Button btnTryAgain =  (Button)viewError.findViewById(R.id.btn_try_again);
 		btnTryAgain.setOnClickListener(this);
 		mCategoryLayout.addView(viewError);
@@ -109,13 +110,11 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 	@Override
 	protected void generateCategorys(CategoryJson responseObject)
 	{
-//		if(WikiConfig.isDebug()) return;
+		mCategoryLayout.removeAllViews();
+		mProgressVisible = false;
 		List<CategoryChild> categorys =  responseObject.getContents();
 		if(categorys!=null)
 		{
-			mCategoryLayout.removeAllViews();
-			mProgressVisible = false;
-			
 			for(CategoryChild category:categorys)
 			{
 				LinearLayout categoryLayout = new LinearLayout(mContext);
@@ -149,8 +148,6 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 						
 						TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
 						tvChild.setText(categorysChild.getName());
-						tvChild.setPadding(50, 0, 0, 0);
-						tvChild.setTextColor(WikiUtil.getResourceColor(R.color.black, mContext));
 						tvChild.setOnClickListener(new SubCategoryListener(categorysChild.getUri(), SubCategorysActivity.this));
 						if(i==(size-1))
 						{
@@ -171,15 +168,24 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 				mCategoryLayout.addView(blankView);
 			}
 		}
+		else
+		{
+			View noCategoryView = mInflater.inflate(R.layout.no_category, null);
+			LayoutParams noCategoryParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+			noCategoryParams.topMargin = WikiUtil.dip2px(mContext, 10);
+			noCategoryView.setLayoutParams(noCategoryParams);
+			mCategoryLayout.addView(noCategoryView);
+		}
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_try_again:
+			showProgressLayout();
 			getCategory(mParentCategory.getUri());
 			break;
-		case R.id.iv_back:
+		case R.id.btn_back:
 			SliderLayer layer = getmMainActivity().getSliderLayer();
 			layer.closeSidebar(layer.openingLayerIndex());
 			break;

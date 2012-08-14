@@ -15,7 +15,7 @@ public class FavoriteColumn extends DatabaseColumn {
 	/**
      * This table's name
      */
-    public static final String 		TABLE_NAME 		= "favorite";
+    public static final String 		TABLE_NAME 		= "favoritess";
     
     public static final String		WIKIID			="wikiid";
     /**

@@ -1,11 +1,12 @@
 package cn.eoe.wiki.db.entity;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.util.UUID;
 
 import android.text.TextUtils;
-import cn.eoe.wiki.utils.L;
+import cn.eoe.wiki.Constants;
+import cn.eoe.wiki.utils.FileUtil;
+import cn.eoe.wiki.utils.WikiUtil;
 
 /**
  * 用于表示wiki的实体
@@ -17,7 +18,9 @@ public class WikiEntity extends DataBaseEntity {
 	private String pageId;
 	private String path;
 	private String uri;
-	private String version;
+	private int version;
+	
+	private String content;
 	
 	private File   wikiFile;
 	
@@ -43,35 +46,30 @@ public class WikiEntity extends DataBaseEntity {
 	 */
 	public String getWikiFileContent()
 	{
-		if(!isWikiFileExist())
+		if(isWikiFileExist())
 		{
-			//check the file .
-			return null;
-		}
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(wikiFile);
-			StringBuilder sb = new StringBuilder();
-			byte buffer[] = new byte[4096];
-			int len = 0;
-			while ((len = fis.read(buffer)) != -1) {
-				sb.append(new String(buffer, 0, len));
-			}
-			return sb.toString();
-		} catch (Exception e) {
-			L.e("get file exception:"+path, e);
-		}
-		finally
-		{
-			if(fis !=null)
-			{
-				try {
-					fis.close();
-				} catch (IOException e) {
-				}
-			}
+			content=FileUtil.getFileContent(wikiFile);
+			return content;
 		}
 		return null;
+	}
+	/**
+	 * 保存json到文件中去。<br>
+	 * 如果保存成功，则会将保存的文件路径赋值给实体的path属性
+	 * @param content
+	 * @return
+	 */
+	public boolean saveWikiFile(String content)
+	{
+		if(!FileUtil.isExternalStorageEnable())
+			return false;
+		String path = Constants.CACHE_DIR+File.separator+UUID.randomUUID().toString();
+		boolean save = FileUtil.saveFile(content, path);
+		if(save)
+		{//save to path
+			this.path = path;
+		}
+		return save;
 	}
 	
 	public String getPageId() {
@@ -92,10 +90,10 @@ public class WikiEntity extends DataBaseEntity {
 	public void setUri(String uri) {
 		this.uri = uri;
 	}
-	public String getVersion() {
+	public int getVersion() {
 		return version;
 	}
-	public void setVersion(String version) {
+	public void setVersion(int version) {
 		this.version = version;
 	}
 	

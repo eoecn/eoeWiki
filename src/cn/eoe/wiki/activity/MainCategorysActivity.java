@@ -4,14 +4,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import android.content.res.ColorStateList;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -22,8 +20,10 @@ import cn.eoe.wiki.json.CategoryChild;
 import cn.eoe.wiki.json.CategoryJson;
 import cn.eoe.wiki.listener.CategoryListener;
 import cn.eoe.wiki.listener.CategoryTitleListener;
-import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
+import cn.eoe.wiki.view.AboutDialog;
+
+import com.umeng.fb.UMFeedbackService;
 /**
  * 用来处理最外层分类的界面
  * @author <a href="mailto:kris1987@qq.com">Kris.lee</a>
@@ -41,7 +41,7 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 	private LinearLayout			mLayoutFeedback;
 	private Button					mBtnRecent;
 	private ImageView				mIvFavorite;
-	
+	private AboutDialog 			aboutDialog;
 	private String					mCategoryUrl;
 
 	private boolean					mProgressVisible;
@@ -66,7 +66,8 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		mCategoryLayout = (LinearLayout)findViewById(R.id.layout_category);
 		mBtnSearch=(Button)findViewById(R.id.btn_search);
 		mBtnSearch.requestFocus();
-
+		
+		aboutDialog = new AboutDialog(this);
 		mLayoutAbout=(LinearLayout)findViewById(R.id.layout_about);
 		mLayoutRecommand=(LinearLayout)findViewById(R.id.layout_recommand);
 		mLayoutFeedback=(LinearLayout)findViewById(R.id.layout_feedback);
@@ -99,11 +100,12 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		mProgressVisible = false;
 		
 		View viewError = mInflater.inflate(R.layout.loading_error, null);
+		LayoutParams errorParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		errorParams.topMargin = WikiUtil.dip2px(mContext, 10);
+		viewError.setLayoutParams(errorParams);
+		
 		TextView tvErrorTip =  (TextView)viewError.findViewById(R.id.tv_error_tip);
 		tvErrorTip.setText(showText);
-		tvErrorTip.setTextColor(WikiUtil.getResourceColor(R.color.red, mContext));
-		
-
 		Button btnTryAgain =  (Button)viewError.findViewById(R.id.btn_try_again);
 		btnTryAgain.setOnClickListener(this);
 		mCategoryLayout.addView(viewError);
@@ -119,15 +121,19 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_try_again:
+			showProgressLayout();
 			getCategory(mCategoryUrl);
 			break;
 		case R.id.btn_search:
 			break;
 		case R.id.layout_about:
+			aboutDialog.show();
 			break;
 		case R.id.layout_recommand:
+			recommandToFriend();
 			break;
 		case R.id.layout_feedback:
+			UMFeedbackService.openUmengFeedbackSDK(this);
 			break;
 		case R.id.btn_recent:
 			break;
@@ -137,15 +143,24 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 			break;
 		}
 	}
+	
+	public void recommandToFriend(){
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("text/plain");
+		intent.putExtra(Intent.EXTRA_TEXT,
+			getResources().getString(R.string.content_recommand));
+	
+		Intent itn = Intent.createChooser(intent, "推荐给好友");
+		startActivity(itn);
+	}
 
 	public void generateCategorys(CategoryJson responseObject,CategoryChild operCategory)
 	{
+		mCategoryLayout.removeAllViews();
+		mProgressVisible = false;
 		List<CategoryChild> categorys =  responseObject.getContents();
 		if(categorys!=null)
 		{
-			mCategoryLayout.removeAllViews();
-			mProgressVisible = false;
-			
 			for(CategoryChild category:categorys)
 			{
 				LinearLayout categoryLayout = new LinearLayout(mContext);
@@ -208,6 +223,14 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 				mCategoryLayout.addView(blankView);
 			}
 		}
+		else
+		{
+			View noCategoryView = mInflater.inflate(R.layout.no_category, null);
+			LayoutParams noCategoryParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+			noCategoryParams.topMargin = WikiUtil.dip2px(mContext, 10);
+			noCategoryView.setLayoutParams(noCategoryParams);
+			mCategoryLayout.addView(noCategoryView);
+		}
 	}
 	
 
@@ -221,6 +244,5 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		{
 			mCloseCategorys.add(category);
 		}
-		generateCategorys(responseObject, category);
 	}
 }

@@ -1,6 +1,9 @@
 package cn.eoe.wiki.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -21,46 +24,7 @@ public class WikiUtil {
 	public static  		int 	VERSION_CODE		= 0;
 	public static 		String  VERSION_NAME		= null;
 	public static 		String  PACKAGE_NAME		= null;
-	/**
-	 * get the external storage file
-	 * 
-	 * @return the file
-	 */
-	public static File getExternalStorageDir() {
-		return Environment.getExternalStorageDirectory();
-	}
 
-	/**
-	 * get the external storage file path
-	 * 
-	 * @return the file path
-	 */
-	public static String getExternalStoragePath() {
-		return getExternalStorageDir().getAbsolutePath();
-	}
-
-	/**
-	 * get the external storage state
-	 * 
-	 * @return
-	 */
-	public static String getExternalStorageState() {
-		return Environment.getExternalStorageState();
-	}
-
-	/**
-	 * check the usability of the external storage.
-	 * 
-	 * @return enable -> true, disable->false
-	 */
-	public static boolean isExternalStorageEnable() {
-		String state = Environment.getExternalStorageState();
-		if (Environment.MEDIA_MOUNTED.equals(state)) {
-			return true;
-		}
-		return false;
-
-	}
 
 	/**
 	 * get the width of the device screen
@@ -185,62 +149,6 @@ public class WikiUtil {
 		return android.os.Build.VERSION.SDK_INT;
 	}
 
-	public static void initExternalDir(boolean cleanFile)
-	{
-		if(WikiUtil.isExternalStorageEnable())
-		{
-			File external = new File(Constants.EXTERNAL_DIR);
-			if(!external.exists())
-			{
-				external.mkdirs();
-			}
-			//check the cache whether exist
-			File cache = new File(Constants.CACHE_DIR);
-			if(!cache.exists())
-			{
-				cache.mkdirs();
-			}
-			else
-			{
-				if(cleanFile)
-				{
-					//if exist,so clear the old file
-					cleanFile(cache, DateUtil.WEEK_MILLIS);
-				}
-			}
-			//check the log dir
-			File logs = new File(Constants.LOGS_DIR);
-			if(!logs.exists())
-			{
-				logs.mkdirs();
-			}
-			else
-			{
-				if(cleanFile)
-				{
-					cleanFile(logs, DateUtil.HALF_MONTH_MILLIS);
-				}
-			}
-		}
-	}
-	private static int cleanFile(File dir, long maxInterval)
-	{
-		File[] files = dir.listFiles();
-		if(files == null) return 0;
-		int beforeNum = 0;
-		long current = System.currentTimeMillis();
-		for(File file:files)
-		{
-			long lastModifiedTime = file.lastModified();
-			if((current-lastModifiedTime) > maxInterval)
-			{
-				//if the file is exist more than a week , so need to delete.
-				file.delete();
-				beforeNum ++;
-			}
-		}
-		return beforeNum;
-	}
 	public static int getResourceColor(int resId, Context context)
 	{
 		return context.getResources().getColor(resId);

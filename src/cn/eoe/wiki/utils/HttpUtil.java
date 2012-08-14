@@ -76,7 +76,7 @@ public class HttpUtil {
 		// set the client verion
 		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
 		// set user-agent
-		HttpProtocolParams.setUserAgent(params, "Mozilla/5.0 (X11; U; Linux i686; zh-CN; rv:1.9.2.15) Gecko/20110303 Ubuntu/10.10 (maverick) Firefox/3.6.15");
+		HttpProtocolParams.setUserAgent(params, "eoeWIKI_Android/0.9");
 		// set the charset
 		HttpProtocolParams.setHttpElementCharset(params, HTTP.UTF_8);
 		HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
@@ -119,7 +119,7 @@ public class HttpUtil {
 	 */
 	public static String get(String url, Map<String, String> data) throws IllegalStateException, ClientProtocolException, HttpResponseException, IOException {
 		HttpGet request = null;
-
+		L.d("request url:"+url);
 		if (data == null || data.isEmpty()) {
 			request = new HttpGet(url);
 		} else {

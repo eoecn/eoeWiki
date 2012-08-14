@@ -7,7 +7,7 @@
 	    <TextView android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
     		android:text="@string/tip_get_data_error"
-    		android:textColor="@color/green"
+    		android:textColor="@color/blue_category"
     		android:textSize="16sp"
     		android:id="@+id/tv_error_tip"
     		android:layout_marginLeft="10dip"/>
@@ -15,5 +15,10 @@
     		android:layout_height="wrap_content"
     		android:layout_marginTop="10dip"
     		android:text="@string/button_try_again"
-    		android:id="@+id/btn_try_again"/>
+    		android:id="@+id/btn_try_again"
+   			android:paddingLeft="20dip"
+   			android:paddingTop="5dip"
+   			android:paddingBottom="5dip"
+   			android:paddingRight="20dip"
+    		android:background="@drawable/btn_grey_blue_stroke"/>
 </LinearLayout>
