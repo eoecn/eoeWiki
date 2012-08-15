@@ -30,7 +30,7 @@ import com.umeng.fb.UMFeedbackService;
  * @data  2012-8-5
  * @version 1.0.0
  */
-public class MainCategorysActivity extends CategorysActivity implements OnClickListener{
+public class MainCategorysActivity extends CategoryActivity implements OnClickListener{
 	
 	private LinearLayout	mCategoryLayout;
 	private LayoutInflater 	mInflater;
@@ -94,7 +94,7 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		mProgressVisible = true;
 	}
 	@Override
-	protected void getCategorysError(String showText)
+	protected void getCategoriesError(String showText)
 	{
 		mCategoryLayout.removeAllViews();
 		mProgressVisible = false;
@@ -112,7 +112,7 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 	}
 	
 	@Override
-	protected void generateCategorys(CategoryJson responseObject)
+	protected void generateCategories(CategoryJson responseObject)
 	{
 		generateCategorys(responseObject, null);
 	}

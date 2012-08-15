@@ -3,7 +3,7 @@ package cn.eoe.wiki.listener;
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import cn.eoe.wiki.activity.CategorysActivity;
+import cn.eoe.wiki.activity.CategoryActivity;
 import cn.eoe.wiki.activity.MainActivity;
 import cn.eoe.wiki.activity.SubCategorysActivity;
 import cn.eoe.wiki.json.CategoryChild;
@@ -17,11 +17,11 @@ import cn.eoe.wiki.utils.L;
  */
 public class CategoryListener implements OnClickListener {
 
-	private CategorysActivity 	context;
+	private CategoryActivity 	context;
 	private CategoryChild 		category;
 	private String				parentName;
 	
-	public CategoryListener(CategorysActivity context,CategoryChild category,String parentName)
+	public CategoryListener(CategoryActivity context,CategoryChild category,String parentName)
 	{
 		this.context = context;
 		this.category = category;

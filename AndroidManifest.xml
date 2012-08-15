@@ -29,7 +29,7 @@
         </activity>
         <activity android:name=".activity.MainCategorysActivity" >
         </activity>
-        <activity android:name=".activity.SubCategorysActivity" >
+        <activity android:name=".activity.SubCategoryActivity" >
         </activity>
         <activity android:name=".activity.RecommendActivity" >
         </activity>
