@@ -24,7 +24,7 @@ public abstract class DatabaseColumn implements BaseColumns{
 	/**
 	 * The version of current database
 	 */
-	public static final int 		DATABASE_VERSION 	= 8;
+	public static final int 		DATABASE_VERSION 	= 10;
 	/**
 	 * Classes's name extends from this class.
 	 */

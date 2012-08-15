@@ -6,27 +6,26 @@ package cn.eoe.wiki.db.entity;
  * @version 1.0.0
  */
 public class FavoriteEntity extends DataBaseEntity {
-	private String 	wikiId;
-	private int 	status;
-	private WikiEntity	wiki;
-	public String getWikiId() {
-		return wikiId;
+	private String		title;
+	private long		pageid;
+	private String		url;
+	public String getTitle() {
+		return title;
 	}
-	public void setWikiId(String wikiId) {
-		this.wikiId = wikiId;
+	public void setTitle(String title) {
+		this.title = title;
 	}
-	public int getStatus() {
-		return status;
+	public long getPageid() {
+		return pageid;
 	}
-	public void setStatus(int status) {
-		this.status = status;
+	public void setPageid(long pageid) {
+		this.pageid = pageid;
 	}
-	public WikiEntity getWiki() {
-		return wiki;
+	public String getUrl() {
+		return url;
 	}
-	public void setWiki(WikiEntity wiki) {
-		this.wiki = wiki;
+	public void setUrl(String url) {
+		this.url = url;
 	}
-	
 	
 }
