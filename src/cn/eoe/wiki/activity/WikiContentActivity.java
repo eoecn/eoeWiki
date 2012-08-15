@@ -4,23 +4,39 @@ package cn.eoe.wiki.activity;
 import org.codehaus.jackson.type.TypeReference;
 
 import android.content.Intent;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.http.HttpManager;
 import cn.eoe.wiki.http.ITransaction;
 import cn.eoe.wiki.json.WikiDetailJson;
 import cn.eoe.wiki.utils.L;
+import cn.eoe.wiki.view.SliderLayer;
 import cn.eoe.wiki.view.SliderLayer.SliderListener;
 
 public class WikiContentActivity extends SliderActivity implements OnClickListener,SliderListener{
 
 	private static final int	HANDLER_DISPLAY_WIKIDETAIL 	= 0x0001;
 	private static final int	HANDLER_GET_WIKIDETAIL_ERROR 	= 0x0002;
+	private static final String WIKI_URL_PRE = "http://wiki.eoeandroid.com/";
+	private boolean mIsFullScreen = false;
+	
+	private ImageView mLayoutParentDirectory;
+	private ImageView mLayoutFullScreen;
+	private ImageView mLayoutFavorite;
+	private ImageView mLayoutShare;
+	
+	private RelativeLayout mWikiDetailTitle;
+	private LinearLayout mLayoutFunctions;
 	
 	public static final String WIKI_CONTENT = "wiki_content";
 	private String mUri;
@@ -48,6 +64,19 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 
 	void initComponent() {
 		mWebView = (WebView)findViewById(R.id.wiki_detail_content);
+		mLayoutParentDirectory = (ImageView)findViewById(R.id.layout_parent_directory);
+		mLayoutFullScreen = (ImageView)findViewById(R.id.layout_fullscreen);
+		mLayoutFavorite = (ImageView)findViewById(R.id.layout_favorite);
+		mLayoutShare = (ImageView)findViewById(R.id.layout_share);
+		
+		mWikiDetailTitle = (RelativeLayout)findViewById(R.id.wiki_detail_title);
+		mLayoutFunctions = (LinearLayout)findViewById(R.id.layout_functions);
+		
+		mLayoutParentDirectory.setOnClickListener(this);
+		mLayoutFullScreen.setOnClickListener(this);
+		mLayoutFavorite.setOnClickListener(this);
+		mLayoutShare.setOnClickListener(this);
+		
 	}
 	
 	void initData(){
@@ -87,7 +116,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
                   + "<head>" + "<meta http-equiv=" + "Content-Type" + " content="
                   + "text/html; charset=utf-8" + "/>" + "<body>"
                   + html + "</body></html>";
-        mWebView.loadData(html1, "text/html","utf-8");
+		mWebView.loadDataWithBaseURL("about:blank", html1,  "text/html","utf-8", null);
         mWebView.setBackgroundColor(R.color.deep_grey);
 	}
 	
@@ -122,10 +151,52 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		
+		switch (v.getId()) {
+		case R.id.layout_parent_directory:
+			fallbackToPreLayer();
+			break;
+		case R.id.layout_fullscreen:
+			fullScreen();
+			break;
+		case R.id.layout_favorite:
+			//do something
+			break;
+		case R.id.layout_share:
+			shareToFriend();
+			break;
+		default:
+			break;
+		}
 	}
 
+	private void fullScreen(){
+		if(!mIsFullScreen){
+			mWikiDetailTitle.setVisibility(View.GONE);
+			mLayoutFunctions.setVisibility(View.GONE);
+			Toast.makeText(WikiContentActivity.this, getString(R.string.screen_back), 1000).show();
+			mIsFullScreen = true;
+		}else{
+			mWikiDetailTitle.setVisibility(View.VISIBLE);
+			mLayoutFunctions.setVisibility(View.VISIBLE);
+			mIsFullScreen = false;
+		}
+	}
+	
+	private void fallbackToPreLayer(){
+		SliderLayer layer = getmMainActivity().getSliderLayer();
+		layer.closeSidebar(layer.openingLayerIndex());
+	}
+	
+	private void shareToFriend(){
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("text/plain");
+		String title = responseObject.getParse().getTitle();
+		String titleForUrl = title.replace(" ", "_");
+		intent.putExtra(Intent.EXTRA_TEXT,getString(R.string.content_share,new Object[]{title,WIKI_URL_PRE+titleForUrl}));
+		Intent it = Intent.createChooser(intent, "分享给好友");
+		startActivity(it);
+	}
+	
 	@Override
 	public void onSidebarOpened() {
 		// TODO Auto-generated method stub

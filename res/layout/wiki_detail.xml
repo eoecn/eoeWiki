@@ -59,73 +59,68 @@
 		<View android:layout_width="match_parent"
 	    	android:layout_height="3dip"
 	    	android:background="@color/blue_line"/>
+		
 		<LinearLayout android:layout_width="match_parent"
 	    	android:layout_height="wrap_content"
-	    	android:orientation="horizontal"
-	    	android:padding="10dip">
-	    	
+	    	android:orientation="horizontal">
+	    	
 		    <LinearLayout
-		        android:id="@+id/layout_parent_directory"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:layout_marginLeft="5dip"
 		        android:layout_weight="1"
-		        android:background="@drawable/ico_parent_directory"
 		        android:clickable="true"
 		        android:gravity="center" >
-		        <ImageView android:layout_width="wrap_content"
-	    			android:layout_height="wrap_content"/>
-		    </LinearLayout>
-		    
-		    <LinearLayout android:layout_width="wrap_content"
-	    		android:layout_height="wrap_content"
-	    		android:layout_weight="1"
-	    		android:id="@+id/layout_fullscreen"
-	    		android:clickable="true"
-	    		android:gravity="center"
-	    		android:background="@drawable/ico_fullscreen"
-	    		android:layout_marginLeft="5dip">
-		        <ImageView android:layout_width="wrap_content"
-	    			android:layout_height="wrap_content"/>
-		    </LinearLayout>
-		    
-		    <LinearLayout android:layout_width="wrap_content"
-	    		android:layout_height="wrap_content"
-	    		android:layout_weight="1"
-	    		android:id="@+id/layout_favorite"
-	    		android:clickable="true"
-	    		android:gravity="center"
-	    		android:background="@drawable/favorites_00"
-	    		android:layout_marginLeft="15dip">
-		        <ImageView android:layout_width="wrap_content"
-	    			android:layout_height="wrap_content"/>
-		    </LinearLayout>
-		    
-		    <LinearLayout android:layout_width="wrap_content"
-	    		android:layout_height="wrap_content"
-	    		android:layout_weight="1"
-	    		android:id="@+id/layout_share"
-	    		android:clickable="true"
-	    		android:gravity="center"
-	    		android:background="@drawable/ico_share"
-	    		android:layout_marginLeft="5dip">
-		        <ImageView android:layout_width="wrap_content"
-	    			android:layout_height="wrap_content"/>
-		    </LinearLayout>
-		    
-		    <LinearLayout android:layout_width="wrap_content"
-	    		android:layout_height="wrap_content"
-	    		android:layout_weight="1"
-	    		android:id="@+id/layout_about"
-	    		android:clickable="true"
-	    		android:gravity="center"
-	    		android:background="@drawable/ico_about"
-	    		android:layout_marginRight="5dip">
-		        <ImageView android:layout_width="wrap_content"
+		        
+		        <ImageView android:id="@+id/layout_parent_directory"
+		            android:layout_width="wrap_content"
 	    			android:layout_height="wrap_content"
-	    			android:src="@drawable/btn_about_x"/>
+	    			android:src="@drawable/ico_parent_directory"
+	    			android:padding="8dip"/>
+		        
+		        <ImageView android:id="@+id/layout_fullscreen"
+		            android:layout_width="wrap_content"
+	    			android:layout_height="wrap_content"
+	    			android:src="@drawable/ico_fullscreen"
+	    			android:padding="8dip"/>
+		    </LinearLayout>
+		    
+		    <View android:layout_width="2dip"
+	    		android:layout_height="match_parent"
+	    		android:background="@color/blue_line"/>
+		    
+		    <LinearLayout android:layout_width="wrap_content"
+	    		android:layout_height="wrap_content"
+	    		android:layout_weight="1"
+	    		android:clickable="true"
+	    		android:gravity="center">
+		        
+		        <ImageView android:id="@+id/layout_favorite" 
+		            android:layout_width="wrap_content"
+	    			android:layout_height="wrap_content"
+	    			android:src="@drawable/favorites_00"
+	    			android:padding="8dip"/>
+		        
+		        <ImageView android:id="@+id/layout_share" 
+		            android:layout_width="wrap_content"
+	    			android:layout_height="wrap_content"
+	    			android:src="@drawable/ico_share"
+	    			android:padding="8dip"/>
+		    </LinearLayout>
+		    
+		    <View android:layout_width="2dip"
+	    		android:layout_height="match_parent"
+	    		android:background="@color/blue_line"/>
+		    
+		    <LinearLayout android:layout_width="wrap_content"
+	    		android:layout_height="wrap_content"
+	    		android:layout_weight="1"
+	    		android:clickable="true"
+	    		android:gravity="center">
+		        
 		    </LinearLayout>
 		    
 		</LinearLayout>
+		
+		
 	</LinearLayout>
 </RelativeLayout>
