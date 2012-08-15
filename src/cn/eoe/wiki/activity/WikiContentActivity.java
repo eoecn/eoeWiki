@@ -4,13 +4,14 @@ package cn.eoe.wiki.activity;
 import org.codehaus.jackson.type.TypeReference;
 
 import android.content.Intent;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -37,6 +38,10 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 	private RelativeLayout mWikiDetailTitle;
 	private LinearLayout mLayoutFunctions;
+	
+	private LayoutInflater mInflater;
+	private RelativeLayout mLayoutWebview;
+	private boolean	mProgressVisible;
 	
 	public static final String WIKI_CONTENT = "wiki_content";
 	private String mUri;
@@ -80,7 +85,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	}
 	
 	void initData(){
-		getWikiDetail();
+		
 	}
 	
 	void getWikiDetail()
@@ -118,6 +123,20 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
                   + html + "</body></html>";
 		mWebView.loadDataWithBaseURL("about:blank", html1,  "text/html","utf-8", null);
         mWebView.setBackgroundColor(R.color.deep_grey);
+        
+        mWebView.getSettings().setSupportZoom(true);
+        mWebView.getSettings().setBuiltInZoomControls(true);
+        
+        mWebView.setWebViewClient(new WebViewClient(){
+
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				System.out.println(url);
+				//view.loadUrl(url);
+				return true;
+			}
+        	
+        });
 	}
 	
 	private void getWikiError(String pError){
@@ -199,8 +218,21 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 	@Override
 	public void onSidebarOpened() {
-		// TODO Auto-generated method stub
-		
+		if(!mProgressVisible)
+		{
+			showProgressLayout();
+		}
+		getWikiDetail();
+		//加一句removeSliderListener
+		//this.getmMainActivity().getSliderLayer().remov
+	}
+	
+	private void showProgressLayout()
+	{
+		View progressView = mInflater.inflate(R.layout.loading, null);
+		mLayoutWebview.removeAllViews();
+		mLayoutWebview.addView(progressView);
+		mProgressVisible = true;
 	}
 
 	@Override

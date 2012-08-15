@@ -93,6 +93,7 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		mCategoryLayout.addView(progressView);
 		mProgressVisible = true;
 	}
+	
 	@Override
 	protected void getCategorysError(String showText)
 	{
