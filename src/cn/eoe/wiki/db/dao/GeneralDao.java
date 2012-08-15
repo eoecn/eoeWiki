@@ -38,7 +38,7 @@ public class GeneralDao<T extends DatabaseColumn> {
 			throw new IllegalArgumentException("invalid page :"+page);
 		}
 		
-		return SqliteWrapper.query(context, context.getContentResolver(), uri, this.tableClass.getColumns(), null, null, "order by "+DatabaseColumn._ID+" limit "+(page-1)*page+","+length);
+		return SqliteWrapper.query(context, context.getContentResolver(), uri, this.tableClass.getColumns(), null, null, DatabaseColumn._ID+" limit "+(page-1)*page+","+length);
 	}
 	
 	public Cursor queryById(long id)

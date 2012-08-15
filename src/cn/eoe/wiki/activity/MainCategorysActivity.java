@@ -246,5 +246,6 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		{
 			mCloseCategorys.add(category);
 		}
+		generateCategorys(mResponseObject, category);
 	}
 }

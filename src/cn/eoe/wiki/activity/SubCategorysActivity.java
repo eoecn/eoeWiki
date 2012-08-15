@@ -145,7 +145,7 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 				TextView tv = (TextView)mInflater.inflate(R.layout.category_title, null);
 				tv.setText(category.getName());
 				tv.setBackgroundResource(R.drawable.btn_grey_blue_nostroke_top);
-				
+				tv.setOnClickListener(new SubCategoryListener(category.getUri(), SubCategorysActivity.this));
 				categoryLayout.addView(tv);
 				List<CategoryChild> categorysChildren =  category.getChildren();
 				if(categorysChildren!=null)

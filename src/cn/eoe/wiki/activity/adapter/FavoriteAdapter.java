@@ -62,6 +62,7 @@ public class FavoriteAdapter extends BaseAdapter{
 			TextView text = (TextView)convertView;
 			FavoriteEntity entity = favorites.get(position);
 			text.setText(entity.getTitle());
+			text.setBackgroundResource(R.drawable.btn_grey_blue_stroke);
 		}
 		return convertView;
 	}

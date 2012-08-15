@@ -30,8 +30,7 @@ public class FavoriteDao extends GeneralDao<FavoriteColumn> {
 	public List<FavoriteEntity> getFavorites(int page, int length)
 	{
 		List<FavoriteEntity> favorites = null;
-//		Cursor cursor = queryByPage(page, length);
-		Cursor cursor = queryAll();
+		Cursor cursor = queryByPage(page, length);
 		if(cursor!=null)
 		{
 			favorites = new ArrayList<FavoriteEntity>();
@@ -43,7 +42,17 @@ public class FavoriteDao extends GeneralDao<FavoriteColumn> {
 		return favorites;
 	}
 	/**
-	 * 添加收藏
+	 * 通过url获取FavoriteEntity
+	 * @param pageid
+	 * @return
+	 */
+	public FavoriteEntity getFavoriteByUrl(String pageid)
+	{
+		Cursor cursor = queryByParameter(FavoriteColumn.PAGEID, pageid);
+		return buildFavoriteEntity(cursor);
+	}
+	/**
+	 * 添加收藏.如果数据库中已经有了，则会更新
 	 * @param pageid
 	 * @param title
 	 * @param url
@@ -51,16 +60,33 @@ public class FavoriteDao extends GeneralDao<FavoriteColumn> {
 	 */
 	public boolean addFavorite(String pageid,String title,String url)
 	{
-		FavoriteEntity entity = new FavoriteEntity();
+		FavoriteEntity entity = getFavoriteByUrl(pageid);
+		long current = System.currentTimeMillis();
+		boolean isUpdate = false;
+		if(entity==null)
+		{
+			entity = new FavoriteEntity();
+			entity.setAddDate(current);
+			isUpdate = true;
+		}
 		entity.setPageid(pageid);
 		entity.setTitle(title);
 		entity.setUrl(url);
-		long current = System.currentTimeMillis();
-		entity.setAddDate(current);
 		entity.setModifyDate(current);
-		if(insert(change2ContentValues(entity))!=null)
+		ContentValues values= change2ContentValues(entity);
+		if(isUpdate)
 		{
-			return true;
+			if(update(values)>0)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if(insert(values)!=null)
+			{
+				return true;
+			}
 		}
 		return false;
 	}

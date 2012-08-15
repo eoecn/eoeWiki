@@ -57,7 +57,7 @@ public class MainActivity extends ActivityGroup {
 		layerThree.setPadding(0, 0, WikiUtil.dip2px(mMainActivity, 10), 0);
 		mSliderLayers.addLayer(new SliderEntity(layerOne, 0, sceenWidth, 0));
 		mSliderLayers.addLayer(new SliderEntity(layerTwo, 0, sceenWidth - WikiUtil.dip2px(mMainActivity, 24), 0));
-		mSliderLayers.addLayer(new SliderEntity(layerThree, 0, sceenWidth - WikiUtil.dip2px(mMainActivity, 20), 0));
+		mSliderLayers.addLayer(new SliderEntity(layerThree, WikiUtil.dip2px(mMainActivity, -10), sceenWidth - WikiUtil.dip2px(mMainActivity, 20), 0));
 
 		Intent intent = new Intent(this, MainCategorysActivity.class);
 		showView(0, intent);
