@@ -30,7 +30,7 @@ public class FavoriteColumn extends DatabaseColumn {
     static {
 		mColumnsMap.put(_ID, "integer primary key autoincrement not null");
 		mColumnsMap.put(TITLE, "text not null");
-		mColumnsMap.put(PAGEID, "integer not null");
+		mColumnsMap.put(PAGEID, "text not null");
 		mColumnsMap.put(URL, "text not null");
 		mColumnsMap.put(DATE_ADD, "localtime");
 		mColumnsMap.put(DATE_MODIFY, "localtime");

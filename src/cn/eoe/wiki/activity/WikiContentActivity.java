@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import cn.eoe.wiki.R;
+import cn.eoe.wiki.db.dao.FavoriteDao;
 import cn.eoe.wiki.http.HttpManager;
 import cn.eoe.wiki.http.ITransaction;
 import cn.eoe.wiki.json.WikiDetailJson;
@@ -46,7 +47,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.wiki_detail);
 		Intent intent = getIntent();
@@ -160,6 +160,9 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 			break;
 		case R.id.layout_favorite:
 			//do something
+			L.d("press favorite icon");
+			FavoriteDao favoriteDao = new FavoriteDao(mContext);
+			favoriteDao.addFavorite(responseObject.getParse().getRevid(), responseObject.getParse().getDisplayTitle(), mUri);
 			break;
 		case R.id.layout_share:
 			shareToFriend();

@@ -5,10 +5,12 @@ import java.util.List;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.activity.BaseActivity;
 import cn.eoe.wiki.db.entity.FavoriteEntity;
+import cn.eoe.wiki.utils.L;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 /**
  * 收藏夹的适配器
  * @author <a href="mailto:kris1987@qq.com">Kris.lee</a>
@@ -53,11 +55,15 @@ public class FavoriteAdapter extends BaseAdapter{
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		L.d("favorite adapter get view position:"+position);
 		if(convertView==null)
 		{
 			convertView = inflater.inflate(R.layout.category_item, null);
+			TextView text = (TextView)convertView;
+			FavoriteEntity entity = favorites.get(position);
+			text.setText(entity.getTitle());
 		}
-		return null;
+		return convertView;
 	}
 
 }

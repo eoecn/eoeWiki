@@ -17,6 +17,7 @@ import cn.eoe.wiki.R;
 import cn.eoe.wiki.json.CategoryChild;
 import cn.eoe.wiki.json.CategoryJson;
 import cn.eoe.wiki.listener.SubCategoryListener;
+import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.SliderLayer;
 import cn.eoe.wiki.view.SliderLayer.SliderListener;
@@ -61,9 +62,24 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 		initData();
 	}
 
+	
+	@Override
+	protected void onPause() {
+		L.d("sub category onPause");
+		super.onPause();
+	}
+
+
+	@Override
+	protected void onResume() {
+		L.d("sub category onResume");
+		super.onResume();
+	}
+
+
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
+		L.d("sub category destroy");
 		super.onDestroy();
 	}
 
@@ -201,6 +217,7 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 			showProgressLayout();
 		}
 		getCategory(mParentCategory.getUri());
+		getmMainActivity().getSliderLayer().removeSliderListener(this);
 	}
 
 	@Override

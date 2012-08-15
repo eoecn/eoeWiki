@@ -1,9 +1,13 @@
 package cn.eoe.wiki.activity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.app.ActivityGroup;
 import android.app.LocalActivityManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +33,7 @@ public class MainActivity extends ActivityGroup {
 	private LocalActivityManager 	mActivityManager;
 
 	private SliderLayer 			mSliderLayers;
+	private Map<Integer, String> 	mLayerIdMap;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,7 @@ public class MainActivity extends ActivityGroup {
 		mActivityManager = getLocalActivityManager();
 
 		mSliderLayers = (SliderLayer) findViewById(R.id.animation_layout);
+		mLayerIdMap = new HashMap<Integer, String>();
 
 		int sceenWidth = WikiUtil.getSceenWidth(mMainActivity);
 		ViewGroup layerOne = (ViewGroup) findViewById(R.id.animation_layout_one);
@@ -58,6 +64,12 @@ public class MainActivity extends ActivityGroup {
 	}
 
 	public void showView(final int index, Intent intent) {
+		String oldId = mLayerIdMap.get(index);
+		if(!TextUtils.isEmpty(oldId))
+		{
+			//destroy the old activity
+			mActivityManager.destroyActivity(oldId, true);
+		}
 		if (intent.getFlags() == 0) {
 			// 这里用不用标志都无所谓了，我们给了不了不同的id ,则都会去重新生成一个
 			// 这样就可以把flag解放出来可以让intent携带更多的数据
@@ -76,6 +88,8 @@ public class MainActivity extends ActivityGroup {
 		ViewGroup currentView = mSliderLayers.getLayer(index);
 		currentView.removeAllViews();
 		currentView.addView(view);
+		//put the new id to the map
+		mLayerIdMap.put(index, id);
 		// if the index ==0 , no need to open .
 		if (index == 0)
 			return;
