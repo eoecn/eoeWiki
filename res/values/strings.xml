@@ -21,4 +21,7 @@
     <string name="about_story_content">eoe的理念是\'让移动开发更简单\', 如何让移动开发更简单是我们不断思考和探索的，我们认为有组织、有体系的内容对开发者的学习和成长是最有价值的，于是大家都希望有这么一款应用让我们零碎的时间里学习到最有价值的知识，于是优亿百科诞生了。</string>
     <string name="about_thanks_content">优亿百科的内容是由社区组织策划，社区会员共同参与贡献的移动开发知识大百科，当其他人在休息的时候，大家还在策划，撰写，翻译着内容，谢谢参与贡献的这些人，他们是（等lsy个我名单～）\n
 优亿百科android客户端是eoeAppLabs的项目，也是社区会员共同参与开发的一款应用.\n\n 参与人员:</string>
+
+    <string name="screen_back">双击屏幕返回</string>
+    <string name="content_share">这篇文章挺好，推荐给你看看：%1$s | %2$s （来自：优亿百科）</string>
 </resources>
