@@ -18,6 +18,7 @@ public class WikiEntity extends DataBaseEntity {
 	private String pageId;
 	private String path;
 	private String uri;
+	private String displayTitle;
 	private int version;
 	
 	private String content;
@@ -95,6 +96,12 @@ public class WikiEntity extends DataBaseEntity {
 	}
 	public void setVersion(int version) {
 		this.version = version;
+	}
+	public String getDisplayTitle() {
+		return displayTitle;
+	}
+	public void setDisplayTitle(String displayTitle) {
+		this.displayTitle = displayTitle;
 	}
 	
 }

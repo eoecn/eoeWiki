@@ -98,7 +98,7 @@ public class UpdateDao extends GeneralDao<UpdateColumn> {
 		return false;
 	}
 	
-	private UpdateEntity buildWikiUpdateEntity(Cursor cursor)
+	public UpdateEntity buildWikiUpdateEntity(Cursor cursor)
 	{
 		UpdateEntity entity = null;
 		if(cursor!=null && cursor.moveToFirst())
@@ -122,7 +122,7 @@ public class UpdateDao extends GeneralDao<UpdateColumn> {
 	 * @param entity
 	 * @return
 	 */
-	private ContentValues change2ContentValues(UpdateEntity entity)
+	public ContentValues change2ContentValues(UpdateEntity entity)
 	{
 
 		ContentValues values = new ContentValues();

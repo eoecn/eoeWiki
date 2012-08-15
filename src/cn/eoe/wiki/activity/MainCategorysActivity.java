@@ -139,6 +139,8 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		case R.id.btn_recent:
 			break;
 		case R.id.iv_favorite:
+			Intent intent = new Intent (mContext,FavoriteActivity.class);
+			getmMainActivity().showView(1, intent);
 			break;
 		default:
 			break;
@@ -245,5 +247,6 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		{
 			mCloseCategorys.add(category);
 		}
+		generateCategorys(mResponseObject, category);
 	}
 }

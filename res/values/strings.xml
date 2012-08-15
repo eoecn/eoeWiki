@@ -14,6 +14,7 @@
 
     <string name="tip_android_title">Android-安卓</string>
     <string name="tip_no_category">杯具，没有可以显示的目录！</string>
+    <string name="tip_no_favorite">杯具，你还没有任何的收藏！</string>
     <string name="content_recommand">源自开发者，服务开发者~第一款为开发者服务的好软件来啦! 快去下载安装吧：http://
 优亿百科(eoeWIKI)是android开发者必备软件，其依靠eoeAndroid开发社区，将高质量移动开发内容用百科的形势进行组织和展示，以方便大家能更快更好的学习移动开发的相关知识，尽快的成长~</string>
     <string name="about_goals_content">优亿百科(eoeWIKI)是一款移动开发知识百科软件，依靠优亿开发者社区，将高质量移动开发内容用百科的形势进行组织和展示，以方便大家能更快更好的学习移动开发的相关知识，尽快的成长。</string>

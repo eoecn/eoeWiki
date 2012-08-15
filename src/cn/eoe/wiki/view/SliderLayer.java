@@ -116,6 +116,17 @@ public class SliderLayer extends ViewGroup {
     	L.d("add a slider listener");
         mListeners.add(l);
     }
+    /**
+     * remove the SliderListener if you dont need the SliderListener
+     * @param l
+     */
+    public void removeSliderListener(SliderListener l) {
+    	L.d("add a slider listener");
+    	if( mListeners.contains(l))
+    	{
+    		mListeners.remove(l);
+    	}
+    }
 
     /* to see if the Sidebar is visible */
     public int openingLayerIndex() {
