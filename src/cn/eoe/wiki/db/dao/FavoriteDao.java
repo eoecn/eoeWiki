@@ -67,6 +67,10 @@ public class FavoriteDao extends GeneralDao<FavoriteColumn> {
 		{
 			entity = new FavoriteEntity();
 			entity.setAddDate(current);
+			isUpdate = false;
+		}
+		else
+		{
 			isUpdate = true;
 		}
 		entity.setPageid(pageid);

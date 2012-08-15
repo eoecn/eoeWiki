@@ -7,6 +7,7 @@ import cn.eoe.wiki.activity.CategorysActivity;
 import cn.eoe.wiki.activity.MainActivity;
 import cn.eoe.wiki.activity.SubCategorysActivity;
 import cn.eoe.wiki.json.CategoryChild;
+import cn.eoe.wiki.utils.L;
 
 /**
  * listener for the category
@@ -29,6 +30,7 @@ public class CategoryListener implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
+		L.e("category click:"+category.getUri());
 		Intent intent = new Intent (context,SubCategorysActivity.class);
 		intent.putExtra(SubCategorysActivity.KEY_CATEGORY, category);
 		intent.putExtra(SubCategorysActivity.KEY_PARENT_TITLE, parentName);
