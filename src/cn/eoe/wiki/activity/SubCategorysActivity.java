@@ -51,8 +51,10 @@ public class SubCategorysActivity extends CategoryActivity implements OnClickLis
 		{
 			throw new NullPointerException("Must give a CategoryChild in the intent");
 		}
+		
 		mParentCategory = intent.getParcelableExtra(KEY_CATEGORY);
 		mParentName = intent.getStringExtra(KEY_PARENT_TITLE);
+		
 		if(mParentCategory==null || TextUtils.isEmpty(mParentName))
 		{
 			throw new NullPointerException("Must give a CategoryChild and the parent name in the intent");
