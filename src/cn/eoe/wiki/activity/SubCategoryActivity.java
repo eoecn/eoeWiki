@@ -139,12 +139,12 @@ public class SubCategoryActivity extends CategoryActivity implements OnClickList
 				int paddind = WikiUtil.dip2px(mContext, 1);
 				categoryLayout.setPadding(paddind, paddind, paddind, paddind);
 				categoryLayout.setLayoutParams(titleParams);
-				categoryLayout.setBackgroundResource(R.drawable.btn_grey_blue_stroke);
+				categoryLayout.setBackgroundResource(R.drawable.bg_stroke_grey_blue);
 				mCategoryLayout.addView(categoryLayout);
 				
 				TextView tv = (TextView)mInflater.inflate(R.layout.category_title, null);
 				tv.setText(category.getName());
-				tv.setBackgroundResource(R.drawable.btn_grey_blue_nostroke_top);
+				tv.setBackgroundResource(R.drawable.bg_nostroke_grey_blue_top);
 				tv.setOnClickListener(new SubCategoryListener(category.getUri(), SubCategoryActivity.this));
 				categoryLayout.addView(tv);
 				List<CategoryChild> categorysChildren =  category.getChildren();
@@ -167,11 +167,11 @@ public class SubCategoryActivity extends CategoryActivity implements OnClickList
 						tvChild.setOnClickListener(new SubCategoryListener(categorysChild.getUri(), SubCategoryActivity.this));
 						if(i==(size-1))
 						{
-							tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_bottom);
+							tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_bottom);
 						}
 						else
 						{
-							tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_nocorners);
+							tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_nocorners);
 						}
 //						mCategoryLayout.addView(tvChild);
 						categoryLayout.addView(tvChild);

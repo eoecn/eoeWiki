@@ -1,13 +1,9 @@
 package cn.eoe.wiki.activity;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.app.ActivityGroup;
 import android.app.LocalActivityManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +29,6 @@ public class MainActivity extends ActivityGroup {
 	private LocalActivityManager 	mActivityManager;
 
 	private SliderLayer 			mSliderLayers;
-	private Map<Integer, String> 	mLayerIdMap;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +41,6 @@ public class MainActivity extends ActivityGroup {
 		mActivityManager = getLocalActivityManager();
 
 		mSliderLayers = (SliderLayer) findViewById(R.id.animation_layout);
-		mLayerIdMap = new HashMap<Integer, String>();
 
 		int sceenWidth = WikiUtil.getSceenWidth(mMainActivity);
 		ViewGroup layerOne = (ViewGroup) findViewById(R.id.animation_layout_one);
@@ -56,7 +50,7 @@ public class MainActivity extends ActivityGroup {
 		ViewGroup layerThree = (ViewGroup) findViewById(R.id.animation_layout_three);
 		layerThree.setPadding(0, 0, 0, 0);
 		mSliderLayers.addLayer(new SliderEntity(layerOne, 0, sceenWidth, 0));
-		mSliderLayers.addLayer(new SliderEntity(layerTwo, 0, sceenWidth - WikiUtil.dip2px(mMainActivity, 24), 0));
+		mSliderLayers.addLayer(new SliderEntity(layerTwo, 0, sceenWidth - WikiUtil.dip2px(mMainActivity, 23), 0));
 		mSliderLayers.addLayer(new SliderEntity(layerThree, WikiUtil.dip2px(mMainActivity, -10), sceenWidth - WikiUtil.dip2px(mMainActivity, 20), 0));
 
 		Intent intent = new Intent(this, MainCategoryActivity.class);
@@ -64,20 +58,6 @@ public class MainActivity extends ActivityGroup {
 	}
 
 	public void showView(final int index, Intent intent) {
-		String oldId = mLayerIdMap.get(index);
-		if(!TextUtils.isEmpty(oldId))
-		{
-			//destroy the old activity
-//			mActivityManager.destroyActivity(oldId, true);
-		}
-		if (intent.getFlags() == 0) {
-			// 这里用不用标志都无所谓了，我们给了不了不同的id ,则都会去重新生成一个
-			// 这样就可以把flag解放出来可以让intent携带更多的数据
-			// 但是要注意，如果是自己定义的flag，则保证与系统的不一至，所以还是不建议使用此方法来携带参数
-			// the FLASG_ACTIVITY_CLEAR_TOP is the detals flags
-			// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		}
 		intent.putExtra("index", index);
 		// 这里id是最关键的，不能重复。
 		// 如果看过一个wiki想快速加载，我们只能通过读取数据库来实现。
@@ -88,8 +68,6 @@ public class MainActivity extends ActivityGroup {
 		ViewGroup currentView = mSliderLayers.getLayer(index);
 		currentView.removeAllViews();
 		currentView.addView(view);
-		//put the new id to the map
-		mLayerIdMap.put(index, id);
 		// if the index ==0 , no need to open .
 		if (index == 0)
 			return;

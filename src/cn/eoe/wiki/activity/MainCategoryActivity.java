@@ -172,7 +172,7 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 				int paddind = WikiUtil.dip2px(mContext, 1);
 				categoryLayout.setPadding(paddind, paddind, paddind, paddind);
 				categoryLayout.setLayoutParams(titleParams);
-				categoryLayout.setBackgroundResource(R.drawable.btn_grey_blue_stroke);
+				categoryLayout.setBackgroundResource(R.drawable.bg_stroke_grey_blue);
 				mCategoryLayout.addView(categoryLayout);
 				
 				TextView tv = (TextView)mInflater.inflate(R.layout.category_title, null);
@@ -183,7 +183,7 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 				{
 					//if operCategory==null ,it means the first
 					//mCloseCategorys.contains(category) this category is close
-					tv.setBackgroundResource(R.drawable.btn_grey_blue_nostroke_top);
+					tv.setBackgroundResource(R.drawable.bg_nostroke_grey_blue_top);
 				
 					List<CategoryChild> categorysChildren =  category.getChildren();
 					if(categorysChildren!=null)
@@ -205,11 +205,11 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 							tvChild.setOnClickListener(new CategoryListener(this, categorysChild,category.getName()));
 							if(i==(size-1))
 							{
-								tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_bottom);
+								tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_bottom);
 							}
 							else
 							{
-								tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_nocorners);
+								tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_nocorners);
 							}
 							categoryLayout.addView(tvChild);
 						}
@@ -217,7 +217,7 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 				}
 				else
 				{
-					tv.setBackgroundResource(R.drawable.btn_grey_blue_nostroke);
+					tv.setBackgroundResource(R.drawable.bg_nostroke_grey_blue);
 				}
 
 				View blankView = new View(mContext);

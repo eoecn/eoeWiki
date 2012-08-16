@@ -9,6 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.activity.adapter.FavoriteAdapter;
 import cn.eoe.wiki.db.dao.FavoriteDao;
@@ -25,7 +26,7 @@ import cn.eoe.wiki.view.SliderLayer.SliderListener;
  *
  */
 public class FavoriteActivity extends SliderActivity implements OnClickListener,SliderListener{
-	public static final 	int		PAGE_COUNT = 2;
+	public static final 	int		PAGE_COUNT = 20;
 	
 	private ListView		mListView;
 	private FavoriteAdapter	mAdapter;
@@ -33,6 +34,7 @@ public class FavoriteActivity extends SliderActivity implements OnClickListener,
 	private LinearLayout	mLayoutLoading;
 	private View			mNoFavorite;
 	private ImageButton		mBtnBack;
+	private TextView		mTvTitle;
 	
 	private FavoriteDao		mFavoriteDao;
 	
@@ -49,7 +51,9 @@ public class FavoriteActivity extends SliderActivity implements OnClickListener,
 	}
 
 	void initComponent() {
+		mTvTitle = (TextView)findViewById(R.id.tv_title_parent);
 		mListView = (ListView)findViewById(R.id.ListView);
+		mListView.setDividerHeight(0);
 		mLayoutLoading = (LinearLayout)findViewById(R.id.layout_loading);
 		mNoFavorite = findViewById(R.id.layout_no_favorite);
 		mBtnBack=(ImageButton)findViewById(R.id.btn_back);
@@ -57,6 +61,7 @@ public class FavoriteActivity extends SliderActivity implements OnClickListener,
 	}
 
 	void initData() {
+		mTvTitle.setText(R.string.title_favorite);
 		mLayoutLoading.setVisibility(View.VISIBLE);
 		mListView.setVisibility(View.GONE);
 		mNoFavorite.setVisibility(View.GONE);
