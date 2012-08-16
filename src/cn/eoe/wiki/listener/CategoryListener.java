@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import cn.eoe.wiki.activity.CategoryActivity;
 import cn.eoe.wiki.activity.MainActivity;
-import cn.eoe.wiki.activity.SubCategorysActivity;
+import cn.eoe.wiki.activity.SubCategoryActivity;
 import cn.eoe.wiki.json.CategoryChild;
 import cn.eoe.wiki.utils.L;
 
@@ -31,9 +31,9 @@ public class CategoryListener implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		L.e("category click:"+category.getUri());
-		Intent intent = new Intent (context,SubCategorysActivity.class);
-		intent.putExtra(SubCategorysActivity.KEY_CATEGORY, category);
-		intent.putExtra(SubCategorysActivity.KEY_PARENT_TITLE, parentName);
+		Intent intent = new Intent (context,SubCategoryActivity.class);
+		intent.putExtra(SubCategoryActivity.KEY_CATEGORY, category);
+		intent.putExtra(SubCategoryActivity.KEY_PARENT_TITLE, parentName);
 		context.getmMainActivity().showView(1, intent);
 	}
 	

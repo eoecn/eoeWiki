@@ -27,7 +27,7 @@
         </activity>
         <activity android:name=".activity.AboutActivity" >
         </activity>
-        <activity android:name=".activity.MainCategorysActivity" >
+        <activity android:name=".activity.MainCategoryActivity" >
         </activity>
         <activity android:name=".activity.SubCategoryActivity" >
         </activity>

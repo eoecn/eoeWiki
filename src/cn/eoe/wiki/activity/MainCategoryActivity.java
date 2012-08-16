@@ -30,7 +30,7 @@ import com.umeng.fb.UMFeedbackService;
  * @data  2012-8-5
  * @version 1.0.0
  */
-public class MainCategorysActivity extends CategoryActivity implements OnClickListener{
+public class MainCategoryActivity extends CategoryActivity implements OnClickListener{
 	
 	private LinearLayout	mCategoryLayout;
 	private LayoutInflater 	mInflater;
@@ -45,14 +45,14 @@ public class MainCategorysActivity extends CategoryActivity implements OnClickLi
 	private String					mCategoryUrl;
 
 	private boolean					mProgressVisible;
-	private Set<CategoryChild> 		mCloseCategorys;
+	private Set<CategoryChild> 		mCloseCategories;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.categorys);
+		setContentView(R.layout.categories);
 		mInflater = LayoutInflater.from(mContext);
 		mCategoryUrl = WikiConfig.getMainCategoruUrl();
-		mCloseCategorys = new HashSet<CategoryChild>();
+		mCloseCategories = new HashSet<CategoryChild>();
 		initComponent();
 		initData();
 	}
@@ -161,10 +161,10 @@ public class MainCategorysActivity extends CategoryActivity implements OnClickLi
 	{
 		mCategoryLayout.removeAllViews();
 		mProgressVisible = false;
-		List<CategoryChild> categorys =  responseObject.getContents();
-		if(categorys!=null)
+		List<CategoryChild> categories =  responseObject.getContents();
+		if(categories!=null)
 		{
-			for(CategoryChild category:categorys)
+			for(CategoryChild category:categories)
 			{
 				LinearLayout categoryLayout = new LinearLayout(mContext);
 				categoryLayout.setOrientation(LinearLayout.VERTICAL);
@@ -179,7 +179,7 @@ public class MainCategorysActivity extends CategoryActivity implements OnClickLi
 				tv.setText(category.getName());
 				tv.setOnClickListener(new CategoryTitleListener(this,category));
 				categoryLayout.addView(tv);
-				if(operCategory==null || !mCloseCategorys.contains(category))
+				if(operCategory==null || !mCloseCategories.contains(category))
 				{
 					//if operCategory==null ,it means the first
 					//mCloseCategorys.contains(category) this category is close
@@ -239,13 +239,13 @@ public class MainCategorysActivity extends CategoryActivity implements OnClickLi
 
 	public void refreshCategory(CategoryChild category)
 	{
-		if(mCloseCategorys.contains(category))
+		if(mCloseCategories.contains(category))
 		{
-			mCloseCategorys.remove(category);
+			mCloseCategories.remove(category);
 		}
 		else
 		{
-			mCloseCategorys.add(category);
+			mCloseCategories.add(category);
 		}
 		generateCategorys(mResponseObject, category);
 	}
