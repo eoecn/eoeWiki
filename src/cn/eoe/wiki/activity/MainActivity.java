@@ -59,7 +59,7 @@ public class MainActivity extends ActivityGroup {
 		mSliderLayers.addLayer(new SliderEntity(layerTwo, 0, sceenWidth - WikiUtil.dip2px(mMainActivity, 24), 0));
 		mSliderLayers.addLayer(new SliderEntity(layerThree, WikiUtil.dip2px(mMainActivity, -10), sceenWidth - WikiUtil.dip2px(mMainActivity, 20), 0));
 
-		Intent intent = new Intent(this, MainCategorysActivity.class);
+		Intent intent = new Intent(this, MainCategoryActivity.class);
 		showView(0, intent);
 	}
 

@@ -27,7 +27,7 @@ import cn.eoe.wiki.view.SliderLayer.SliderListener;
  * @data  2012-8-5
  * @version 1.0.0
  */
-public class SubCategorysActivity extends CategoryActivity implements OnClickListener,SliderListener{
+public class SubCategoryActivity extends CategoryActivity implements OnClickListener,SliderListener{
 	public static final		String 	KEY_CATEGORY		= "category";
 	public static final		String 	KEY_PARENT_TITLE	= "parent_title";
 	
@@ -130,10 +130,10 @@ public class SubCategorysActivity extends CategoryActivity implements OnClickLis
 	{
 		mCategoryLayout.removeAllViews();
 		mProgressVisible = false;
-		List<CategoryChild> categorys =  responseObject.getContents();
-		if(categorys!=null)
+		List<CategoryChild> categories =  responseObject.getContents();
+		if(categories!=null)
 		{
-			for(CategoryChild category:categorys)
+			for(CategoryChild category:categories)
 			{
 				LinearLayout categoryLayout = new LinearLayout(mContext);
 				categoryLayout.setOrientation(LinearLayout.VERTICAL);
@@ -147,7 +147,7 @@ public class SubCategorysActivity extends CategoryActivity implements OnClickLis
 				TextView tv = (TextView)mInflater.inflate(R.layout.category_title, null);
 				tv.setText(category.getName());
 				tv.setBackgroundResource(R.drawable.btn_grey_blue_nostroke_top);
-				tv.setOnClickListener(new SubCategoryListener(category.getUri(), SubCategorysActivity.this));
+				tv.setOnClickListener(new SubCategoryListener(category.getUri(), SubCategoryActivity.this));
 				categoryLayout.addView(tv);
 				List<CategoryChild> categorysChildren =  category.getChildren();
 				if(categorysChildren!=null)
@@ -166,7 +166,7 @@ public class SubCategorysActivity extends CategoryActivity implements OnClickLis
 						
 						TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
 						tvChild.setText(categorysChild.getName());
-						tvChild.setOnClickListener(new SubCategoryListener(categorysChild.getUri(), SubCategorysActivity.this));
+						tvChild.setOnClickListener(new SubCategoryListener(categorysChild.getUri(), SubCategoryActivity.this));
 						if(i==(size-1))
 						{
 							tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_bottom);

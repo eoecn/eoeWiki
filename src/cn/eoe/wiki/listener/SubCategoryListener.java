@@ -1,6 +1,6 @@
 package cn.eoe.wiki.listener;
 
-import cn.eoe.wiki.activity.SubCategorysActivity;
+import cn.eoe.wiki.activity.SubCategoryActivity;
 import cn.eoe.wiki.activity.WikiContentActivity;
 import android.content.Intent;
 import android.view.View;
@@ -10,9 +10,9 @@ import android.widget.Toast;
 public class SubCategoryListener implements OnClickListener{
 
 	private String mUri;
-	private SubCategorysActivity mContext;
+	private SubCategoryActivity mContext;
 	
-	public SubCategoryListener(String pUri,SubCategorysActivity pContext){
+	public SubCategoryListener(String pUri,SubCategoryActivity pContext){
 		mUri = pUri;
 		mContext = pContext;
 	}

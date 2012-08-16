@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="8dp"
-        android:text="关于我们"
+        android:text="@string/about_title"
         android:textColor="@android:color/white"
         android:textSize="20sp" />
 
@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:text="[应用简介]"
+                android:text="@string/about_intro_title"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="10dp"
                 />
@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:text="[应用故事]"
+                android:text="@string/about_story_title"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="8dp"
                 />
@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:text="[致谢&amp;联系我们]"
+                android:text="@string/about_thanks_title"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="8dp"
                 />
@@ -78,6 +78,15 @@
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:text="@string/about_thanks_content" />
+            
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="@string/about_developer_title"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="8dp"
+                />
 
             <HorizontalScrollView
                 android:layout_width="wrap_content"
@@ -86,7 +95,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="8dp"
                     android:orientation="horizontal" >
 
                     <LinearLayout
@@ -239,6 +248,28 @@
                     
                 </LinearLayout>
             </HorizontalScrollView>
+            
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="@string/about_translators_title"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="8dp"
+                />
+            <include 
+                layout="@layout/translators_layout"
+                />
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="@string/go_on"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="8dp"
+                />  
+                
+                
         </LinearLayout>
     </ScrollView>
 
@@ -255,7 +286,7 @@
             android:layout_height="fill_parent"
             android:layout_marginRight="6dp"
             android:layout_weight="1"
-            android:text="我要反馈"
+            android:text="@string/btn_feedback_text"
             android:background="@drawable/about_btn_bg"
             android:textColor="@android:color/white"
             android:textSize="14sp" />
@@ -265,7 +296,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:text="关闭"
+            android:text="@string/btn_cancel_text"
             android:background="@drawable/about_btn_bg"
             android:textColor="@android:color/white"
             android:textSize="14sp" />
