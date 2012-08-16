@@ -36,20 +36,11 @@
     	android:layout_below="@+id/wiki_detail_title"
     	android:layout_above="@+id/layout_functions">
 		
-	    <RelativeLayout android:id="@+id/layout_webview"
-	        android:layout_width="match_parent"
-	        android:layout_height="fill_parent"
-	        android:layout_marginLeft="5dip"
-	        android:layout_marginRight="5dip"
-	        android:layout_marginTop="5dip"
-	        android:layout_marginBottom="5dip">
-	    
 	    <WebView android:id="@+id/wiki_detail_content"
 	        android:layout_width="wrap_content"
 	        android:layout_height="match_parent"
 	        android:layout_gravity="center_horizontal"/>
 	    
-	    </RelativeLayout>
 	</ScrollView>
 	
 	<LinearLayout android:id="@+id/layout_functions"

@@ -42,7 +42,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 	private LayoutInflater mInflater;
 	private RelativeLayout mLayoutWebview;
-	private boolean	mProgressVisible;
 	
 	public static final String WIKI_CONTENT = "wiki_content";
 	private String mUri;
@@ -221,22 +220,14 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 	@Override
 	public void onSidebarOpened() {
-		if(!mProgressVisible)
+		/*if(!mProgressVisible)
 		{
 			showProgressLayout();
-		}
+		}*/
 		getWikiDetail();
-		//加一句removeSliderListener
-		//this.getmMainActivity().getSliderLayer().remov
+		//this.getmMainActivity().getSliderLayer().removeSliderListener(this);
 	}
 	
-	private void showProgressLayout()
-	{
-		View progressView = mInflater.inflate(R.layout.loading, null);
-		mLayoutWebview.removeAllViews();
-		mLayoutWebview.addView(progressView);
-		mProgressVisible = true;
-	}
 
 	@Override
 	public void onSidebarClosed() {
