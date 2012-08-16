@@ -153,7 +153,7 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 		intent.putExtra(Intent.EXTRA_TEXT,
 			getResources().getString(R.string.content_recommand));
 	
-		Intent itn = Intent.createChooser(intent, "推荐给好友");
+		Intent itn = Intent.createChooser(intent, getResources().getString(R.string.recomment_chooser_title));
 		startActivity(itn);
 	}
 
