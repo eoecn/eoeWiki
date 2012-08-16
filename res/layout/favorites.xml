@@ -8,10 +8,9 @@
 	<RelativeLayout android:layout_below="@+id/category_title"
 	    android:layout_width="match_parent"
     	android:layout_height="match_parent"
-    	android:layout_marginTop="10dip"
-    	android:layout_marginLeft="15dip"
-    	android:layout_marginRight="10dip">
-	    
+    	android:layout_marginTop="2dip"
+    	android:layout_marginLeft="5dip"
+    	android:layout_marginRight="5dip">
 		<ListView android:id="@+id/ListView"
 		    style="@style/listStyle"/>
 		<include android:id="@+id/layout_loading"

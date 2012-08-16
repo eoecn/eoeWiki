@@ -1,11 +1,17 @@
 package cn.eoe.wiki.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -15,6 +21,7 @@ import cn.eoe.wiki.activity.adapter.FavoriteAdapter;
 import cn.eoe.wiki.db.dao.FavoriteDao;
 import cn.eoe.wiki.db.entity.FavoriteEntity;
 import cn.eoe.wiki.utils.L;
+import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.SliderLayer;
 import cn.eoe.wiki.view.SliderLayer.SliderListener;
 
@@ -25,8 +32,10 @@ import cn.eoe.wiki.view.SliderLayer.SliderListener;
  * @version 1.0.0
  *
  */
-public class FavoriteActivity extends SliderActivity implements OnClickListener,SliderListener{
-	public static final 	int		PAGE_COUNT = 20;
+public class FavoriteActivity extends SliderActivity implements OnClickListener,SliderListener,OnScrollListener{
+	public static final 	int		PAGE_COUNT 			= 20;
+	private static final 	int		HANDLER_REFRESH 	= 0x0001;
+	private static final 	int		HANDLER_LOADING_MORE = 0x0002;
 	
 	private ListView		mListView;
 	private FavoriteAdapter	mAdapter;
@@ -35,16 +44,24 @@ public class FavoriteActivity extends SliderActivity implements OnClickListener,
 	private View			mNoFavorite;
 	private ImageButton		mBtnBack;
 	private TextView		mTvTitle;
+	private View 			mLayoutPrgogress;
 	
 	private FavoriteDao		mFavoriteDao;
 	
-	private int 			currentPage;
+	private int 			currentPage = 0;
+	private int 			totalCount = -1;
+	private int				displayCount = -1;
 	private List<FavoriteEntity> mFavorites;
+	private boolean			isRefreshing;
+	private LayoutInflater 	mInflater;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.favorites);
 		mFavoriteDao = new FavoriteDao(mContext);
+		mInflater = LayoutInflater.from(mContext);
+		mFavorites = new ArrayList<FavoriteEntity>();
 		getmMainActivity().getSliderLayer().addSliderListener(this);
 		initComponent();
 		initData();
@@ -61,10 +78,23 @@ public class FavoriteActivity extends SliderActivity implements OnClickListener,
 	}
 
 	void initData() {
+		isRefreshing = false;
 		mTvTitle.setText(R.string.title_favorite);
+		
+		TextView blankHeaderView = new TextView(mContext);
+		blankHeaderView.setHeight(WikiUtil.dip2px(mContext, 10));
+		mListView.addHeaderView(blankHeaderView);
+
+		View footerView = mInflater.inflate(R.layout.favorite_footer, null);
+		mLayoutPrgogress = footerView.findViewById(R.id.layout_progress);
+		mLayoutPrgogress.setVisibility(View.GONE);
+		mListView.addFooterView(footerView);
+		mListView.setOnScrollListener(this);
+		
 		mLayoutLoading.setVisibility(View.VISIBLE);
 		mListView.setVisibility(View.GONE);
 		mNoFavorite.setVisibility(View.GONE);
+		
 	}
 	@Override
 	public void onClick(View v) {
@@ -85,7 +115,7 @@ public class FavoriteActivity extends SliderActivity implements OnClickListener,
 	@Override
 	public void onSidebarOpened() {
 		L.e("favorite onSidebarOpened");
-		new LoadFavoriteFromDb().execute();
+		new LoadFavoriteFromDb().execute(currentPage+1);
 		getmMainActivity().getSliderLayer().removeSliderListener(this);
 	}
 
@@ -93,55 +123,102 @@ public class FavoriteActivity extends SliderActivity implements OnClickListener,
 	public void onSidebarClosed() {
 		
 	}
-
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState) {
+		if (scrollState == OnScrollListener.SCROLL_STATE_FLING || scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
+			if (view.getLastVisiblePosition() == view.getCount() - 1) {
+				if(!isRefreshing && displayCount<totalCount) {
+					isRefreshing = true;
+					L.i("isrefreshing-->" + isRefreshing);
+					mHandler.sendEmptyMessage(HANDLER_LOADING_MORE);
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void onScroll(AbsListView view, int firstVisibleItem,
+			int visibleItemCount, int totalItemCount) {
+	}
+	
 	@Override
 	public boolean onContentTouchedWhenOpening() {
 		return false;
 	}
-	class LoadFavoriteFromDb extends AsyncTask<String, Integer, Boolean>
+	
+	private Handler mHandler = new Handler()
 	{
 
 		@Override
-		protected Boolean doInBackground(String... params) {
-			L.d("favorite doInBackground");
-			if(currentPage==0)
-			{
-				currentPage = 1;
-			}
-			mFavorites = mFavoriteDao.getFavorites(currentPage, PAGE_COUNT);
-			if(mFavorites==null || mFavorites.size()==0)
-			{
-				return false;
-			}
-			else
-			{
-				return true;
-			}
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			L.d("favorite onPostExecute:"+result.booleanValue());
-			mLayoutLoading.setVisibility(View.GONE);
-			if(result.booleanValue())
-			{
-				mNoFavorite.setVisibility(View.GONE);
-				mListView.setVisibility(View.VISIBLE);
-				if(mAdapter==null)
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case HANDLER_REFRESH:
+				isRefreshing = false;
+				mLayoutLoading.setVisibility(View.GONE);
+				mLayoutPrgogress.setVisibility(View.GONE);
+				
+				if(mFavorites.size()==0)
 				{
-					mAdapter = new FavoriteAdapter(mContext, mFavorites);
-					mListView.setAdapter(mAdapter);
+					//No favorite to display
+					mListView.setVisibility(View.GONE);
+					mNoFavorite.setVisibility(View.VISIBLE);
 				}
 				else
 				{
-					mAdapter.setFavorites(mFavorites);
+					mNoFavorite.setVisibility(View.GONE);
+					mListView.setVisibility(View.VISIBLE);
+					boolean ret = ((Boolean)msg.obj).booleanValue();
+					if(!ret)
+						return;//如果没有更新成功则返回 
+					currentPage++;
+					displayCount = mFavorites.size();
+					if(mAdapter==null)
+					{
+						mAdapter = new FavoriteAdapter(FavoriteActivity.this, mFavorites);
+						mListView.setAdapter(mAdapter);
+					}
+					else
+					{
+						mAdapter.setFavorites(mFavorites);
+					}
 				}
+				break;
+			case HANDLER_LOADING_MORE:
+				mLayoutPrgogress.setVisibility(View.VISIBLE);
+				new LoadFavoriteFromDb().execute(currentPage+1);
+				break;
+
+			default:
+				break;
+			}
+		}
+		
+	};
+	
+	class LoadFavoriteFromDb extends AsyncTask<Integer, Integer, Boolean>
+	{
+
+		@Override
+		protected Boolean doInBackground(Integer... params) {
+			//get the total count
+			if(totalCount==-1)
+			{
+				totalCount = mFavoriteDao.getFavoriteCount();
+			}
+			int loadPage = params[0];
+			L.d("favorite doInBackground:"+loadPage);
+			List<FavoriteEntity> favorites = mFavoriteDao.getFavorites(loadPage, PAGE_COUNT);
+			if(favorites==null || favorites.size()==0)
+			{
+				mHandler.obtainMessage(HANDLER_REFRESH, Boolean.valueOf(false)).sendToTarget();
 			}
 			else
 			{
-				mListView.setVisibility(View.GONE);
-				mNoFavorite.setVisibility(View.VISIBLE);
+				mFavorites.addAll(favorites);
+				mHandler.obtainMessage(HANDLER_REFRESH, Boolean.valueOf(true)).sendToTarget();
 			}
+			
+			return true;
 		}
 		
 	}

@@ -9,7 +9,11 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.activity.BaseActivity;
+import cn.eoe.wiki.activity.FavoriteActivity;
+import cn.eoe.wiki.activity.SubCategoryActivity;
 import cn.eoe.wiki.db.entity.FavoriteEntity;
+import cn.eoe.wiki.listener.FavoriteItemListener;
+import cn.eoe.wiki.listener.SubCategoryListener;
 import cn.eoe.wiki.utils.L;
 /**
  * 收藏夹的适配器
@@ -19,11 +23,11 @@ import cn.eoe.wiki.utils.L;
  *
  */
 public class FavoriteAdapter extends BaseAdapter{
-	private BaseActivity			context;
+	private FavoriteActivity		context;
 	private List<FavoriteEntity> 	favorites;
 	private LayoutInflater 			inflater;
 	
-	public FavoriteAdapter(BaseActivity context,List<FavoriteEntity> favorites)
+	public FavoriteAdapter(FavoriteActivity context,List<FavoriteEntity> favorites)
 	{
 		this.context = context;
 		this.favorites = favorites;
@@ -59,7 +63,7 @@ public class FavoriteAdapter extends BaseAdapter{
 		if(convertView==null)
 		{
 			convertView = inflater.inflate(R.layout.favorite_item, null);
-			TextView text = (TextView)convertView;
+			TextView text = (TextView)convertView.findViewById(R.id.textView);
 			FavoriteEntity entity = favorites.get(position);
 			text.setText(entity.getTitle());
 			int count = favorites.size();
@@ -82,6 +86,7 @@ public class FavoriteAdapter extends BaseAdapter{
 					text.setBackgroundResource(R.drawable.bg_item_nocorners);
 				}
 			}
+			text.setOnClickListener(new FavoriteItemListener(entity.getUrl(), context));
 		}
 		return convertView;
 	}

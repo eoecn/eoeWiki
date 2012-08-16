@@ -22,6 +22,21 @@ public class FavoriteDao extends GeneralDao<FavoriteColumn> {
 		super(new FavoriteColumn(), context);
 	}
 	/**
+	 * get the total count of the favorite
+	 * @return
+	 */
+	public int getFavoriteCount()
+	{
+		int count = 0;
+		Cursor cursor = queryAll();
+		if(cursor!=null)
+		{
+			count = cursor.getCount();
+			cursor.close();
+		}
+		return count;
+	}
+	/**
 	 * get the favorite
 	 * @param page
 	 * @param length
@@ -60,6 +75,18 @@ public class FavoriteDao extends GeneralDao<FavoriteColumn> {
 	 */
 	public boolean addFavorite(String pageid,String title,String url)
 	{
+		if(TextUtils.isEmpty(pageid))
+		{
+			throw new IllegalArgumentException("Need a page id");
+		}
+		if(TextUtils.isEmpty(title))
+		{
+			throw new IllegalArgumentException("Need a title");
+		}
+		if(TextUtils.isEmpty(url))
+		{
+			throw new IllegalArgumentException("Need a url");
+		}
 		FavoriteEntity entity = getFavoriteByUrl(pageid);
 		long current = System.currentTimeMillis();
 		boolean isUpdate = false;

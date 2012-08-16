@@ -16,15 +16,11 @@
 	<string name="tip_no_favorite">杯具，好像你还没有收藏有wiki哦！</string>
 	<string name="title_favorite">收藏夹</string>
 	
-	
-	
-	
 	<!-- recommend text -->
 	<string name="content_recommand">源自开发者，服务开发者~第一款为开发者服务的好软件来啦! 快去下载安装吧：http://
 		优亿百科(eoeWIKI)是android开发者必备软件，其依靠eoeAndroid开发社区，将高质量移动开发内容用百科的形势进行组织和展示，以方便大家能更快更好的学习移动开发的相关知识，尽快的成长~
 	</string>
 	<string name="recomment_chooser_title">推荐给好友</string>
-	
 	
 	<!-- about text -->
 	<string name="about_title">关于我们</string>
@@ -42,7 +38,6 @@
 		如何让移动开发更简单是我们不断思考和探索的，我们认为有组织、有体系的内容对开发者的学习和成长是最有价值的，于是大家都希望有这么一款应用让我们零碎的时间里学习到最有价值的知识，于是优亿百科诞生了。
 	</string>
 	<string name="about_thanks_content">优亿百科是由社区组织策划，社区会员共同参与贡献的移动开发知识大百科，客户端产品由社区eoeAppLabs组开发和维护，谢谢所有人的付出和贡献，有你们，eoe更精彩!</string>
-	
 
     <string name="screen_back">双击屏幕返回</string>
     <string name="content_share">这篇文章挺好，推荐给你看看：%1$s | %2$s （来自：优亿百科）</string>
