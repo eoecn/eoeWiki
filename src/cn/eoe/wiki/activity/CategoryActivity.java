@@ -24,7 +24,7 @@ import cn.eoe.wiki.utils.L;
  * @data  2012-8-5
  * @version 1.0.0
  */
-public abstract class CategorysActivity extends SliderActivity{
+public abstract class CategoryActivity extends SliderActivity{
 	
 	private static final int	HANDLER_DISPLAY_CATEGORY 	= 0x0001;
 	private static final int	HANDLER_LOAD_CATEGORY_ERROR = 0x0002;
@@ -80,8 +80,8 @@ public abstract class CategorysActivity extends SliderActivity{
 		return false;
 	}
 	
-	abstract void getCategorysError(String showText);
-	abstract void generateCategorys(CategoryJson responseObject);
+	abstract void getCategoriesError(String showText);
+	abstract void generateCategories(CategoryJson responseObject);
 	
 	/**
 	 * mapper the string to the json bean
@@ -120,7 +120,7 @@ public abstract class CategorysActivity extends SliderActivity{
 			}
 			mHandler.obtainMessage(HANDLER_DISPLAY_CATEGORY, mResponseObject).sendToTarget();
 		} catch (Exception e) {
-			L.e("getCategorysTransaction exception", e);
+			L.e("getCategory Transaction exception", e);
 			if(!fromNet)
 			{
 				L.d("category content is erro which is read from the cache dir");
@@ -141,19 +141,19 @@ public abstract class CategorysActivity extends SliderActivity{
 			switch (msg.what) {
 			case HANDLER_DISPLAY_CATEGORY:
 				L.d("HANDLER_DISPLAY_CATEGORY");
-				generateCategorys((CategoryJson)msg.obj);
+				generateCategories((CategoryJson)msg.obj);
 				break;
 			case HANDLER_LOAD_CATEGORY_ERROR:
-				getCategorysError(getString(R.string.tip_get_category_error));
+				getCategoriesError(getString(R.string.tip_get_category_error));
 				break;
 			case HANDLER_LOAD_CATEGORY_DB:
 				new LoadCategoryFromDb().execute(mUrl);
 				break;
 			case HANDLER_LOAD_CATEGORY_NET:
-				new HttpManager(mUrl,null, HttpManager.GET, getCategorysTransaction).start();
+				new HttpManager(mUrl,null, HttpManager.GET, getCategoriesTransaction).start();
 				break;
 			case HANDLER_REFRESH_CATEGORY_NET:
-				new HttpManager(mUrl,null, HttpManager.GET, refreshCategorysTransaction).start();
+				new HttpManager(mUrl,null, HttpManager.GET, refreshCategoriesTransaction).start();
 				break;
 			default:
 				break;
@@ -162,7 +162,7 @@ public abstract class CategorysActivity extends SliderActivity{
 		
 	};
 	
-	public ITransaction getCategorysTransaction = new ITransaction() {
+	public ITransaction getCategoriesTransaction = new ITransaction() {
 		
 
 		@Override
@@ -177,7 +177,7 @@ public abstract class CategorysActivity extends SliderActivity{
 		}
 	};
 
-	public ITransaction refreshCategorysTransaction = new ITransaction() {
+	public ITransaction refreshCategoriesTransaction = new ITransaction() {
 		
 
 		@Override

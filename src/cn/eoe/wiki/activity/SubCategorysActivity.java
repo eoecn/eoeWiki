@@ -27,7 +27,7 @@ import cn.eoe.wiki.view.SliderLayer.SliderListener;
  * @data  2012-8-5
  * @version 1.0.0
  */
-public class SubCategorysActivity extends CategorysActivity implements OnClickListener,SliderListener{
+public class SubCategorysActivity extends CategoryActivity implements OnClickListener,SliderListener{
 	public static final		String 	KEY_CATEGORY		= "category";
 	public static final		String 	KEY_PARENT_TITLE	= "parent_title";
 	
@@ -107,7 +107,7 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 		mProgressVisible = true;
 	}
 	@Override
-	protected void getCategorysError(String showText)
+	protected void getCategoriesError(String showText)
 	{
 		mCategoryLayout.removeAllViews();
 		mProgressVisible = false;
@@ -124,7 +124,7 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 		mCategoryLayout.addView(viewError);
 	}
 	@Override
-	protected void generateCategorys(CategoryJson responseObject)
+	protected void generateCategories(CategoryJson responseObject)
 	{
 		mCategoryLayout.removeAllViews();
 		mProgressVisible = false;

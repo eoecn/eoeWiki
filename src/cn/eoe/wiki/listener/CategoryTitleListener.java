@@ -2,7 +2,7 @@ package cn.eoe.wiki.listener;
 
 import android.view.View;
 import android.view.View.OnClickListener;
-import cn.eoe.wiki.activity.CategorysActivity;
+import cn.eoe.wiki.activity.CategoryActivity;
 import cn.eoe.wiki.activity.MainCategorysActivity;
 import cn.eoe.wiki.json.CategoryChild;
 

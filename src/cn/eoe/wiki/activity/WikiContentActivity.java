@@ -12,9 +12,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.db.dao.FavoriteDao;
@@ -22,6 +24,7 @@ import cn.eoe.wiki.http.HttpManager;
 import cn.eoe.wiki.http.ITransaction;
 import cn.eoe.wiki.json.WikiDetailJson;
 import cn.eoe.wiki.utils.L;
+import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.SliderLayer;
 import cn.eoe.wiki.view.SliderLayer.SliderListener;
 
@@ -32,10 +35,13 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private static final String WIKI_URL_PRE = "http://wiki.eoeandroid.com/";
 	private boolean mIsFullScreen = false;
 	
-	private ImageView mLayoutParentDirectory;
-	private ImageView mLayoutFullScreen;
-	private ImageView mLayoutFavorite;
-	private ImageView mLayoutShare;
+	private ImageButton 	mBtnParentDirectory;
+	private ImageButton 	mBtnFullScreen;
+	private ImageButton 	mBtnFavorite;
+	private ImageButton 	mBtnShare;
+	private ImageButton		mBtnBack;
+	private TextView		mTvFistCategoryName;
+	private TextView		mTvSecondCategoryName;
 	
 	private RelativeLayout mWikiDetailTitle;
 	private LinearLayout mLayoutFunctions;
@@ -43,7 +49,9 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private LayoutInflater mInflater;
 	private RelativeLayout mLayoutWebview;
 	
-	public static final String WIKI_CONTENT = "wiki_content";
+	public static final 	String  WIKI_CONTENT = "wiki_content";
+	public static final		String 	KEY_PARENT_TITLE	= "parent_title";
+	public static final		String 	KEY_SUB_PARENT_TITLE	= "sub_parent_title";
 	private String mUri;
 	
 	protected WikiDetailJson responseObject = null;
@@ -67,24 +75,32 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	}
 
 	void initComponent() {
+		mTvFistCategoryName = (TextView)findViewById(R.id.tv_title_parent);
+		mTvSecondCategoryName = (TextView)findViewById(R.id.tv_second_parent_title);
+		mBtnBack=(ImageButton)findViewById(R.id.btn_back);
+		mBtnBack.setOnClickListener(this);
 		mWebView = (WebView)findViewById(R.id.wiki_detail_content);
-		mLayoutParentDirectory = (ImageView)findViewById(R.id.layout_parent_directory);
-		mLayoutFullScreen = (ImageView)findViewById(R.id.layout_fullscreen);
-		mLayoutFavorite = (ImageView)findViewById(R.id.layout_favorite);
-		mLayoutShare = (ImageView)findViewById(R.id.layout_share);
+		mBtnParentDirectory = (ImageButton)findViewById(R.id.btn_parent_directory);
+		mBtnFullScreen = (ImageButton)findViewById(R.id.btn_fullscreen);
+		mBtnFavorite = (ImageButton)findViewById(R.id.btn_favorite);
+		mBtnShare = (ImageButton)findViewById(R.id.btn_share);
 		
 		mWikiDetailTitle = (RelativeLayout)findViewById(R.id.wiki_detail_title);
 		mLayoutFunctions = (LinearLayout)findViewById(R.id.layout_functions);
 		
-		mLayoutParentDirectory.setOnClickListener(this);
-		mLayoutFullScreen.setOnClickListener(this);
-		mLayoutFavorite.setOnClickListener(this);
-		mLayoutShare.setOnClickListener(this);
+		mBtnParentDirectory.setOnClickListener(this);
+		mBtnFullScreen.setOnClickListener(this);
+		mBtnFavorite.setOnClickListener(this);
+		mBtnShare.setOnClickListener(this);
 		
 	}
 	
 	void initData(){
-		
+		//TODO set the first parent title
+		//需要上层传过来
+		mTvFistCategoryName.setText("Frist Title");
+		//TODO set the second parent title
+		mTvSecondCategoryName.setText("Second Title");
 	}
 	
 	void getWikiDetail()
@@ -121,7 +137,8 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
                   + "text/html; charset=utf-8" + "/>" + "<body>"
                   + html + "</body></html>";
 		mWebView.loadDataWithBaseURL("about:blank", html1,  "text/html","utf-8", null);
-        mWebView.setBackgroundColor(R.color.deep_grey);
+
+		//mWebView.setBackgroundColor(R.color.deep_grey);
         
         mWebView.getSettings().setSupportZoom(true);
         mWebView.getSettings().setBuiltInZoomControls(true);
@@ -136,6 +153,8 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 			}
         	
         });
+		//要使用下面这种方式
+        mWebView.setBackgroundColor(WikiUtil.getResourceColor(R.color.deep_grey, mContext));
 	}
 	
 	private void getWikiError(String pError){
@@ -170,19 +189,20 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.layout_parent_directory:
+		case R.id.btn_back:
+		case R.id.btn_parent_directory:
 			fallbackToPreLayer();
 			break;
-		case R.id.layout_fullscreen:
+		case R.id.btn_fullscreen:
 			fullScreen();
 			break;
-		case R.id.layout_favorite:
+		case R.id.btn_favorite:
 			//do something
 			L.d("press favorite icon");
 			FavoriteDao favoriteDao = new FavoriteDao(mContext);
 			favoriteDao.addFavorite(responseObject.getParse().getRevid(), responseObject.getParse().getDisplayTitle(), mUri);
 			break;
-		case R.id.layout_share:
+		case R.id.btn_share:
 			shareToFriend();
 			break;
 		default:
@@ -224,8 +244,11 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		{
 			showProgressLayout();
 		}*/
-		getWikiDetail();
+	//	getWikiDetail();
 		//this.getmMainActivity().getSliderLayer().removeSliderListener(this);
+		// TODO Auto-generated method stub
+		getWikiDetail();
+		getmMainActivity().getSliderLayer().removeSliderListener(this);
 	}
 	
 

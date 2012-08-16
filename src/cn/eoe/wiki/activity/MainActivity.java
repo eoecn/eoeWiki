@@ -54,7 +54,7 @@ public class MainActivity extends ActivityGroup {
 		ViewGroup layerTwo = (ViewGroup) findViewById(R.id.animation_layout_two);
 		layerTwo.setPadding(0, 0, WikiUtil.dip2px(mMainActivity, 15), 0);
 		ViewGroup layerThree = (ViewGroup) findViewById(R.id.animation_layout_three);
-		layerThree.setPadding(0, 0, WikiUtil.dip2px(mMainActivity, 10), 0);
+		layerThree.setPadding(0, 0, 0, 0);
 		mSliderLayers.addLayer(new SliderEntity(layerOne, 0, sceenWidth, 0));
 		mSliderLayers.addLayer(new SliderEntity(layerTwo, 0, sceenWidth - WikiUtil.dip2px(mMainActivity, 24), 0));
 		mSliderLayers.addLayer(new SliderEntity(layerThree, WikiUtil.dip2px(mMainActivity, -10), sceenWidth - WikiUtil.dip2px(mMainActivity, 20), 0));
@@ -68,7 +68,7 @@ public class MainActivity extends ActivityGroup {
 		if(!TextUtils.isEmpty(oldId))
 		{
 			//destroy the old activity
-			mActivityManager.destroyActivity(oldId, true);
+//			mActivityManager.destroyActivity(oldId, true);
 		}
 		if (intent.getFlags() == 0) {
 			// 这里用不用标志都无所谓了，我们给了不了不同的id ,则都会去重新生成一个
