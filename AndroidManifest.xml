@@ -35,6 +35,8 @@
         </activity>
         <activity android:name=".activity.SearchActivity" >
         </activity>
+        <activity android:name=".activity.SearchResultActivity">            
+        </activity>
         <activity android:name=".activity.WikiContentActivity" >
         </activity>
         <activity android:name=".activity.FavoriteActivity" >
