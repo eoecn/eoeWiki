@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+	<include android:id="@+id/category_title"
+	    layout="@layout/sub_layer_title"/>
+	<ScrollView style="@style/scrollStyle"
+    	android:layout_below="@+id/category_title"
+    	android:layout_marginTop="10dip">
+		<LinearLayout android:layout_width="match_parent"
+    		android:layout_height="wrap_content"
+    		android:orientation="vertical"
+   			android:paddingLeft="15dip"
+   			android:paddingRight="10dip">
+		    <LinearLayout android:layout_width="match_parent"
+    			android:layout_height="wrap_content"
+    			android:orientation="vertical"
+    			android:layout_marginTop="5dip"
+    			android:id="@+id/layout_category"
+    			android:gravity="center_horizontal"></LinearLayout>
+	    </LinearLayout>
+	</ScrollView>
+</RelativeLayout>

@@ -148,7 +148,6 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 				Intent intent_toSearchResult = new Intent(mContext, SearchResultActivity.class);
 				intent_toSearchResult.putExtra(SearchResultActivity.KEY_SEARCH_TEXT, searchText);
 				getmMainActivity().showView(1, intent_toSearchResult);
-				
 			}
 			break;
 		case R.id.layout_about:
@@ -167,8 +166,14 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 			UMFeedbackService.openUmengFeedbackSDK(this);
 			break;
 		case R.id.btn_recent:
-			//umeng event
-			MobclickAgent.onEvent(this, "home", "btn_recent");
+			try{
+				Intent intent = new Intent (this, RecentlyUpdatedActivity.class);
+				this.getmMainActivity().showView(1, intent);
+	        }
+	        catch (Exception e)
+	        {
+	            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+	        }
 			break;
 		case R.id.iv_favorite:
 			//umeng event

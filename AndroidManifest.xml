@@ -39,9 +39,10 @@
         </activity>
         <activity android:name=".activity.WikiContentActivity" >
         </activity>
+		<activity android:name=".activity.RecentlyUpdatedActivity" >
+		</activity>
         <activity android:name=".activity.FavoriteActivity" >
         </activity>
-
         <provider
             android:authorities="cn.eoe.wiki.provider"
             android:name=".db.DatabaseProvider" >
