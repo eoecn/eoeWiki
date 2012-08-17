@@ -51,8 +51,10 @@ public class SubCategoryActivity extends CategoryActivity implements OnClickList
 		{
 			throw new NullPointerException("Must give a CategoryChild in the intent");
 		}
+		
 		mParentCategory = intent.getParcelableExtra(KEY_CATEGORY);
 		mParentName = intent.getStringExtra(KEY_PARENT_TITLE);
+		
 		if(mParentCategory==null || TextUtils.isEmpty(mParentName))
 		{
 			throw new NullPointerException("Must give a CategoryChild and the parent name in the intent");
@@ -145,7 +147,8 @@ public class SubCategoryActivity extends CategoryActivity implements OnClickList
 				TextView tv = (TextView)mInflater.inflate(R.layout.category_title, null);
 				tv.setText(category.getName());
 				tv.setBackgroundResource(R.drawable.bg_nostroke_grey_blue_top);
-				tv.setOnClickListener(new SubCategoryListener(category.getUri(), SubCategoryActivity.this));
+				tv.setOnClickListener(new SubCategoryListener(mParentCategory.getName(),
+						"",category.getUri(), SubCategoryActivity.this));
 				categoryLayout.addView(tv);
 				List<CategoryChild> categorysChildren =  category.getChildren();
 				if(categorysChildren!=null)
@@ -164,7 +167,8 @@ public class SubCategoryActivity extends CategoryActivity implements OnClickList
 						
 						TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
 						tvChild.setText(categorysChild.getName());
-						tvChild.setOnClickListener(new SubCategoryListener(categorysChild.getUri(), SubCategoryActivity.this));
+						tvChild.setOnClickListener(new SubCategoryListener(mParentCategory.getName(),
+								category.getName(),categorysChild.getUri(), SubCategoryActivity.this));
 						if(i==(size-1))
 						{
 							tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_bottom);

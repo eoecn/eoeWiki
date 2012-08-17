@@ -4,22 +4,26 @@ package cn.eoe.wiki.activity;
 import org.codehaus.jackson.type.TypeReference;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.LayoutInflater;
+import android.view.GestureDetector;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.db.dao.FavoriteDao;
+import cn.eoe.wiki.db.entity.ParamsEntity;
 import cn.eoe.wiki.http.HttpManager;
 import cn.eoe.wiki.http.ITransaction;
 import cn.eoe.wiki.json.WikiDetailJson;
@@ -33,6 +37,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private static final int	HANDLER_DISPLAY_WIKIDETAIL 	= 0x0001;
 	private static final int	HANDLER_GET_WIKIDETAIL_ERROR 	= 0x0002;
 	private static final String WIKI_URL_PRE = "http://wiki.eoeandroid.com/";
+	private static final String WIKI_URL_AFTER = "/api.php?action=parse&format=json&page=";
 	private boolean mIsFullScreen = false;
 	
 	private ImageButton 	mBtnParentDirectory;
@@ -46,13 +51,10 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private RelativeLayout mWikiDetailTitle;
 	private LinearLayout mLayoutFunctions;
 	
-	private LayoutInflater mInflater;
-	private RelativeLayout mLayoutWebview;
-	
 	public static final 	String  WIKI_CONTENT = "wiki_content";
 	public static final		String 	KEY_PARENT_TITLE	= "parent_title";
 	public static final		String 	KEY_SUB_PARENT_TITLE	= "sub_parent_title";
-	private String mUri;
+	private ParamsEntity mParamsEntity;
 	
 	protected WikiDetailJson responseObject = null;
 	private WebView mWebView;
@@ -65,8 +67,8 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		if(intent == null){
 			throw new NullPointerException("Must give a Wiki Uri in the intent");
 		}
-		mUri = intent.getStringExtra(WIKI_CONTENT);
-		if(mUri == null){
+		mParamsEntity = (ParamsEntity)intent.getParcelableExtra(WIKI_CONTENT);
+		if(mParamsEntity == null){
 			throw new NullPointerException("Must give a Wiki Uri in the intent");
 		}
 		getmMainActivity().getSliderLayer().addSliderListener(this);
@@ -98,14 +100,14 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	void initData(){
 		//TODO set the first parent title
 		//需要上层传过来
-		mTvFistCategoryName.setText("Frist Title");
+		mTvFistCategoryName.setText(mParamsEntity.getFirstTitle());
 		//TODO set the second parent title
-		mTvSecondCategoryName.setText("Second Title");
+		mTvSecondCategoryName.setText(mParamsEntity.getSecondTitle());
 	}
 	
 	void getWikiDetail()
 	{
-		HttpManager manager = new HttpManager(mUri,null, HttpManager.GET, getWikiDetailTransaction);
+		HttpManager manager = new HttpManager(mParamsEntity.getUri(),null, HttpManager.GET, getWikiDetailTransaction);
 		manager.start();
 	}
 	
@@ -138,17 +140,51 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
                   + html + "</body></html>";
 		mWebView.loadDataWithBaseURL("about:blank", html1,  "text/html","utf-8", null);
 
-		//mWebView.setBackgroundColor(R.color.deep_grey);
-        
         mWebView.getSettings().setSupportZoom(true);
         mWebView.getSettings().setBuiltInZoomControls(true);
+        
+        mWebView.setOnTouchListener(new OnTouchListener() {
+			int count = 0;
+			long first,second = 0l;
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				System.out.println("I am here");
+				if(event.getAction() == KeyEvent.ACTION_DOWN){
+					count++;
+					if(count == 1){
+						first = System.currentTimeMillis();
+					}else if(count == 2){
+						second = System.currentTimeMillis();
+						if(second - first <= 500){
+							fullScreen();
+							count = 0;
+							first = 0l;
+							second = 0l;
+						}
+					}
+				}
+				return true;
+			}
+		});
         
         mWebView.setWebViewClient(new WebViewClient(){
 
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				System.out.println(url);
-				//view.loadUrl(url);
+				if(url.startsWith("http://") || url.startsWith("www.")){
+					Uri uri = Uri.parse(url);  
+					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+					startActivity(intent);
+					/*Intent intent= new Intent();        
+	                intent.setAction("android.intent.action.VIEW");    
+	                Uri content_url = Uri.parse(url);   
+	                intent.setData(content_url);           
+	                intent.setClassName("com.android.browser","com.android.browser.BrowserActivity");   
+	                startActivity(intent);*/
+					return true;
+				}
+				mParamsEntity.setUri(WIKI_URL_PRE+WIKI_URL_AFTER+url.substring(1));
+				getWikiDetail();
 				return true;
 			}
         	
@@ -197,10 +233,9 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 			fullScreen();
 			break;
 		case R.id.btn_favorite:
-			//do something
 			L.d("press favorite icon");
 			FavoriteDao favoriteDao = new FavoriteDao(mContext);
-			favoriteDao.addFavorite(responseObject.getParse().getRevid(), responseObject.getParse().getDisplayTitle(), mUri);
+			favoriteDao.addFavorite(responseObject.getParse().getRevid(), responseObject.getParse().getDisplayTitle(), mParamsEntity.getUri());
 			break;
 		case R.id.btn_share:
 			shareToFriend();
@@ -240,13 +275,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 	@Override
 	public void onSidebarOpened() {
-		/*if(!mProgressVisible)
-		{
-			showProgressLayout();
-		}*/
-	//	getWikiDetail();
-		//this.getmMainActivity().getSliderLayer().removeSliderListener(this);
-		// TODO Auto-generated method stub
 		getWikiDetail();
 		getmMainActivity().getSliderLayer().removeSliderListener(this);
 	}
