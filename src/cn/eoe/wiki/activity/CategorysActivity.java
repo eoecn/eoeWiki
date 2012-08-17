@@ -31,6 +31,8 @@ public abstract class CategorysActivity extends SliderActivity{
 	private static final int	HANDLER_LOAD_CATEGORY_DB 	= 0x0003;
 	private static final int	HANDLER_LOAD_CATEGORY_NET 	= 0x0004;
 	private static final int	HANDLER_REFRESH_CATEGORY_NET= 0x0005;
+	private static final int	HANDLER_DISPLAY_RECENT_UPDATED= 0x0006;
+	
 	
 	protected CategoryJson 	mResponseObject 	= null;
 	private String 			mUrl 				= null;
@@ -154,6 +156,9 @@ public abstract class CategorysActivity extends SliderActivity{
 				break;
 			case HANDLER_REFRESH_CATEGORY_NET:
 				new HttpManager(mUrl,null, HttpManager.GET, refreshCategorysTransaction).start();
+				break;
+			case HANDLER_DISPLAY_RECENT_UPDATED:
+				//
 				break;
 			default:
 				break;

@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.WikiConfig;
 import cn.eoe.wiki.json.CategoryChild;
@@ -136,6 +137,14 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 			UMFeedbackService.openUmengFeedbackSDK(this);
 			break;
 		case R.id.btn_recent:
+			try{
+				Intent intent = new Intent (this, RecentlyUpdatedActivity.class);
+				this.getmMainActivity().showView(1, intent);
+	        }
+	        catch (Exception e)
+	        {
+	            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+	        }
 			break;
 		case R.id.iv_favorite:
 			break;
