@@ -6,14 +6,17 @@ import java.util.Set;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.WikiConfig;
 import cn.eoe.wiki.json.CategoryChild;
@@ -35,6 +38,7 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 	private LinearLayout	mCategoryLayout;
 	private LayoutInflater 	mInflater;
 	private Button			mBtnSearch;
+	private EditText        mEditText;
 
 	private LinearLayout			mLayoutAbout;
 	private LinearLayout			mLayoutRecommand;
@@ -66,6 +70,7 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 		mCategoryLayout = (LinearLayout)findViewById(R.id.layout_category);
 		mBtnSearch=(Button)findViewById(R.id.btn_search);
 		mBtnSearch.requestFocus();
+		mEditText = (EditText) findViewById(R.id.et_search);
 		
 		aboutDialog = new AboutDialog(this);
 		mLayoutAbout=(LinearLayout)findViewById(R.id.layout_about);
@@ -126,6 +131,13 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 			getCategory(mCategoryUrl);
 			break;
 		case R.id.btn_search:
+			if (TextUtils.isEmpty(mEditText.getText())) {
+				Toast.makeText(mContext, "请输入检索关键字", Toast.LENGTH_SHORT).show();
+			} else {
+			Intent intent_toSearchResult = new Intent(mContext, SearchResultActivity.class);
+			intent_toSearchResult.putExtra("et_search", mEditText.getText().toString());
+			getmMainActivity().showView(1, intent_toSearchResult);
+			}
 			break;
 		case R.id.layout_about:
 			aboutDialog.show();

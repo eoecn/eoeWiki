@@ -5,13 +5,17 @@
 	<string name="tip_search_key">关键字</string>
 	<string name="tip_loading">拼命为你加载中...</string>
 	<string name="tip_get_category_error">抱歉，获取目录失败，请重试。</string>
+	<string name="tip_get_search_error">抱歉，检索失败，请重试。</string>
+	<string name="tip_get_search_null">抱歉，找不到和查询相匹配的结果</string>
 	<string name="button_try_again">重试</string>
+	<string name="button_toBack">返回</string>
 	<string name="tip_about">关于</string>
 	<string name="tip_recommand">推荐</string>
 	<string name="tip_feedback">反馈</string>
 	<string name="button_recent_update">最近更新</string>
 	
 	<string name="tip_android_title">Android-安卓</string>
+	<string name="tip_search_title">Android-检索</string>
 	<string name="tip_no_category">杯具，没有可以显示的目录！</string>
 	<string name="tip_no_favorite">杯具，好像你还没有收藏有wiki哦！</string>
 	
