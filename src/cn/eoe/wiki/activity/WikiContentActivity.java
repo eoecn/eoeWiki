@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.db.dao.FavoriteDao;
-import cn.eoe.wiki.db.entity.ParamsEntity;
 import cn.eoe.wiki.http.HttpManager;
 import cn.eoe.wiki.http.ITransaction;
 import cn.eoe.wiki.json.WikiDetailJson;
@@ -39,6 +39,12 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private static final String WIKI_URL_PRE = "http://wiki.eoeandroid.com/";
 	private static final String WIKI_URL_AFTER = "/api.php?action=parse&format=json&page=";
 	private boolean mIsFullScreen = false;
+	private int count = 0;
+	private long first,second = 0l;
+	
+	private LinearLayout	mCategoryLayout;
+	private LayoutInflater 	mInflater;
+	private boolean			mProgressVisible;
 	
 	private ImageButton 	mBtnParentDirectory;
 	private ImageButton 	mBtnFullScreen;
@@ -63,6 +69,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.wiki_detail);
+		mInflater = LayoutInflater.from(mContext);
 		Intent intent = getIntent();
 		if(intent == null){
 			throw new NullPointerException("Must give a Wiki Uri in the intent");
@@ -77,6 +84,8 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	}
 
 	void initComponent() {
+		mCategoryLayout = (LinearLayout)findViewById(R.id.layout_wiki_detail_process);
+		
 		mTvFistCategoryName = (TextView)findViewById(R.id.tv_title_parent);
 		mTvSecondCategoryName = (TextView)findViewById(R.id.tv_second_parent_title);
 		mBtnBack=(ImageButton)findViewById(R.id.btn_back);
@@ -103,6 +112,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		mTvFistCategoryName.setText(mParamsEntity.getFirstTitle());
 		//TODO set the second parent title
 		mTvSecondCategoryName.setText(mParamsEntity.getSecondTitle());
+		//showProgressLayout();
 	}
 	
 	void getWikiDetail()
@@ -144,8 +154,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
         mWebView.getSettings().setBuiltInZoomControls(true);
         
         mWebView.setOnTouchListener(new OnTouchListener() {
-			int count = 0;
-			long first,second = 0l;
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				System.out.println("I am here");
@@ -163,7 +171,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 						}
 					}
 				}
-				return true;
+				return false;
 			}
 		});
         
@@ -245,6 +253,14 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		}
 	}
 
+	protected void showProgressLayout()
+	{
+		View progressView = mInflater.inflate(R.layout.loading, null);
+		mCategoryLayout.removeAllViews();
+		mCategoryLayout.addView(progressView);
+		mProgressVisible = true;
+	}
+	
 	private void fullScreen(){
 		if(!mIsFullScreen){
 			mWikiDetailTitle.setVisibility(View.GONE);
@@ -275,6 +291,10 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 	@Override
 	public void onSidebarOpened() {
+		/*if(!mProgressVisible)
+		{
+			showProgressLayout();
+		}*/
 		getWikiDetail();
 		getmMainActivity().getSliderLayer().removeSliderListener(this);
 	}

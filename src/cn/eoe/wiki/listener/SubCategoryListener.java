@@ -1,8 +1,8 @@
 package cn.eoe.wiki.listener;
 
+import cn.eoe.wiki.activity.ParamsEntity;
 import cn.eoe.wiki.activity.SubCategoryActivity;
 import cn.eoe.wiki.activity.WikiContentActivity;
-import cn.eoe.wiki.db.entity.ParamsEntity;
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
