@@ -20,5 +20,5 @@
    			android:paddingTop="5dip"
    			android:paddingBottom="5dip"
    			android:paddingRight="20dip"
-    		android:background="@drawable/btn_grey_blue_stroke"/>
+    		android:background="@drawable/bg_stroke_grey_blue"/>
 </LinearLayout>

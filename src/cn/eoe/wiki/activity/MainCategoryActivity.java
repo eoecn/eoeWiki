@@ -23,6 +23,7 @@ import cn.eoe.wiki.json.CategoryChild;
 import cn.eoe.wiki.json.CategoryJson;
 import cn.eoe.wiki.listener.CategoryListener;
 import cn.eoe.wiki.listener.CategoryTitleListener;
+import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.AboutDialog;
 
@@ -131,12 +132,13 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 			getCategory(mCategoryUrl);
 			break;
 		case R.id.btn_search:
+			L.d("pressed search");
 			if (TextUtils.isEmpty(mEditText.getText())) {
 				Toast.makeText(mContext, "请输入检索关键字", Toast.LENGTH_SHORT).show();
 			} else {
-			Intent intent_toSearchResult = new Intent(mContext, SearchResultActivity.class);
-			intent_toSearchResult.putExtra("et_search", mEditText.getText().toString());
-			getmMainActivity().showView(1, intent_toSearchResult);
+				Intent intent_toSearchResult = new Intent(mContext, SearchResultActivity.class);
+				intent_toSearchResult.putExtra("et_search", mEditText.getText().toString());
+				getmMainActivity().showView(1, intent_toSearchResult);
 			}
 			break;
 		case R.id.layout_about:

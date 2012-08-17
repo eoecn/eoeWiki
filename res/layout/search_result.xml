@@ -3,39 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
-    <RelativeLayout
-        android:id="@+id/search_result_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical" >
-
-        <Button
-            android:id="@+id/btn_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Back" />
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/btn_back"
-            android:text="EOE WIKI"
-            android:textColor="@color/green"
-            android:textSize="30sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:layout_below="@+id/btn_back" />
-    </RelativeLayout>
+	<include android:id="@+id/category_title"
+	    layout="@layout/sub_layer_title"/>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/search_result_title" >
+        android:layout_below="@+id/category_title" >
 
         <LinearLayout
             android:layout_width="match_parent"

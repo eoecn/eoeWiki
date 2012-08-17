@@ -52,6 +52,7 @@
 	    			android:layout_toLeftOf="@+id/btn_search"
 	    			android:hint="@string/tip_search_key"
 	    			android:id="@+id/et_search"
+	    			android:singleLine="true"
 	    			android:layout_marginRight="5dip"
 	    			android:background="@drawable/search_border"
 	    			android:layout_centerVertical="true"/>

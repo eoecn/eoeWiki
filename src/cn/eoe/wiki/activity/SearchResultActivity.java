@@ -2,7 +2,6 @@ package cn.eoe.wiki.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import android.content.Context;
@@ -11,23 +10,25 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import cn.eoe.wiki.R;
+import cn.eoe.wiki.json.SearchJson;
+import cn.eoe.wiki.json.SearchJudgeChild;
 import cn.eoe.wiki.json.SearchJudgeJson;
 import cn.eoe.wiki.json.SearchResultChild;
 import cn.eoe.wiki.json.SearchResultJson;
-import cn.eoe.wiki.json.SearchJson;
-import cn.eoe.wiki.json.SearchJudgeChild;
 import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.SliderLayer;
+import cn.eoe.wiki.view.SliderLayer.SliderListener;
 
 /**
  * 检索结果展示
@@ -37,14 +38,14 @@ import cn.eoe.wiki.view.SliderLayer;
  * @version 1.0.0
  */
 public class SearchResultActivity extends SearchActivity implements
-		OnClickListener {
+		OnClickListener,SliderListener {
 	public static final String KEY_SEARCHRESULT = "SearchResultActivity";
 
 	private LinearLayout mSearchResultLayout;
 	// private MyListView listView;
 	private HashMap<String, Object> maps;
 	private LayoutInflater mInflater;
-	private Button mBtnBack;
+	private ImageButton mBtnBack;
 
 //	private LinkedList<HashMap<String, String>> mListItems;
 	private List<HashMap<String, Object>> lists;
@@ -72,7 +73,7 @@ public class SearchResultActivity extends SearchActivity implements
 		}
 		content_search = intent.getStringExtra("et_search");
 		url += content_search;
-
+		getmMainActivity().getSliderLayer().addSliderListener(this);
 		initComponent();
 		initData();
 	}
@@ -86,13 +87,12 @@ public class SearchResultActivity extends SearchActivity implements
 	void initComponent() {
 		mSearchResultLayout = (LinearLayout) findViewById(R.id.layout_search_result);
 		// listView = (MyListView) findViewById(R.id.listView);
-		mBtnBack = (Button) findViewById(R.id.btn_back);
+		mBtnBack = (ImageButton) findViewById(R.id.btn_back);
 		mBtnBack.setOnClickListener(this);
 	}
 
 	void initData() {
 		showProgressLayout();
-		getSearchResult(url);
 	}
 
 	protected void showProgressLayout() {
@@ -258,6 +258,22 @@ public class SearchResultActivity extends SearchActivity implements
 		default:
 			break;
 		}
+	}
+	@Override
+	public void onSidebarOpened() {
+		//TODO get the result
+		getSearchResult(url);
+		getmMainActivity().getSliderLayer().removeSliderListener(this);
+	}
+
+	@Override
+	public void onSidebarClosed() {
+		
+	}
+
+	@Override
+	public boolean onContentTouchedWhenOpening() {
+		return false;
 	}
 
 	public class MyListAdapter extends BaseAdapter {

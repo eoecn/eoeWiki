@@ -107,7 +107,7 @@ public class MainActivity extends ActivityGroup {
 				return true;
 			}
 		}
-		return super.dispatchKeyEvent(event);
+		return false;
 	}
 	
 	public SliderLayer getSliderLayer()
