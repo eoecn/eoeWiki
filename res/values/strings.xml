@@ -1,5 +1,5 @@
 <resources>
-	<string name="app_name">EoeWiki</string>
+	<string name="app_name">eoeWiki</string>
 	<string name="button_search">搜索</string>
 	<string name="tip_get_data_error">抱歉，获取数据失败，请重试。</string>
 	<string name="tip_search_key">关键字</string>
@@ -22,7 +22,7 @@
 	<string name="tip_category_not_finish">你选择的wiki暂时还没有内容，请再给我们一首歌的时间...</string>
 	
 	<!-- recommend text -->
-	<string name="content_recommand">源自开发者，服务开发者~第一款为开发者服务的好软件来啦! 快去下载安装吧：http://
+	<string name="content_recommand">源自开发者，服务开发者~第一款为开发者服务的好软件来啦! 快去体验吧：http://t.cn/zWH5QSv
 		优亿百科(eoeWIKI)是android开发者必备软件，其依靠eoeAndroid开发社区，将高质量移动开发内容用百科的形势进行组织和展示，以方便大家能更快更好的学习移动开发的相关知识，尽快的成长~	</string>
 	<string name="recomment_chooser_title">推荐给好友</string>
 	
