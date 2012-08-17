@@ -26,31 +26,32 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 import cn.eoe.wiki.R;
-import cn.eoe.wiki.activity.CategorysActivity.LoadCategoryFromDb;
 import cn.eoe.wiki.db.entity.UpdateEntity;
 import cn.eoe.wiki.http.HttpManager;
 import cn.eoe.wiki.http.ITransaction;
 import cn.eoe.wiki.json.CategoryChild;
-import cn.eoe.wiki.json.CategoryJson;
 import cn.eoe.wiki.json.RecentlyUpdatedJson;
-import cn.eoe.wiki.json.WikiDetailJson;
+import cn.eoe.wiki.listener.RecentlyUpdatedListener;
 import cn.eoe.wiki.listener.SubCategoryListener;
-import cn.eoe.wiki.utils.DateUtil;
 import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.SliderLayer;
 import cn.eoe.wiki.view.SliderLayer.SliderListener;
-
+/**
+ * 最新更新文章列表的Activity
+ * @author <a href="mailto:realh3@gmail.com">Real Xu</a>
+ * @data  2012-8-17
+ * @version 1.0.0
+ */
 public class RecentlyUpdatedActivity extends SliderActivity implements SliderListener{
 
-	public static final		String 	KEY_CATEGORY		= "category";
-	public static final		String 	KEY_PARENT_TITLE	= "parent_title";
+	private static final String WIKI_URL_HOST = "http://wiki.eoeandroid.com/";
+	private static final String WIKI_URL_DETAIL = "api.php?action=parse&format=json&page=";
+	private static final String WIKI_URL_LOCATION = "api.php?action=query&list=recentchanges&rclimit=30&format=json";
 	
 	final int HANDLER_LOAD_CONTENT_NET = 0;
 	final int HANDLER_DISPLAY_CONTENT = 1;
 	final int HANDLER_LOAD_ERROR = 2;
-	
-	private String 			mUrl 				= null;
 	
 	private LinearLayout	mContentLayout;
 	private LayoutInflater 	mInflater;
@@ -85,12 +86,9 @@ public class RecentlyUpdatedActivity extends SliderActivity implements SliderLis
 	}
 
 	void initData() {
-		mUrl = "http://wiki.eoeandroid.com/api.php?action=query&list=recentchanges&rclimit=30&format=json";
-		
 		mTvParentName.setText("最近更新");
-
 		showProgressLayout();
-		new HttpManager(mUrl, null, HttpManager.GET, getRecentlyUpdatedTransaction).start();
+		new HttpManager(WIKI_URL_HOST + WIKI_URL_LOCATION, null, HttpManager.GET, getRecentlyUpdatedTransaction).start();
 	}
 	
 	protected void showProgressLayout()
@@ -107,15 +105,13 @@ public class RecentlyUpdatedActivity extends SliderActivity implements SliderLis
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
-			
 			case HANDLER_LOAD_CONTENT_NET:
-				new HttpManager(mUrl, null, HttpManager.GET, getRecentlyUpdatedTransaction).start();
+				new HttpManager(WIKI_URL_HOST + WIKI_URL_LOCATION, null, HttpManager.GET, getRecentlyUpdatedTransaction).start();
 				break;
 			case HANDLER_DISPLAY_CONTENT:
 				generateRecentlyUpdated((List<RecentlyUpdatedJson>)msg.obj);
 				break;
 			case HANDLER_LOAD_ERROR:
-				
 				break;
 			default:
 				break;
@@ -125,7 +121,6 @@ public class RecentlyUpdatedActivity extends SliderActivity implements SliderLis
 	
 	public ITransaction getRecentlyUpdatedTransaction = new ITransaction() {
 		
-
 		@Override
 		public void transactionOver(String result) {
 			mapperJson(result,true);
@@ -175,12 +170,12 @@ public class RecentlyUpdatedActivity extends SliderActivity implements SliderLis
 		int paddind = WikiUtil.dip2px(mContext, 1);
 		contentLayout.setPadding(paddind, paddind, paddind, paddind);
 		contentLayout.setLayoutParams(titleParams);
-		contentLayout.setBackgroundResource(R.drawable.btn_grey_blue_stroke);
+		contentLayout.setBackgroundResource(R.drawable.bg_stroke_grey_blue);
 		mContentLayout.addView(contentLayout);
 		
 		TextView tv = (TextView)mInflater.inflate(R.layout.category_title, null);
 		tv.setText("最近更新");
-		tv.setBackgroundResource(R.drawable.btn_grey_blue_nostroke_top);
+		tv.setBackgroundResource(R.drawable.bg_nostroke_grey_blue_top);
 		
 		contentLayout.addView(tv);
 		
@@ -196,19 +191,22 @@ public class RecentlyUpdatedActivity extends SliderActivity implements SliderLis
 			
 			TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
 			tvChild.setText(item.getTitle());
-//			tvChild.setOnClickListener(
-//				new SubCategoryListener(
-//				mParentCategory.getName(),
-//				item.getTitle(),
-//				"http://wiki.eoeandroid.com/"+item.getTitle(), .this
-//			));
+			
+			tvChild.setOnClickListener(
+				new RecentlyUpdatedListener(
+					"最新更新", 
+					item.getTitle(), 
+					WIKI_URL_HOST + WIKI_URL_DETAIL + item.getTitle().replace(' ', '_'), 
+					this
+				)
+			);
 			if(i == recentlyUpdatedJsons.size() - 1)
 			{
-				tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_bottom);
+				tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_bottom);
 			}
 			else
 			{
-				tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_nocorners);
+				tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_nocorners);
 			}
 //			mCategoryLayout.addView(tvChild);
 			contentLayout.addView(tvChild);

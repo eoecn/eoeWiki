@@ -18,6 +18,7 @@ public class WikiColumn extends DatabaseColumn {
     public static final String 		TABLE_NAME 		= "wikis";
     
     public static final String		PAGEID			="pageid";
+    public static final String 		DISPLAY_TITLE	="display_title";
     /**
      * 是保存wiki的路径
      */
@@ -34,7 +35,8 @@ public class WikiColumn extends DatabaseColumn {
 		mColumnsMap.put(_ID, "integer primary key autoincrement not null");
 		mColumnsMap.put(PAGEID, "integer not null");
 		mColumnsMap.put(VERSION, "integer not null");
-		mColumnsMap.put(PATH, "text not null");
+		mColumnsMap.put(PATH, "text");
+		mColumnsMap.put(DISPLAY_TITLE, "text");
 		mColumnsMap.put(URI, "text not null");
 		mColumnsMap.put(DATE_ADD, "localtime");
 		mColumnsMap.put(DATE_MODIFY, "localtime");

@@ -15,7 +15,6 @@
     		android:paddingTop="7dip"
     		android:scaleType="center"
     		android:src="@drawable/ico_home"
-    		android:background="@drawable/btn_home_bg"
     		android:layout_alignTop="@+id/vertical_reparator"
     		android:layout_alignBottom="@+id/vertical_reparator"/>
 	    <ImageView android:layout_width="wrap_content"

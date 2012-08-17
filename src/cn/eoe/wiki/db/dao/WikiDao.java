@@ -171,7 +171,7 @@ public class WikiDao extends GeneralDao<WikiColumn> {
 		return false;
 	}
 	
-	private WikiEntity buildWikiEntity(Cursor cursor)
+	public WikiEntity buildWikiEntity(Cursor cursor)
 	{
 		WikiEntity entity = null;
 		if(cursor!=null && cursor.moveToFirst())
@@ -183,6 +183,7 @@ public class WikiDao extends GeneralDao<WikiColumn> {
 			entity.setPageId(cursor.getString(cursor.getColumnIndex(WikiColumn.PAGEID)));
 			entity.setPath(cursor.getString(cursor.getColumnIndex(WikiColumn.PATH)));
 			entity.setUri(cursor.getString(cursor.getColumnIndex(WikiColumn.URI)));
+			entity.setDisplayTitle(cursor.getString(cursor.getColumnIndex(WikiColumn.DISPLAY_TITLE)));
 			entity.setVersion(cursor.getInt(cursor.getColumnIndex(WikiColumn.VERSION)));
 		}
 		if(cursor!=null)
@@ -197,7 +198,7 @@ public class WikiDao extends GeneralDao<WikiColumn> {
 	 * @param entity
 	 * @return
 	 */
-	private ContentValues change2ContentValues(WikiEntity entity)
+	public ContentValues change2ContentValues(WikiEntity entity)
 	{
 
 		ContentValues values = new ContentValues();
@@ -220,6 +221,10 @@ public class WikiDao extends GeneralDao<WikiColumn> {
 		if(!TextUtils.isEmpty(entity.getUri()))
 		{
 			values.put(WikiColumn.URI, entity.getUri());
+		}
+		if(!TextUtils.isEmpty(entity.getDisplayTitle()))
+		{
+			values.put(WikiColumn.DISPLAY_TITLE, entity.getDisplayTitle());
 		}
 		if(entity.getVersion()>0)
 		{

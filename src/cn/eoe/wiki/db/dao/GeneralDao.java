@@ -31,6 +31,16 @@ public class GeneralDao<T extends DatabaseColumn> {
 		return SqliteWrapper.query(context, context.getContentResolver(), uri, this.tableClass.getColumns(), null, null, null);
 	}
 	
+	public Cursor queryByPage(int page,int length)
+	{
+		if(page<=0)
+		{
+			throw new IllegalArgumentException("invalid page :"+page);
+		}
+		
+		return SqliteWrapper.query(context, context.getContentResolver(), uri, this.tableClass.getColumns(), null, null, DatabaseColumn._ID+" limit "+(page-1)*length+","+length);
+	}
+	
 	public Cursor queryById(long id)
 	{
 		return SqliteWrapper.query(context, context.getContentResolver(), Uri.withAppendedPath(uri, String.valueOf(id)), this.tableClass.getColumns(), null, null, null);

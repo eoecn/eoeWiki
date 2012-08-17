@@ -17,6 +17,7 @@ import cn.eoe.wiki.R;
 import cn.eoe.wiki.json.CategoryChild;
 import cn.eoe.wiki.json.CategoryJson;
 import cn.eoe.wiki.listener.SubCategoryListener;
+import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.SliderLayer;
 import cn.eoe.wiki.view.SliderLayer.SliderListener;
@@ -26,7 +27,7 @@ import cn.eoe.wiki.view.SliderLayer.SliderListener;
  * @data  2012-8-5
  * @version 1.0.0
  */
-public class SubCategorysActivity extends CategorysActivity implements OnClickListener,SliderListener{
+public class SubCategoryActivity extends CategoryActivity implements OnClickListener,SliderListener{
 	public static final		String 	KEY_CATEGORY		= "category";
 	public static final		String 	KEY_PARENT_TITLE	= "parent_title";
 	
@@ -50,8 +51,10 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 		{
 			throw new NullPointerException("Must give a CategoryChild in the intent");
 		}
+		
 		mParentCategory = intent.getParcelableExtra(KEY_CATEGORY);
 		mParentName = intent.getStringExtra(KEY_PARENT_TITLE);
+		
 		if(mParentCategory==null || TextUtils.isEmpty(mParentName))
 		{
 			throw new NullPointerException("Must give a CategoryChild and the parent name in the intent");
@@ -61,9 +64,24 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 		initData();
 	}
 
+	
+	@Override
+	protected void onPause() {
+		L.d("sub category onPause");
+		super.onPause();
+	}
+
+
+	@Override
+	protected void onResume() {
+		L.d("sub category onResume");
+		super.onResume();
+	}
+
+
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
+		L.d("sub category destroy");
 		super.onDestroy();
 	}
 
@@ -91,7 +109,7 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 		mProgressVisible = true;
 	}
 	@Override
-	protected void getCategorysError(String showText)
+	protected void getCategoriesError(String showText)
 	{
 		mCategoryLayout.removeAllViews();
 		mProgressVisible = false;
@@ -108,14 +126,14 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 		mCategoryLayout.addView(viewError);
 	}
 	@Override
-	protected void generateCategorys(CategoryJson responseObject)
+	protected void generateCategories(CategoryJson responseObject)
 	{
 		mCategoryLayout.removeAllViews();
 		mProgressVisible = false;
-		List<CategoryChild> categorys =  responseObject.getContents();
-		if(categorys!=null)
+		List<CategoryChild> categories =  responseObject.getContents();
+		if(categories!=null)
 		{
-			for(CategoryChild category:categorys)
+			for(CategoryChild category:categories)
 			{
 				LinearLayout categoryLayout = new LinearLayout(mContext);
 				categoryLayout.setOrientation(LinearLayout.VERTICAL);
@@ -123,13 +141,14 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 				int paddind = WikiUtil.dip2px(mContext, 1);
 				categoryLayout.setPadding(paddind, paddind, paddind, paddind);
 				categoryLayout.setLayoutParams(titleParams);
-				categoryLayout.setBackgroundResource(R.drawable.btn_grey_blue_stroke);
+				categoryLayout.setBackgroundResource(R.drawable.bg_stroke_grey_blue);
 				mCategoryLayout.addView(categoryLayout);
 				
 				TextView tv = (TextView)mInflater.inflate(R.layout.category_title, null);
 				tv.setText(category.getName());
-				tv.setBackgroundResource(R.drawable.btn_grey_blue_nostroke_top);
-				
+				tv.setBackgroundResource(R.drawable.bg_nostroke_grey_blue_top);
+				tv.setOnClickListener(new SubCategoryListener(mParentCategory.getName(),
+						"",category.getUri(), SubCategoryActivity.this));
 				categoryLayout.addView(tv);
 				List<CategoryChild> categorysChildren =  category.getChildren();
 				if(categorysChildren!=null)
@@ -148,14 +167,15 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 						
 						TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
 						tvChild.setText(categorysChild.getName());
-						tvChild.setOnClickListener(new SubCategoryListener(categorysChild.getUri(), SubCategorysActivity.this));
+						tvChild.setOnClickListener(new SubCategoryListener(mParentCategory.getName(),
+								category.getName(),categorysChild.getUri(), SubCategoryActivity.this));
 						if(i==(size-1))
 						{
-							tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_bottom);
+							tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_bottom);
 						}
 						else
 						{
-							tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_nocorners);
+							tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_nocorners);
 						}
 //						mCategoryLayout.addView(tvChild);
 						categoryLayout.addView(tvChild);
@@ -201,6 +221,7 @@ public class SubCategorysActivity extends CategorysActivity implements OnClickLi
 			showProgressLayout();
 		}
 		getCategory(mParentCategory.getUri());
+		getmMainActivity().getSliderLayer().removeSliderListener(this);
 	}
 
 	@Override

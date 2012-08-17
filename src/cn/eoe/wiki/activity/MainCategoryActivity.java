@@ -6,10 +6,12 @@ import java.util.Set;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
@@ -21,9 +23,11 @@ import cn.eoe.wiki.json.CategoryChild;
 import cn.eoe.wiki.json.CategoryJson;
 import cn.eoe.wiki.listener.CategoryListener;
 import cn.eoe.wiki.listener.CategoryTitleListener;
+import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.AboutDialog;
 
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.UMFeedbackService;
 /**
  * 用来处理最外层分类的界面
@@ -31,11 +35,12 @@ import com.umeng.fb.UMFeedbackService;
  * @data  2012-8-5
  * @version 1.0.0
  */
-public class MainCategorysActivity extends CategorysActivity implements OnClickListener{
+public class MainCategoryActivity extends CategoryActivity implements OnClickListener{
 	
 	private LinearLayout	mCategoryLayout;
 	private LayoutInflater 	mInflater;
 	private Button			mBtnSearch;
+	private EditText        mEditText;
 
 	private LinearLayout			mLayoutAbout;
 	private LinearLayout			mLayoutRecommand;
@@ -46,14 +51,14 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 	private String					mCategoryUrl;
 
 	private boolean					mProgressVisible;
-	private Set<CategoryChild> 		mCloseCategorys;
+	private Set<CategoryChild> 		mCloseCategories;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.categorys);
+		setContentView(R.layout.categories);
 		mInflater = LayoutInflater.from(mContext);
 		mCategoryUrl = WikiConfig.getMainCategoruUrl();
-		mCloseCategorys = new HashSet<CategoryChild>();
+		mCloseCategories = new HashSet<CategoryChild>();
 		initComponent();
 		initData();
 	}
@@ -67,6 +72,7 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		mCategoryLayout = (LinearLayout)findViewById(R.id.layout_category);
 		mBtnSearch=(Button)findViewById(R.id.btn_search);
 		mBtnSearch.requestFocus();
+		mEditText = (EditText) findViewById(R.id.et_search);
 		
 		aboutDialog = new AboutDialog(this);
 		mLayoutAbout=(LinearLayout)findViewById(R.id.layout_about);
@@ -94,8 +100,9 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		mCategoryLayout.addView(progressView);
 		mProgressVisible = true;
 	}
+	
 	@Override
-	protected void getCategorysError(String showText)
+	protected void getCategoriesError(String showText)
 	{
 		mCategoryLayout.removeAllViews();
 		mProgressVisible = false;
@@ -113,7 +120,7 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 	}
 	
 	@Override
-	protected void generateCategorys(CategoryJson responseObject)
+	protected void generateCategories(CategoryJson responseObject)
 	{
 		generateCategorys(responseObject, null);
 	}
@@ -122,18 +129,36 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_try_again:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_try_again");
 			showProgressLayout();
 			getCategory(mCategoryUrl);
 			break;
 		case R.id.btn_search:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_search");
+			L.d("pressed search");
+			if (TextUtils.isEmpty(mEditText.getText())) {
+				Toast.makeText(mContext, "请输入检索关键字", Toast.LENGTH_SHORT).show();
+			} else {
+				Intent intent_toSearchResult = new Intent(mContext, SearchResultActivity.class);
+				intent_toSearchResult.putExtra("et_search", mEditText.getText().toString());
+				getmMainActivity().showView(1, intent_toSearchResult);
+			}
 			break;
 		case R.id.layout_about:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_about");
 			aboutDialog.show();
 			break;
 		case R.id.layout_recommand:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_recommand");
 			recommandToFriend();
 			break;
 		case R.id.layout_feedback:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_feedback");
 			UMFeedbackService.openUmengFeedbackSDK(this);
 			break;
 		case R.id.btn_recent:
@@ -145,8 +170,13 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 	        {
 	            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
 	        }
+
 			break;
 		case R.id.iv_favorite:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_favorite");
+			Intent intent = new Intent (mContext,FavoriteActivity.class);
+			getmMainActivity().showView(1, intent);
 			break;
 		default:
 			break;
@@ -159,7 +189,7 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 		intent.putExtra(Intent.EXTRA_TEXT,
 			getResources().getString(R.string.content_recommand));
 	
-		Intent itn = Intent.createChooser(intent, "推荐给好友");
+		Intent itn = Intent.createChooser(intent, getResources().getString(R.string.recomment_chooser_title));
 		startActivity(itn);
 	}
 
@@ -167,10 +197,10 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 	{
 		mCategoryLayout.removeAllViews();
 		mProgressVisible = false;
-		List<CategoryChild> categorys =  responseObject.getContents();
-		if(categorys!=null)
+		List<CategoryChild> categories =  responseObject.getContents();
+		if(categories!=null)
 		{
-			for(CategoryChild category:categorys)
+			for(CategoryChild category:categories)
 			{
 				LinearLayout categoryLayout = new LinearLayout(mContext);
 				categoryLayout.setOrientation(LinearLayout.VERTICAL);
@@ -178,18 +208,18 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 				int paddind = WikiUtil.dip2px(mContext, 1);
 				categoryLayout.setPadding(paddind, paddind, paddind, paddind);
 				categoryLayout.setLayoutParams(titleParams);
-				categoryLayout.setBackgroundResource(R.drawable.btn_grey_blue_stroke);
+				categoryLayout.setBackgroundResource(R.drawable.bg_stroke_grey_blue);
 				mCategoryLayout.addView(categoryLayout);
 				
 				TextView tv = (TextView)mInflater.inflate(R.layout.category_title, null);
 				tv.setText(category.getName());
 				tv.setOnClickListener(new CategoryTitleListener(this,category));
 				categoryLayout.addView(tv);
-				if(operCategory==null || !mCloseCategorys.contains(category))
+				if(operCategory==null || !mCloseCategories.contains(category))
 				{
 					//if operCategory==null ,it means the first
 					//mCloseCategorys.contains(category) this category is close
-					tv.setBackgroundResource(R.drawable.btn_grey_blue_nostroke_top);
+					tv.setBackgroundResource(R.drawable.bg_nostroke_grey_blue_top);
 				
 					List<CategoryChild> categorysChildren =  category.getChildren();
 					if(categorysChildren!=null)
@@ -211,11 +241,11 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 							tvChild.setOnClickListener(new CategoryListener(this, categorysChild,category.getName()));
 							if(i==(size-1))
 							{
-								tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_bottom);
+								tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_bottom);
 							}
 							else
 							{
-								tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_nocorners);
+								tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_nocorners);
 							}
 							categoryLayout.addView(tvChild);
 						}
@@ -223,7 +253,7 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 				}
 				else
 				{
-					tv.setBackgroundResource(R.drawable.btn_grey_blue_nostroke);
+					tv.setBackgroundResource(R.drawable.bg_nostroke_grey_blue);
 				}
 
 				View blankView = new View(mContext);
@@ -245,13 +275,14 @@ public class MainCategorysActivity extends CategorysActivity implements OnClickL
 
 	public void refreshCategory(CategoryChild category)
 	{
-		if(mCloseCategorys.contains(category))
+		if(mCloseCategories.contains(category))
 		{
-			mCloseCategorys.remove(category);
+			mCloseCategories.remove(category);
 		}
 		else
 		{
-			mCloseCategorys.add(category);
+			mCloseCategories.add(category);
 		}
+		generateCategorys(mResponseObject, category);
 	}
 }

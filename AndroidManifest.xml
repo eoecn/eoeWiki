@@ -27,18 +27,22 @@
         </activity>
         <activity android:name=".activity.AboutActivity" >
         </activity>
-        <activity android:name=".activity.MainCategorysActivity" >
+        <activity android:name=".activity.MainCategoryActivity" >
         </activity>
-        <activity android:name=".activity.SubCategorysActivity" >
+        <activity android:name=".activity.SubCategoryActivity" >
         </activity>
         <activity android:name=".activity.RecommendActivity" >
         </activity>
         <activity android:name=".activity.SearchActivity" >
         </activity>
+        <activity android:name=".activity.SearchResultActivity">            
+        </activity>
         <activity android:name=".activity.WikiContentActivity" >
         </activity>
 		<activity android:name=".activity.RecentlyUpdatedActivity" >
 		</activity>
+        <activity android:name=".activity.FavoriteActivity" >
+        </activity>
         <provider
             android:authorities="cn.eoe.wiki.provider"
             android:name=".db.DatabaseProvider" >
