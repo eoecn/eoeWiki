@@ -30,6 +30,11 @@ public class CategoryListener implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
+		if(context.getmMainActivity().getSliderLayer().isAnimationing())
+		{
+			L.e("Slding moving ....");
+			return;
+		}
 		L.e("category click:"+category.getUri());
 		Intent intent = new Intent (context,SubCategoryActivity.class);
 		intent.putExtra(SubCategoryActivity.KEY_CATEGORY, category);

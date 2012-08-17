@@ -39,6 +39,7 @@ import cn.eoe.wiki.view.SliderLayer.SliderListener;
  */
 public class SearchResultActivity extends SearchActivity implements
 		OnClickListener,SliderListener {
+	public static final String KEY_SEARCH_TEXT = "search_text";
 	public static final String KEY_SEARCHRESULT = "SearchResultActivity";
 
 	private LinearLayout mSearchResultLayout;
@@ -71,7 +72,7 @@ public class SearchResultActivity extends SearchActivity implements
 		if (intent == null) {
 			throw new NullPointerException("Must give a keyword in the intent");
 		}
-		content_search = intent.getStringExtra("et_search");
+		content_search = intent.getStringExtra(KEY_SEARCH_TEXT);
 		url += content_search;
 		getmMainActivity().getSliderLayer().addSliderListener(this);
 		initComponent();
@@ -262,6 +263,7 @@ public class SearchResultActivity extends SearchActivity implements
 	@Override
 	public void onSidebarOpened() {
 		//TODO get the result
+		WikiUtil.hideSoftInput(mBtnBack);
 		getSearchResult(url);
 		getmMainActivity().getSliderLayer().removeSliderListener(this);
 	}

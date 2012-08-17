@@ -5,6 +5,7 @@ import android.app.LocalActivityManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import cn.eoe.wiki.R;
@@ -86,6 +87,19 @@ public class MainActivity extends ActivityGroup {
 	}
 
 	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		if(mSliderLayers.isAnimationing())
+		{
+			//if the slider is moving , we need to stop all the touch event
+			return true;
+		}
+		else
+		{
+			return super.dispatchTouchEvent(ev);
+		}
+	}
+
+	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		L.e("MainActivity dispatchKeyEvent:"+event.getKeyCode());
 		int keyCode = event.getKeyCode();
@@ -110,7 +124,7 @@ public class MainActivity extends ActivityGroup {
 				return true;
 			}
 		}
-		return false;
+		return super.dispatchKeyEvent(event);
 	}
 	
 	public SliderLayer getSliderLayer()

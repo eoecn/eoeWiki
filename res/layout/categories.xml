@@ -12,23 +12,23 @@
     		android:layout_height="wrap_content"
     		android:src="@drawable/category_logo"
     		android:layout_marginLeft="10dip"
+    		android:layout_marginTop="1px"
+    		android:focusable="true"
+    		android:focusableInTouchMode="true"
     		android:layout_centerVertical="true"/>
 	    
 	    <ImageView android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
     		android:src="@drawable/btn_favorites"
-    		android:layout_marginRight="13dip"
+    		android:layout_marginRight="17dip"
     		android:layout_alignParentRight="true"
     		android:layout_alignParentTop="true"
     		android:clickable="true"
     		android:id="@+id/iv_favorite"/>
 	</RelativeLayout>
-	<ScrollView android:layout_width="match_parent"
-    	android:layout_height="match_parent"
+	<ScrollView style="@style/scrollStyle"
     	android:layout_below="@+id/category_title"
     	android:layout_above="@+id/layout_functions"
-    	android:fadingEdge="none"
-    	android:scrollbars="none"
     	android:layout_marginTop="2dip">
 		<LinearLayout android:layout_width="match_parent"
     		android:layout_height="wrap_content"
@@ -41,8 +41,6 @@
 		        <Button android:layout_width="wrap_content"
 	    			android:layout_height="wrap_content"
 	    			android:id="@+id/btn_search"
-	    			android:focusable="true"
-	    			android:focusableInTouchMode="true"
 	    			android:layout_alignParentRight="true"
 	    			android:background="@drawable/btn_search"
 	    			android:layout_centerVertical="true"/>
