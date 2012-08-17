@@ -24,6 +24,7 @@ public class SubCategoryListener implements OnClickListener{
 	
 	@Override
 	public void onClick(View v) {
+		System.out.println("I am here onclick");
 		// TODO Auto-generated method stub
 		Intent intent = new Intent (mContext,WikiContentActivity.class);
 		ParamsEntity pe = new ParamsEntity();

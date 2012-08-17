@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -17,16 +16,21 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.LinearLayout.LayoutParams;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.db.dao.FavoriteDao;
 import cn.eoe.wiki.http.HttpManager;
 import cn.eoe.wiki.http.ITransaction;
+import cn.eoe.wiki.json.WikiDetailErrorJson;
 import cn.eoe.wiki.json.WikiDetailJson;
+import cn.eoe.wiki.json.WikiDetailParent;
 import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.SliderLayer;
@@ -34,36 +38,38 @@ import cn.eoe.wiki.view.SliderLayer.SliderListener;
 
 public class WikiContentActivity extends SliderActivity implements OnClickListener,SliderListener{
 
-	private static final int	HANDLER_DISPLAY_WIKIDETAIL 	= 0x0001;
-	private static final int	HANDLER_GET_WIKIDETAIL_ERROR 	= 0x0002;
-	private static final String WIKI_URL_PRE = "http://wiki.eoeandroid.com/";
-	private static final String WIKI_URL_AFTER = "/api.php?action=parse&format=json&page=";
-	private boolean mIsFullScreen = false;
-	private int count = 0;
-	private long first,second = 0l;
+	private static final int		HANDLER_DISPLAY_WIKIDETAIL 	= 0x0001;
+	private static final int		HANDLER_GET_WIKIERROR 	= 0x0002;
+	private static final int		HANDLER_GET_WIKIDETAIL_ERROR 	= 0x0003;
+	private static final String 	WIKI_URL_PRE = "http://wiki.eoeandroid.com/";
+	private static final String 	WIKI_URL_AFTER = "/api.php?action=parse&format=json&page=";
+	private boolean 				mIsFullScreen = false;
+	private int 					count = 0;
+	private long 					first,second = 0l;
 	
-	private LinearLayout	mCategoryLayout;
-	private LayoutInflater 	mInflater;
-	private boolean			mProgressVisible;
+	private RelativeLayout			mWikiProcessLayout;
+	private LayoutInflater 			mInflater;
+	private boolean					mProgressVisible;
 	
-	private ImageButton 	mBtnParentDirectory;
-	private ImageButton 	mBtnFullScreen;
-	private ImageButton 	mBtnFavorite;
-	private ImageButton 	mBtnShare;
-	private ImageButton		mBtnBack;
-	private TextView		mTvFistCategoryName;
-	private TextView		mTvSecondCategoryName;
+	private ImageButton 			mBtnParentDirectory;
+	private ImageButton 			mBtnFullScreen;
+	private ImageButton 			mBtnFavorite;
+	private ImageButton 			mBtnShare;
+	private ImageButton				mBtnBack;
+	private TextView				mTvFistCategoryName;
+	private TextView				mTvSecondCategoryName;
 	
-	private RelativeLayout mWikiDetailTitle;
-	private LinearLayout mLayoutFunctions;
+	private RelativeLayout			mWikiDetailTitle;
+	private LinearLayout 			mLayoutFunctions;
 	
 	public static final 	String  WIKI_CONTENT = "wiki_content";
 	public static final		String 	KEY_PARENT_TITLE	= "parent_title";
 	public static final		String 	KEY_SUB_PARENT_TITLE	= "sub_parent_title";
-	private ParamsEntity mParamsEntity;
+	private ParamsEntity			mParamsEntity;
 	
-	protected WikiDetailJson responseObject = null;
-	private WebView mWebView;
+	protected WikiDetailJson 		responseObject = null;
+	protected WikiDetailErrorJson	responseError = null;
+	private WebView 				mWebView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +90,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	}
 
 	void initComponent() {
-		mCategoryLayout = (LinearLayout)findViewById(R.id.layout_wiki_detail_process);
+		mWikiProcessLayout = (RelativeLayout)findViewById(R.id.layout_wiki_detail_process);
 		
 		mTvFistCategoryName = (TextView)findViewById(R.id.tv_title_parent);
 		mTvSecondCategoryName = (TextView)findViewById(R.id.tv_second_parent_title);
@@ -112,7 +118,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		mTvFistCategoryName.setText(mParamsEntity.getFirstTitle());
 		//TODO set the second parent title
 		mTvSecondCategoryName.setText(mParamsEntity.getSecondTitle());
-		//showProgressLayout();
+		showProgressLayout();
 	}
 	
 	void getWikiDetail()
@@ -129,6 +135,9 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 			case HANDLER_DISPLAY_WIKIDETAIL:
 				generateWiki((WikiDetailJson)msg.obj);
 				break;
+			case HANDLER_GET_WIKIERROR:
+				generateWikiError((WikiDetailErrorJson)msg.obj);
+				break;
 			case HANDLER_GET_WIKIDETAIL_ERROR:
 				getWikiError(getString(R.string.tip_get_category_error));
 				break;
@@ -140,6 +149,8 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	};
 	
 	private void generateWiki(WikiDetailJson pWikiDetailJson){
+		mWikiProcessLayout.removeAllViews();
+		mProgressVisible = false;
 		String html = pWikiDetailJson.getParse().getText().getHtml();
 		String html1 = "<!DOCTYPE html PUBLIC "
                   + "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -183,12 +194,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 					Uri uri = Uri.parse(url);  
 					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 					startActivity(intent);
-					/*Intent intent= new Intent();        
-	                intent.setAction("android.intent.action.VIEW");    
-	                Uri content_url = Uri.parse(url);   
-	                intent.setData(content_url);           
-	                intent.setClassName("com.android.browser","com.android.browser.BrowserActivity");   
-	                startActivity(intent);*/
 					return true;
 				}
 				mParamsEntity.setUri(WIKI_URL_PRE+WIKI_URL_AFTER+url.substring(1));
@@ -201,8 +206,30 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
         mWebView.setBackgroundColor(WikiUtil.getResourceColor(R.color.deep_grey, mContext));
 	}
 	
+	private void generateWikiError(WikiDetailErrorJson pWikiDetailErrorJson){
+		ScrollView sw = (ScrollView)findViewById(R.id.sv_wiki_scroll);
+		sw.setVisibility(View.GONE);
+		if("missingtitle".equals(pWikiDetailErrorJson.getError().getCode())){
+			getWikiError(getString(R.string.no_such_article));
+		}else{
+			getWikiError(getString(R.string.unknow_error));
+		}
+	}
+	
 	private void getWikiError(String pError){
+		mWikiProcessLayout.removeAllViews();
+		mProgressVisible = false;
 		
+		View viewError = mInflater.inflate(R.layout.loading_error, null);
+		LayoutParams errorParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		errorParams.topMargin = WikiUtil.dip2px(mContext, 10);
+		viewError.setLayoutParams(errorParams);
+		
+		TextView tvErrorTip =  (TextView)viewError.findViewById(R.id.tv_error_tip);
+		tvErrorTip.setText(pError);
+		Button btnTryAgain =  (Button)viewError.findViewById(R.id.btn_try_again);
+		btnTryAgain.setOnClickListener(this);
+		mWikiProcessLayout.addView(viewError);
 	}
 	
 	public ITransaction getWikiDetailTransaction = new ITransaction() {
@@ -210,8 +237,13 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		@Override
 		public void transactionOver(String result) {
 			try {
-				responseObject = mObjectMapper.readValue(result, new TypeReference<WikiDetailJson>() { });
-				mHandler.obtainMessage(HANDLER_DISPLAY_WIKIDETAIL, responseObject).sendToTarget();
+				responseError = mObjectMapper.readValue(result, new TypeReference<WikiDetailErrorJson>() { });
+				if(responseError.getError() == null){
+					responseObject = mObjectMapper.readValue(result, new TypeReference<WikiDetailJson>() { });
+					mHandler.obtainMessage(HANDLER_DISPLAY_WIKIDETAIL, responseObject).sendToTarget();
+				}else{
+					mHandler.obtainMessage(HANDLER_GET_WIKIERROR, responseError).sendToTarget();
+				}
 			} catch (Exception e) {
 				L.e("getWikiDetailTransaction exception", e);
 				mHandler.obtainMessage(HANDLER_GET_WIKIDETAIL_ERROR).sendToTarget();
@@ -256,8 +288,8 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	protected void showProgressLayout()
 	{
 		View progressView = mInflater.inflate(R.layout.loading, null);
-		mCategoryLayout.removeAllViews();
-		mCategoryLayout.addView(progressView);
+		mWikiProcessLayout.removeAllViews();
+		mWikiProcessLayout.addView(progressView);
 		mProgressVisible = true;
 	}
 	
@@ -291,10 +323,10 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 	@Override
 	public void onSidebarOpened() {
-		/*if(!mProgressVisible)
+		if(!mProgressVisible)
 		{
 			showProgressLayout();
-		}*/
+		}
 		getWikiDetail();
 		getmMainActivity().getSliderLayer().removeSliderListener(this);
 	}
