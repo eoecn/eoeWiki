@@ -14,6 +14,8 @@ import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.SliderEntity;
 import cn.eoe.wiki.view.SliderLayer;
 
+import com.umeng.analytics.MobclickAgent;
+
 /**
  * 应用程序的主界面
  * 
@@ -41,7 +43,8 @@ public class MainActivity extends ActivityGroup {
 		mActivityManager = getLocalActivityManager();
 
 		mSliderLayers = (SliderLayer) findViewById(R.id.animation_layout);
-
+		//umeng event
+		MobclickAgent.onEvent(this, "home", "enter");
 		int sceenWidth = WikiUtil.getSceenWidth(mMainActivity);
 		ViewGroup layerOne = (ViewGroup) findViewById(R.id.animation_layout_one);
 		layerOne.setPadding(0,0, WikiUtil.dip2px(mMainActivity, 20), 0);

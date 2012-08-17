@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import cn.eoe.wiki.activity.FavoriteActivity;
 import cn.eoe.wiki.activity.WikiContentActivity;
+import cn.eoe.wiki.db.entity.ParamsEntity;
 
 /**
  * 点击收藏夹的第一项，跳转到detail页面
@@ -16,17 +17,24 @@ public class FavoriteItemListener implements OnClickListener{
 
 	private String 				mUri;
 	private FavoriteActivity 	mContext;
+	private String 				mFristParentName;
+	private String 				mSecondParentName;
 	
-	public FavoriteItemListener(String uri,FavoriteActivity context){
+	public FavoriteItemListener(String uri,FavoriteActivity context,String firstParentName,String sencondParentName){
 		mUri = uri;
 		mContext = context;
+		mFristParentName = firstParentName;
+		mSecondParentName = sencondParentName;
 	}
 	
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		Intent intent = new Intent (mContext,WikiContentActivity.class);
-		intent.putExtra(WikiContentActivity.WIKI_CONTENT, mUri);
+		ParamsEntity pe = new ParamsEntity();
+		pe.setFirstTitle(mFristParentName);
+		pe.setSecondTitle(mSecondParentName);
+		pe.setUri(mUri);
+		intent.putExtra(WikiContentActivity.WIKI_CONTENT, pe);
 		mContext.getmMainActivity().showView(2, intent);
 	}
 

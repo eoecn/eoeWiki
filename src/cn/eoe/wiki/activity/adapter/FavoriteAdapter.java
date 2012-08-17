@@ -86,7 +86,7 @@ public class FavoriteAdapter extends BaseAdapter{
 					text.setBackgroundResource(R.drawable.bg_item_nocorners);
 				}
 			}
-			text.setOnClickListener(new FavoriteItemListener(entity.getUrl(), context));
+			text.setOnClickListener(new FavoriteItemListener(entity.getUrl(), context,context.getString(R.string.title_favorite),""));
 		}
 		return convertView;
 	}
