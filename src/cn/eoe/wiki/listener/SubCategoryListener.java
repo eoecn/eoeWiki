@@ -2,6 +2,7 @@ package cn.eoe.wiki.listener;
 
 import cn.eoe.wiki.activity.SubCategoryActivity;
 import cn.eoe.wiki.activity.WikiContentActivity;
+import cn.eoe.wiki.db.entity.ParamsEntity;
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,10 +11,14 @@ import android.widget.Toast;
 public class SubCategoryListener implements OnClickListener{
 
 	private String mUri;
+	private String mFirstTitle;
+	private String mSecondTitle;
 	private SubCategoryActivity mContext;
 	
-	public SubCategoryListener(String pUri,SubCategoryActivity pContext){
+	public SubCategoryListener(String pFirstTitle,String pSecondTitle,String pUri,SubCategoryActivity pContext){
 		mUri = pUri;
+		mFirstTitle = pFirstTitle;
+		mSecondTitle = pSecondTitle;
 		mContext = pContext;
 	}
 	
@@ -21,8 +26,12 @@ public class SubCategoryListener implements OnClickListener{
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		Intent intent = new Intent (mContext,WikiContentActivity.class);
-		intent.putExtra(WikiContentActivity.WIKI_CONTENT, mUri);
+		ParamsEntity pe = new ParamsEntity();
+		pe.setFirstTitle(mFirstTitle);
+		pe.setSecondTitle(mSecondTitle);
+		pe.setUri(mUri);
+		intent.putExtra(WikiContentActivity.WIKI_CONTENT, pe);
 		mContext.getmMainActivity().showView(2, intent);
 	}
-
+	
 }

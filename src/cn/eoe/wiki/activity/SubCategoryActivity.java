@@ -147,7 +147,8 @@ public class SubCategoryActivity extends CategoryActivity implements OnClickList
 				TextView tv = (TextView)mInflater.inflate(R.layout.category_title, null);
 				tv.setText(category.getName());
 				tv.setBackgroundResource(R.drawable.btn_grey_blue_nostroke_top);
-				tv.setOnClickListener(new SubCategoryListener(category.getUri(), SubCategoryActivity.this));
+				tv.setOnClickListener(new SubCategoryListener(mParentCategory.getName(),
+						"",category.getUri(), SubCategoryActivity.this));
 				categoryLayout.addView(tv);
 				List<CategoryChild> categorysChildren =  category.getChildren();
 				if(categorysChildren!=null)
@@ -166,7 +167,8 @@ public class SubCategoryActivity extends CategoryActivity implements OnClickList
 						
 						TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
 						tvChild.setText(categorysChild.getName());
-						tvChild.setOnClickListener(new SubCategoryListener(categorysChild.getUri(), SubCategoryActivity.this));
+						tvChild.setOnClickListener(new SubCategoryListener(mParentCategory.getName(),
+								category.getName(),categorysChild.getUri(), SubCategoryActivity.this));
 						if(i==(size-1))
 						{
 							tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_bottom);
