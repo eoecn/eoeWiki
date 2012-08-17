@@ -27,7 +27,6 @@ public class SubCategoryListener implements OnClickListener{
 	public void onClick(View v) {
 		if(mContext.getmMainActivity().getSliderLayer().isAnimationing())
 		{
-			L.e("Slding moving ....");
 			return;
 		}
 		Intent intent = new Intent (mContext,WikiContentActivity.class);

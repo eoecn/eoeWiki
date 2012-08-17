@@ -22,7 +22,10 @@ public class RecentlyUpdatedListener implements OnClickListener {
 	
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
+		if(mContext.getmMainActivity().getSliderLayer().isAnimationing())
+		{
+			return;
+		}
 		Intent intent = new Intent(mContext, WikiContentActivity.class);
 		ParamsEntity pe = new ParamsEntity();
 		pe.setFirstTitle(mFirstTitle);

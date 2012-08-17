@@ -86,7 +86,7 @@ public class RecentlyUpdatedActivity extends SliderActivity implements SliderLis
 	}
 
 	void initData() {
-		mTvParentName.setText("最近更新");
+		mTvParentName.setText(R.string.title_update_recent);
 		showProgressLayout();
 	}
 	
@@ -193,8 +193,8 @@ public class RecentlyUpdatedActivity extends SliderActivity implements SliderLis
 			
 			tvChild.setOnClickListener(
 				new RecentlyUpdatedListener(
-					"最新更新", 
-					item.getTitle(), 
+					mContext.getString(R.string.title_update_recent), 
+					"", 
 					WIKI_URL_HOST + WIKI_URL_DETAIL + item.getTitle().replace(' ', '_'), 
 					this
 				)
@@ -221,6 +221,7 @@ public class RecentlyUpdatedActivity extends SliderActivity implements SliderLis
 	@Override
 	public void onSidebarOpened() {
 		new HttpManager(WIKI_URL_HOST + WIKI_URL_LOCATION, null, HttpManager.GET, getRecentlyUpdatedTransaction).start();
+		getmMainActivity().getSliderLayer().removeSliderListener(this);
 		
 	}
 

@@ -29,6 +29,10 @@ public class FavoriteItemListener implements OnClickListener{
 	
 	@Override
 	public void onClick(View v) {
+		if(mContext.getmMainActivity().getSliderLayer().isAnimationing())
+		{
+			return;
+		}
 		Intent intent = new Intent (mContext,WikiContentActivity.class);
 		ParamsEntity pe = new ParamsEntity();
 		pe.setFirstTitle(mFristParentName);
