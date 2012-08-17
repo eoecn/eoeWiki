@@ -3,6 +3,8 @@ package cn.eoe.wiki.activity;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.umeng.analytics.MobclickAgent;
+
 import android.app.ActivityGroup;
 import android.app.LocalActivityManager;
 import android.content.Intent;
@@ -47,7 +49,8 @@ public class MainActivity extends ActivityGroup {
 
 		mSliderLayers = (SliderLayer) findViewById(R.id.animation_layout);
 		mLayerIdMap = new HashMap<Integer, String>();
-
+		//umeng event
+		MobclickAgent.onEvent(this, "home", "enter");
 		int sceenWidth = WikiUtil.getSceenWidth(mMainActivity);
 		ViewGroup layerOne = (ViewGroup) findViewById(R.id.animation_layout_one);
 		layerOne.setPadding(0,0, WikiUtil.dip2px(mMainActivity, 20), 0);

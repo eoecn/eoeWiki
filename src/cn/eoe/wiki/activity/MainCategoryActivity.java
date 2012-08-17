@@ -23,6 +23,7 @@ import cn.eoe.wiki.listener.CategoryTitleListener;
 import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.AboutDialog;
 
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.UMFeedbackService;
 /**
  * 用来处理最外层分类的界面
@@ -122,23 +123,37 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_try_again:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_try_again");
 			showProgressLayout();
 			getCategory(mCategoryUrl);
 			break;
 		case R.id.btn_search:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_search");
 			break;
 		case R.id.layout_about:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_about");
 			aboutDialog.show();
 			break;
 		case R.id.layout_recommand:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_recommand");
 			recommandToFriend();
 			break;
 		case R.id.layout_feedback:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_feedback");
 			UMFeedbackService.openUmengFeedbackSDK(this);
 			break;
 		case R.id.btn_recent:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_recent");
 			break;
 		case R.id.iv_favorite:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_favorite");
 			Intent intent = new Intent (mContext,FavoriteActivity.class);
 			getmMainActivity().showView(1, intent);
 			break;
