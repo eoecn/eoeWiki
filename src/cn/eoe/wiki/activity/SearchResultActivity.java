@@ -7,7 +7,8 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,20 +38,24 @@ import cn.eoe.wiki.view.SliderLayer.SliderListener;
  * @data 2012-8-11
  * @version 1.0.0
  */
-public class SearchResultActivity extends SearchActivity implements
-		OnClickListener,SliderListener {
+public class SearchResultActivity extends SearchActivity implements OnClickListener, SliderListener, OnScrollListener {
+	public static final String KEY_SEARCH_TEXT = "search_text";
 	public static final String KEY_SEARCHRESULT = "SearchResultActivity";
+	private static final int HANDLER_LOADING_MORE = 0x0002;
 
 	private LinearLayout mSearchResultLayout;
 	// private MyListView listView;
 	private HashMap<String, Object> maps;
 	private LayoutInflater mInflater;
 	private ImageButton mBtnBack;
+	private TextView mTvTitle;
 
-//	private LinkedList<HashMap<String, String>> mListItems;
 	private List<HashMap<String, Object>> lists;
-	private int lastItem;
+	// private int lastItem;
 	private MyListAdapter adapter;
+	private int count_load;
+	private SearchJudgeJson searchResultJudge;
+	private boolean flg;
 	// private OnRefreshListener mOnRefreshListener;
 
 	// private boolean mProgressVisible;
@@ -59,7 +64,7 @@ public class SearchResultActivity extends SearchActivity implements
 	// private String url =
 	// "http://wiki.eoeandroid.com/api.php?action=query&list=search&format=json&srwhat=text&srsearch=";
 
-	private String url = "http://wiki.eoeandroid.com/api.php?action=query&list=search&srwhat=text&format=json&sroffset=2&srlimit=10&srsearch=";
+	private String url = "http://wiki.eoeandroid.com/api.php?action=query&list=search&srwhat=text&format=json&sroffset=0&srlimit=10&srsearch=";
 	private String content_search;
 
 	@Override
@@ -71,8 +76,9 @@ public class SearchResultActivity extends SearchActivity implements
 		if (intent == null) {
 			throw new NullPointerException("Must give a keyword in the intent");
 		}
-		content_search = intent.getStringExtra("et_search");
+		content_search = intent.getStringExtra(KEY_SEARCH_TEXT);
 		url += content_search;
+		/* 监听滑块滑动的动作 */
 		getmMainActivity().getSliderLayer().addSliderListener(this);
 		initComponent();
 		initData();
@@ -86,13 +92,19 @@ public class SearchResultActivity extends SearchActivity implements
 
 	void initComponent() {
 		mSearchResultLayout = (LinearLayout) findViewById(R.id.layout_search_result);
-		// listView = (MyListView) findViewById(R.id.listView);
+		mTvTitle = (TextView) findViewById(R.id.tv_title_parent);
 		mBtnBack = (ImageButton) findViewById(R.id.btn_back);
 		mBtnBack.setOnClickListener(this);
 	}
 
+	/**
+	 * 初始化loading
+	 */
 	void initData() {
-		showProgressLayout();
+		flg = true;
+		count_load = 0;
+		mTvTitle.setText(R.string.button_search);
+		// showProgressLayout();
 	}
 
 	protected void showProgressLayout() {
@@ -124,105 +136,31 @@ public class SearchResultActivity extends SearchActivity implements
 	protected void generateSearchResult(SearchJson responseObject) {
 		// if(WikiConfig.isDebug()) return;
 
-		SearchJudgeJson searchResultJudge = responseObject.getQuery_continue();
-		if (null != searchResultJudge) {
-			SearchJudgeChild search = searchResultJudge.getSearch();
-			int sroffset = search.getSroffset();
-			System.out.println(sroffset);
-		}
+		searchResultJudge = responseObject.getQuery_continue();
 
 		SearchResultJson searchResultJson = responseObject.getQuery();
 		List<SearchResultChild> results = searchResultJson.getSearch();
 		if (results != null) {
 			if (0 != results.size()) {
-				mSearchResultLayout.removeAllViews();
 
-				// Button button = new Button(mContext);
-				// button.setText("tyut");
-				// mSearchResultLayout.addView(button);
-				// mProgressVisible = false;
-				 lists = new ArrayList<HashMap<String, Object>>();
-				// MyListView myListView = new MyListView(mContext);
-				ListView myListView = new ListView(mContext);
+				lists = new ArrayList<HashMap<String, Object>>();
+				ListView myListView = (ListView) findViewById(R.id.ListView);
 
 				for (SearchResultChild result : results) {
 					maps = new HashMap<String, Object>();
 					maps.put("title", result.getTitle());
 					maps.put("snippet", result.getSnippet());
 					lists.add(maps);
-					// TextView tv = new TextView(mContext);
-					// tv.setText(result.getTitle());
-					// tv.setTextColor(R.color.green);
-					// mSearchResultLayout.addView(tv);
-					//
-					// TextView tvChild = new TextView(mContext);
-					// tvChild.setText(result.getSnippet());
-					// tvChild.setPadding(50, 20, 0, 0);
-					// L.d("tvChild font:" + tvChild.getTextSize());
-					// tvChild.setTextSize(tvChild.getTextSize() * 2 / 5);
-					// tvChild.setTextColor(WikiUtil.getResourceColor(R.color.black,
-					// mContext));
-					// // tvChild.setOnClickListener();
-					// mSearchResultLayout.addView(tvChild);
 
 				}
-				adapter = new MyListAdapter(mContext, lists);
+				adapter = new MyListAdapter(SearchResultActivity.this, lists);
 				myListView.setAdapter(adapter);
-				mSearchResultLayout.addView(myListView);
-				myListView.setOnScrollListener(new OnScrollListener() {
-
-					@Override
-					public void onScrollStateChanged(AbsListView view,
-							int scrollState) {
-						if (lastItem == adapter.getCount() - 1
-								&& scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
-							addMoreData();
-						}
-					}
-
-					@Override
-					public void onScroll(AbsListView view,
-							int firstVisibleItem, int visibleItemCount,
-							int totalItemCount) {
-						Log.i(SearchResultActivity.class.getCanonicalName(),
-								firstVisibleItem + "firstVisibleItem");
-						Log.i(SearchResultActivity.class.getCanonicalName(),
-								visibleItemCount + "visibleItemCount");
-
-						lastItem = firstVisibleItem - 2 + visibleItemCount;
-					}
-				});
+				myListView.setOnScrollListener(this);
 
 			} else {
 				getSearchResultNull();
 			}
 		}
-	}
-
-	private void addMoreData() {
-		showDialog(0);
-		new Thread() {
-			public void run() {
-				for (int i = 0; i < 3; i++) {
-					/************测试数据********************/
-					HashMap<String, Object> map = new HashMap<String, Object>();
-					map.put("title", "中国城市智能手机普及率35%");
-					map.put("snippet", "Google今日发布的报告显示");
-					lists.add(map);
-				}
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				runOnUiThread(new Runnable() {
-					public void run() {
-						removeDialog(0);
-						adapter.notifyDataSetChanged();
-					}
-				});
-			};
-		}.start();
 	}
 
 	protected void getSearchResultNull() {
@@ -259,16 +197,22 @@ public class SearchResultActivity extends SearchActivity implements
 			break;
 		}
 	}
+
+	/**
+	 * 滑动全部展开后会调用 在这里开始去加载数据
+	 * 
+	 */
 	@Override
 	public void onSidebarOpened() {
 		//TODO get the result
+		WikiUtil.hideSoftInput(mBtnBack);
 		getSearchResult(url);
 		getmMainActivity().getSliderLayer().removeSliderListener(this);
 	}
 
 	@Override
 	public void onSidebarClosed() {
-		
+
 	}
 
 	@Override
@@ -305,29 +249,15 @@ public class SearchResultActivity extends SearchActivity implements
 
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			// if (position == getCount() - 1) {
-			// View view = LayoutInflater.from(getApplicationContext())
-			// .inflate(R.layout.listfooter_more, null);
-			// return view;
-			// }
-			ViewHolder holder;
-			if (convertView != null
-					&& convertView.getId() == R.id.newitem_layout) {
-				holder = (ViewHolder) convertView.getTag();
-			} else {
-				convertView = LayoutInflater.from(mContext).inflate(
-						R.layout.newsitem, null);
-				holder = new ViewHolder();
-				holder.tvTitle = (TextView) convertView
-						.findViewById(R.id.news_title);
-				holder.tvContent = (TextView) convertView
-						.findViewById(R.id.news_from);
+			convertView = mInflater.inflate(R.layout.newsitem, null);
+			TextView tvTitle = (TextView) convertView
+					.findViewById(R.id.news_title);
+			TextView tvContent = (TextView) convertView
+					.findViewById(R.id.news_from);
 
-				convertView.setTag(holder);
-			}
-			holder.tvTitle.setText(data.get(position).get("title").toString());
-			holder.tvTitle.setPadding(15, 0, 10, 0);
-			String title = data.get(position).get("title").toString();
+			tvTitle.setText(data.get(position).get("title").toString());
+			tvTitle.setPadding(15, 0, 10, 0);
+			final String title = data.get(position).get("title").toString();
 			String[] title_array = title.split(" ");
 			StringBuffer title_search = new StringBuffer();
 			for (int i = 0; i < title_array.length; i++) {
@@ -341,14 +271,17 @@ public class SearchResultActivity extends SearchActivity implements
 
 			final String url_toContent = "http://wiki.eoeandroid.com/api.php?action=parse&format=json&page="
 					+ title_search;
-			holder.tvTitle.setOnClickListener(new OnClickListener() {
+			tvTitle.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(mContext,
 							WikiContentActivity.class);
-					intent.putExtra(WikiContentActivity.WIKI_CONTENT,
-							url_toContent);
+					ParamsEntity pe = new ParamsEntity();
+					pe.setFirstTitle("搜索");
+					pe.setSecondTitle(title);
+					pe.setUri(url_toContent);
+					intent.putExtra(WikiContentActivity.WIKI_CONTENT, pe);
 					getmMainActivity().showView(2, intent);
 				}
 			});
@@ -356,15 +289,64 @@ public class SearchResultActivity extends SearchActivity implements
 			String content = data.get(position).get("snippet").toString();
 			content = content.replace("<span class='searchmatch'>", "");
 			content = content.replace("</span>", "");
-			holder.tvContent.setText(content);
-			holder.tvContent.setPadding(30, 0, 10, 0);
+			tvContent.setText(content);
+			tvContent.setPadding(30, 0, 10, 0);
 			return convertView;
 		}
 	}
 
-	public static class ViewHolder {
-		TextView tvTitle;
-		TextView tvContent;
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState) {
+		// TODO Auto-generated method stub
+		if (scrollState == OnScrollListener.SCROLL_STATE_FLING
+				|| scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
+			if (view.getLastVisiblePosition() == view.getCount() - 1) {
+				count_load++;
+				mHandler.sendEmptyMessage(HANDLER_LOADING_MORE);
+			}
+		}
+	}
+
+	private Handler mHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			int sroffset = 0;
+			switch (msg.what) {
+
+			case HANDLER_LOADING_MORE:
+				String url_load = "http://wiki.eoeandroid.com/api.php?action=query&list=search&srwhat=text&format=json&srlimit=10&srsearch="
+						+ content_search + "&sroffset=";
+				// mLayoutPrgogress.setVisibility(View.VISIBLE);
+				// new LoadFavoriteFromDb().execute(currentPage+1);
+
+				if (null != searchResultJudge) {
+					SearchJudgeChild search = searchResultJudge.getSearch();
+					sroffset = search.getSroffset();
+					System.out.println(sroffset);
+					if (sroffset < 10) {
+						url_load += String.valueOf(sroffset);
+					} else {
+						url_load += String.valueOf(10 * count_load);
+					}
+
+					getSearchResult(url_load);
+				}
+
+				break;
+
+			default:
+				break;
+			}
+		}
+
+	};
+
+	@Override
+	public void onScroll(AbsListView view, int firstVisibleItem,
+			int visibleItemCount, int totalItemCount) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

@@ -23,6 +23,9 @@ public class CategoryChild implements Parcelable{
 	@JsonProperty("uri")
 	private String uri;
 	
+	@JsonProperty("pageid")
+	private String pageID;
+	
 	@JsonProperty("children")
 	private	List<CategoryChild> children;
 	
@@ -37,6 +40,7 @@ public class CategoryChild implements Parcelable{
 		name = source.readString();
 		description = source.readString();
 		uri = source.readString();
+		pageID = source.readString();
 		children = new ArrayList<CategoryChild>();
 		source.readTypedList(children, CategoryChild.CREATOR);
 	}
@@ -53,7 +57,7 @@ public class CategoryChild implements Parcelable{
 		dest.writeString(name);
 		dest.writeString(description);
 		dest.writeString(uri);
-		dest.writeString(title);
+		dest.writeString(pageID);
 		dest.writeTypedList(children);
 	}
 	public static final Parcelable.Creator<CategoryChild> CREATOR = new Creator<CategoryChild>() {
@@ -99,6 +103,15 @@ public class CategoryChild implements Parcelable{
 
 	public void setUri(String uri) {
 		this.uri = uri;
+	}
+
+	
+	public String getPageID() {
+		return pageID;
+	}
+
+	public void setPageID(String pageID) {
+		this.pageID = pageID;
 	}
 
 	public List<CategoryChild> getChildren() {

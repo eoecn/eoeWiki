@@ -12,7 +12,7 @@
 		android:singleLine="true"
 		android:clickable="true"
 		android:ellipsize="end"
-		android:paddingLeft="20dip"
+		android:paddingLeft="5dip"
 		android:paddingTop="5dip"
 		android:paddingRight="5dip"
 		android:paddingBottom="5dip"/>

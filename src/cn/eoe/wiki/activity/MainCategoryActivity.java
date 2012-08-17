@@ -4,12 +4,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -69,9 +72,10 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 	}
 
 	void initComponent() {
+		ImageView ivCategoryLog = (ImageView)findViewById(R.id.category_logo);
+		ivCategoryLog.requestFocus();
 		mCategoryLayout = (LinearLayout)findViewById(R.id.layout_category);
 		mBtnSearch=(Button)findViewById(R.id.btn_search);
-		mBtnSearch.requestFocus();
 		mEditText = (EditText) findViewById(R.id.et_search);
 		
 		aboutDialog = new AboutDialog(this);
@@ -137,12 +141,12 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 		case R.id.btn_search:
 			//umeng event
 			MobclickAgent.onEvent(this, "home", "btn_search");
-			L.d("pressed search");
-			if (TextUtils.isEmpty(mEditText.getText())) {
+			String searchText = mEditText.getText().toString();
+			if (TextUtils.isEmpty(searchText)) {
 				Toast.makeText(mContext, "请输入检索关键字", Toast.LENGTH_SHORT).show();
 			} else {
 				Intent intent_toSearchResult = new Intent(mContext, SearchResultActivity.class);
-				intent_toSearchResult.putExtra("et_search", mEditText.getText().toString());
+				intent_toSearchResult.putExtra(SearchResultActivity.KEY_SEARCH_TEXT, searchText);
 				getmMainActivity().showView(1, intent_toSearchResult);
 			}
 			break;
@@ -162,8 +166,14 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 			UMFeedbackService.openUmengFeedbackSDK(this);
 			break;
 		case R.id.btn_recent:
-			//umeng event
-			MobclickAgent.onEvent(this, "home", "btn_recent");
+			try{
+				Intent intent = new Intent (this, RecentlyUpdatedActivity.class);
+				this.getmMainActivity().showView(1, intent);
+	        }
+	        catch (Exception e)
+	        {
+	            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+	        }
 			break;
 		case R.id.iv_favorite:
 			//umeng event

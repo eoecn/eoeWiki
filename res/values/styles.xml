@@ -12,13 +12,20 @@
 	</style>
 	
 	<style name="listStyle">
-    	<item name="android:layout_height">fill_parent</item>
-        <item name="android:layout_width">fill_parent</item>
+    	<item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
     	<item name="android:fadingEdge">none</item>
     	<item name="android:background">@color/deep_grey</item>
     	<item name="android:fadeScrollbars">true</item>
     	<item name="android:scrollingCache">false</item>
     	<item name="android:cacheColorHint">@color/white</item>
     	<item name="android:dividerHeight">0dip</item>
+	</style>
+	
+	<style name="scrollStyle">
+    	<item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+    	<item name="android:fadingEdge">none</item>
+    	<!--<item name="android:scrollbars">none</item>-->
 	</style>
 </resources>

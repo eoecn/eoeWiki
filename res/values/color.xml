@@ -18,6 +18,7 @@
       <color name="grey_stroke">#c1c1c1</color>
       
       <color name="grey_category">#797878</color>
+      <color name="not_finish_color">#cecece</color>
       
 </resources>
 

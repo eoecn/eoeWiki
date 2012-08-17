@@ -1,22 +1,19 @@
 package cn.eoe.wiki.listener;
 
-import cn.eoe.wiki.activity.ParamsEntity;
-import cn.eoe.wiki.activity.SubCategoryActivity;
-import cn.eoe.wiki.activity.WikiContentActivity;
-import cn.eoe.wiki.utils.L;
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Toast;
+import cn.eoe.wiki.activity.ParamsEntity;
+import cn.eoe.wiki.activity.RecentlyUpdatedActivity;
+import cn.eoe.wiki.activity.WikiContentActivity;
 
-public class SubCategoryListener implements OnClickListener{
-
+public class RecentlyUpdatedListener implements OnClickListener {
 	private String mUri;
 	private String mFirstTitle;
 	private String mSecondTitle;
-	private SubCategoryActivity mContext;
+	private RecentlyUpdatedActivity mContext;
 	
-	public SubCategoryListener(String pFirstTitle,String pSecondTitle,String pUri,SubCategoryActivity pContext){
+	public RecentlyUpdatedListener(String pFirstTitle,String pSecondTitle,String pUri,RecentlyUpdatedActivity pContext){
 		mUri = pUri;
 		mFirstTitle = pFirstTitle;
 		mSecondTitle = pSecondTitle;
@@ -25,12 +22,11 @@ public class SubCategoryListener implements OnClickListener{
 	
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		if(mContext.getmMainActivity().getSliderLayer().isAnimationing())
 		{
 			return;
 		}
-		Intent intent = new Intent (mContext,WikiContentActivity.class);
+		Intent intent = new Intent(mContext, WikiContentActivity.class);
 		ParamsEntity pe = new ParamsEntity();
 		pe.setFirstTitle(mFirstTitle);
 		pe.setSecondTitle(mSecondTitle);
@@ -38,5 +34,4 @@ public class SubCategoryListener implements OnClickListener{
 		intent.putExtra(WikiContentActivity.WIKI_CONTENT, pe);
 		mContext.getmMainActivity().showView(2, intent);
 	}
-	
 }

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.eoe.wiki"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionCode="100"
+    android:versionName="1.0.0" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -39,9 +39,10 @@
         </activity>
         <activity android:name=".activity.WikiContentActivity" >
         </activity>
+		<activity android:name=".activity.RecentlyUpdatedActivity" >
+		</activity>
         <activity android:name=".activity.FavoriteActivity" >
         </activity>
-
         <provider
             android:authorities="cn.eoe.wiki.provider"
             android:name=".db.DatabaseProvider" >

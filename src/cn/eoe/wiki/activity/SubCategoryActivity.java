@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -17,6 +18,7 @@ import cn.eoe.wiki.R;
 import cn.eoe.wiki.json.CategoryChild;
 import cn.eoe.wiki.json.CategoryJson;
 import cn.eoe.wiki.listener.SubCategoryListener;
+import cn.eoe.wiki.listener.SubCategoryNoFinishListener;
 import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.SliderLayer;
@@ -150,37 +152,9 @@ public class SubCategoryActivity extends CategoryActivity implements OnClickList
 				tv.setOnClickListener(new SubCategoryListener(mParentCategory.getName(),
 						"",category.getUri(), SubCategoryActivity.this));
 				categoryLayout.addView(tv);
-				List<CategoryChild> categorysChildren =  category.getChildren();
-				if(categorysChildren!=null)
-				{
-					int size = categorysChildren.size();
-					for (int i = 0; i < size; i++)
-					{
-						//add the line first
-						View lineView = new View(mContext);
-						LayoutParams blankParams = new LayoutParams(LayoutParams.MATCH_PARENT, WikiUtil.dip2px(mContext, 1));
-						lineView.setLayoutParams(blankParams);
-						lineView.setBackgroundResource(R.color.grey_stroke);
-						categoryLayout.addView(lineView);
-						//add the text
-						CategoryChild categorysChild = categorysChildren.get(i);
-						
-						TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
-						tvChild.setText(categorysChild.getName());
-						tvChild.setOnClickListener(new SubCategoryListener(mParentCategory.getName(),
-								category.getName(),categorysChild.getUri(), SubCategoryActivity.this));
-						if(i==(size-1))
-						{
-							tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_bottom);
-						}
-						else
-						{
-							tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_nocorners);
-						}
-//						mCategoryLayout.addView(tvChild);
-						categoryLayout.addView(tvChild);
-					}
-				}
+				List<CategoryChild> subCategories =  category.getChildren();
+
+				buildCategories(categoryLayout, subCategories, 1);
 
 				View blankView = new View(mContext);
 				LayoutParams blankParams = new LayoutParams(LayoutParams.MATCH_PARENT, WikiUtil.dip2px(mContext, 8));
@@ -195,6 +169,72 @@ public class SubCategoryActivity extends CategoryActivity implements OnClickList
 			noCategoryParams.topMargin = WikiUtil.dip2px(mContext, 10);
 			noCategoryView.setLayoutParams(noCategoryParams);
 			mCategoryLayout.addView(noCategoryView);
+		}
+	}
+	
+	private void buildCategories(ViewGroup parent,List<CategoryChild> categories,int floot)
+	{
+		if(categories!=null)
+		{
+			int size = categories.size();
+			for (int i = 0; i < size; i++)
+			{
+				//add the line first
+				View lineView = new View(mContext);
+				LayoutParams blankParams = new LayoutParams(LayoutParams.MATCH_PARENT, WikiUtil.dip2px(mContext, 1));
+				lineView.setLayoutParams(blankParams);
+				lineView.setBackgroundResource(R.color.grey_stroke);
+				parent.addView(lineView);
+				//add the text
+				CategoryChild categorysChild = categories.get(i);
+
+				TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
+				if(floot>1)
+				{
+					tvChild.setText("●"+categorysChild.getName());
+				}
+				else
+				{
+					tvChild.setText(categorysChild.getName());
+				}
+				boolean notFinish = TextUtils.isEmpty(categorysChild.getPageID());
+				if(notFinish)
+				{
+					tvChild.setTextColor(WikiUtil.getResourceColor(R.color.not_finish_color, mContext));
+					tvChild.setOnClickListener(new SubCategoryNoFinishListener(SubCategoryActivity.this));
+				}
+				else
+				{
+					tvChild.setOnClickListener(new SubCategoryListener(mParentName,mParentCategory.getName(),
+							categorysChild.getUri(), SubCategoryActivity.this));
+				}
+				tvChild.setPadding(WikiUtil.dip2px(mContext, 20)*floot, WikiUtil.dip2px(mContext, 5), WikiUtil.dip2px(mContext, 5), WikiUtil.dip2px(mContext, 5));
+				parent.addView(tvChild);
+				List<CategoryChild> subCategories =  categorysChild.getChildren();
+				if(i==(size-1)&&(subCategories==null||subCategories.size()==0))//如果是最后一个，并且没有子元素了，就收尾
+				{
+					if(notFinish)
+					{
+						tvChild.setBackgroundResource(R.drawable.shape_nostroke_white_bottom);
+					}
+					else
+					{
+						tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_bottom);
+					}
+				}
+				else
+				{
+					if(notFinish)
+					{
+						tvChild.setBackgroundColor(WikiUtil.getResourceColor(R.color.white, mContext));
+					}
+					else
+					{
+						tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_nocorners);
+					}
+					buildCategories(parent, subCategories, floot+1);
+				}
+			}
 		}
 	}
 

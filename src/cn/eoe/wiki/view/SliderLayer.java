@@ -39,15 +39,15 @@ import cn.eoe.wiki.utils.L;
  * @version 1.0.0
  */
 public class SliderLayer extends ViewGroup {
-    public final static int DURATION = 500;
+    public final static int 		DURATION 		= 500;
 
 
-    protected List<SliderEntity> mListLayers;
-    protected Animation mAnimation;
-    protected Set<SliderListener> mListeners;
+    protected List<SliderEntity> 	mListLayers;
+    protected Animation 			mAnimation;
+    protected Set<SliderListener> 	mListeners;
 
-    private int mOpenLayerIndex =0;
-    
+    private int 					mOpenLayerIndex =0;
+    private boolean 				isAnimationing = false;
 
     public SliderLayer(Context context) {
         this(context, null);
@@ -132,6 +132,12 @@ public class SliderLayer extends ViewGroup {
     public int openingLayerIndex() {
         return mOpenLayerIndex;
     }
+    
+    public boolean isAnimationing()
+    {
+    	return isAnimationing;
+    }
+    
     public void openSidebar(int index) {
     	if(index <= mOpenLayerIndex)
     	{
@@ -194,7 +200,7 @@ public class SliderLayer extends ViewGroup {
         }
 
         public void onAnimationStart(Animation animation) {
-//            iSidebar.setVisibility(View.VISIBLE);
+            isAnimationing = true;
         }
 
         public void onAnimationEnd(Animation animation) {
@@ -203,6 +209,7 @@ public class SliderLayer extends ViewGroup {
             for(SliderListener l:mListeners) {
                 l.onSidebarOpened();
             }
+            isAnimationing = false;
         }
     }
 
@@ -216,6 +223,7 @@ public class SliderLayer extends ViewGroup {
         public void onAnimationRepeat(Animation animation) {
         }
         public void onAnimationStart(Animation animation) {
+            isAnimationing = true;
         }
 
         public void onAnimationEnd(Animation animation) {
@@ -224,6 +232,7 @@ public class SliderLayer extends ViewGroup {
             for(SliderListener l:mListeners) {
                 l.onSidebarClosed();
             }
+            isAnimationing = false;
         }
     }
     public interface SliderListener {
