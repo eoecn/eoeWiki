@@ -6,23 +6,28 @@ import java.util.Set;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.WikiConfig;
 import cn.eoe.wiki.json.CategoryChild;
 import cn.eoe.wiki.json.CategoryJson;
 import cn.eoe.wiki.listener.CategoryListener;
 import cn.eoe.wiki.listener.CategoryTitleListener;
+import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.AboutDialog;
 
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.UMFeedbackService;
 /**
  * 用来处理最外层分类的界面
@@ -35,6 +40,7 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 	private LinearLayout	mCategoryLayout;
 	private LayoutInflater 	mInflater;
 	private Button			mBtnSearch;
+	private EditText        mEditText;
 
 	private LinearLayout			mLayoutAbout;
 	private LinearLayout			mLayoutRecommand;
@@ -66,6 +72,7 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 		mCategoryLayout = (LinearLayout)findViewById(R.id.layout_category);
 		mBtnSearch=(Button)findViewById(R.id.btn_search);
 		mBtnSearch.requestFocus();
+		mEditText = (EditText) findViewById(R.id.et_search);
 		
 		aboutDialog = new AboutDialog(this);
 		mLayoutAbout=(LinearLayout)findViewById(R.id.layout_about);
@@ -122,23 +129,45 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_try_again:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_try_again");
 			showProgressLayout();
 			getCategory(mCategoryUrl);
 			break;
 		case R.id.btn_search:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_search");
+			L.d("pressed search");
+			if (TextUtils.isEmpty(mEditText.getText())) {
+				Toast.makeText(mContext, "请输入检索关键字", Toast.LENGTH_SHORT).show();
+			} else {
+				Intent intent_toSearchResult = new Intent(mContext, SearchResultActivity.class);
+				intent_toSearchResult.putExtra("et_search", mEditText.getText().toString());
+				getmMainActivity().showView(1, intent_toSearchResult);
+			}
 			break;
 		case R.id.layout_about:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_about");
 			aboutDialog.show();
 			break;
 		case R.id.layout_recommand:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_recommand");
 			recommandToFriend();
 			break;
 		case R.id.layout_feedback:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_feedback");
 			UMFeedbackService.openUmengFeedbackSDK(this);
 			break;
 		case R.id.btn_recent:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_recent");
 			break;
 		case R.id.iv_favorite:
+			//umeng event
+			MobclickAgent.onEvent(this, "home", "btn_favorite");
 			Intent intent = new Intent (mContext,FavoriteActivity.class);
 			getmMainActivity().showView(1, intent);
 			break;
@@ -172,7 +201,7 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 				int paddind = WikiUtil.dip2px(mContext, 1);
 				categoryLayout.setPadding(paddind, paddind, paddind, paddind);
 				categoryLayout.setLayoutParams(titleParams);
-				categoryLayout.setBackgroundResource(R.drawable.btn_grey_blue_stroke);
+				categoryLayout.setBackgroundResource(R.drawable.bg_stroke_grey_blue);
 				mCategoryLayout.addView(categoryLayout);
 				
 				TextView tv = (TextView)mInflater.inflate(R.layout.category_title, null);
@@ -183,7 +212,7 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 				{
 					//if operCategory==null ,it means the first
 					//mCloseCategorys.contains(category) this category is close
-					tv.setBackgroundResource(R.drawable.btn_grey_blue_nostroke_top);
+					tv.setBackgroundResource(R.drawable.bg_nostroke_grey_blue_top);
 				
 					List<CategoryChild> categorysChildren =  category.getChildren();
 					if(categorysChildren!=null)
@@ -205,11 +234,11 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 							tvChild.setOnClickListener(new CategoryListener(this, categorysChild,category.getName()));
 							if(i==(size-1))
 							{
-								tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_bottom);
+								tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_bottom);
 							}
 							else
 							{
-								tvChild.setBackgroundResource(R.drawable.btn_white_blue_nostroke_nocorners);
+								tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_nocorners);
 							}
 							categoryLayout.addView(tvChild);
 						}
@@ -217,7 +246,7 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 				}
 				else
 				{
-					tv.setBackgroundResource(R.drawable.btn_grey_blue_nostroke);
+					tv.setBackgroundResource(R.drawable.bg_nostroke_grey_blue);
 				}
 
 				View blankView = new View(mContext);
