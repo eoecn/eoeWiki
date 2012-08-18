@@ -48,6 +48,8 @@
     <string name="content_share">这篇文章挺好，推荐给你看看：%1$s | %2$s （来自：优亿百科）</string>
     <string name="no_such_article">槽糕，找不到该文章</string>
     <string name="unknow_error">未知错误！无法加载</string>
+    <string name="favorite_success">收藏成功</string>
+    <string name="favorite_cancel">取消收藏成功</string>
     
 	<string name="about_translators1">kris: 和eoer们一起合作，感觉非常的棒</string>
 	<string name="about_translators2">小手冰凉: wiki，让我学到了很多...</string>

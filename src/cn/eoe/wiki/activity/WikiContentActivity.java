@@ -30,7 +30,6 @@ import cn.eoe.wiki.http.HttpManager;
 import cn.eoe.wiki.http.ITransaction;
 import cn.eoe.wiki.json.WikiDetailErrorJson;
 import cn.eoe.wiki.json.WikiDetailJson;
-import cn.eoe.wiki.json.WikiDetailParent;
 import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.SliderLayer;
@@ -41,6 +40,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private static final int		HANDLER_DISPLAY_WIKIDETAIL 	= 0x0001;
 	private static final int		HANDLER_GET_WIKIERROR 	= 0x0002;
 	private static final int		HANDLER_GET_WIKIDETAIL_ERROR 	= 0x0003;
+	private static final int		SHOWTIME = 1000;
 	private static final String 	WIKI_URL_PRE = "http://wiki.eoeandroid.com/";
 	private static final String 	WIKI_URL_AFTER = "/api.php?action=parse&format=json&page=";
 	private boolean 				mIsFullScreen = false;
@@ -61,6 +61,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 	private RelativeLayout			mWikiDetailTitle;
 	private LinearLayout 			mLayoutFunctions;
+	private ScrollView 				mWikiScrollView;
 	
 	public static final 	String  WIKI_CONTENT = "wiki_content";
 	public static final		String 	KEY_PARENT_TITLE	= "parent_title";
@@ -104,6 +105,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		
 		mWikiDetailTitle = (RelativeLayout)findViewById(R.id.wiki_detail_title);
 		mLayoutFunctions = (LinearLayout)findViewById(R.id.layout_functions);
+		mWikiScrollView = (ScrollView)findViewById(R.id.sv_wiki_scroll);
 		
 		mBtnParentDirectory.setOnClickListener(this);
 		mBtnFullScreen.setOnClickListener(this);
@@ -117,12 +119,16 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		//需要上层传过来
 		mTvFistCategoryName.setText(mParamsEntity.getFirstTitle());
 		//TODO set the second parent title
-		mTvSecondCategoryName.setText(mParamsEntity.getSecondTitle());
-		showProgressLayout();
+		if("".equals(mParamsEntity.getSecondTitle())){
+			mTvSecondCategoryName.setVisibility(View.GONE);
+		}else{
+			mTvSecondCategoryName.setText(mParamsEntity.getSecondTitle());
+		}
 	}
 	
 	void getWikiDetail()
 	{
+		showProgressLayout();
 		HttpManager manager = new HttpManager(mParamsEntity.getUri(),null, HttpManager.GET, getWikiDetailTransaction);
 		manager.start();
 	}
@@ -151,6 +157,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private void generateWiki(WikiDetailJson pWikiDetailJson){
 		mWikiProcessLayout.removeAllViews();
 		mProgressVisible = false;
+		mWikiScrollView.setVisibility(View.VISIBLE);
 		String html = pWikiDetailJson.getParse().getText().getHtml();
 		String html1 = "<!DOCTYPE html PUBLIC "
                   + "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -174,6 +181,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 						first = System.currentTimeMillis();
 					}else if(count == 2){
 						second = System.currentTimeMillis();
+						System.out.println(second - first <= 500);
 						if(second - first <= 500){
 							fullScreen();
 							count = 0;
@@ -207,8 +215,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	}
 	
 	private void generateWikiError(WikiDetailErrorJson pWikiDetailErrorJson){
-		ScrollView sw = (ScrollView)findViewById(R.id.sv_wiki_scroll);
-		sw.setVisibility(View.GONE);
+		mWikiScrollView.setVisibility(View.GONE);
 		if("missingtitle".equals(pWikiDetailErrorJson.getError().getCode())){
 			getWikiError(getString(R.string.no_such_article));
 		}else{
@@ -273,9 +280,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 			fullScreen();
 			break;
 		case R.id.btn_favorite:
-			L.d("press favorite icon");
-			FavoriteDao favoriteDao = new FavoriteDao(mContext);
-			favoriteDao.addFavorite(responseObject.getParse().getRevid(), responseObject.getParse().getDisplayTitle(), mParamsEntity.getUri());
+			//collectionFavorite();
 			break;
 		case R.id.btn_share:
 			shareToFriend();
@@ -285,8 +290,19 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		}
 	}
 
-	protected void showProgressLayout()
+	/*private void collectionFavorite(){
+		FavoriteDao favoriteDao = new FavoriteDao(mContext);
+		favoriteDao.getFavoriteByUrl(m);
+		mWebView.seton
+		
+		favoriteDao.addFavorite(responseObject.getParse().getRevid(), responseObject.getParse().getDisplayTitle(), mParamsEntity.getUri());
+		Toast.makeText(mContext, getString(R.string.favorite_success), SHOWTIME).show();
+	}*/
+	
+	private void showProgressLayout()
 	{
+		mWikiScrollView.setVisibility(View.GONE);
+		
 		View progressView = mInflater.inflate(R.layout.loading, null);
 		mWikiProcessLayout.removeAllViews();
 		mWikiProcessLayout.addView(progressView);
@@ -297,7 +313,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		if(!mIsFullScreen){
 			mWikiDetailTitle.setVisibility(View.GONE);
 			mLayoutFunctions.setVisibility(View.GONE);
-			Toast.makeText(WikiContentActivity.this, getString(R.string.screen_back), 1000).show();
+			Toast.makeText(WikiContentActivity.this, getString(R.string.screen_back), SHOWTIME).show();
 			mIsFullScreen = true;
 		}else{
 			mWikiDetailTitle.setVisibility(View.VISIBLE);
