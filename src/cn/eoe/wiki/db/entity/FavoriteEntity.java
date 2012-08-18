@@ -7,7 +7,7 @@ package cn.eoe.wiki.db.entity;
  */
 public class FavoriteEntity extends DataBaseEntity {
 	private String		title;
-	private String		pageid;
+	private String		revid;
 	private String		url;
 	public String getTitle() {
 		return title;
@@ -15,11 +15,12 @@ public class FavoriteEntity extends DataBaseEntity {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public String getPageid() {
-		return pageid;
+	
+	public String getRevid() {
+		return revid;
 	}
-	public void setPageid(String pageid) {
-		this.pageid = pageid;
+	public void setRevid(String revid) {
+		this.revid = revid;
 	}
 	public String getUrl() {
 		return url;

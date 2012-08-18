@@ -57,13 +57,13 @@ public class FavoriteDao extends GeneralDao<FavoriteColumn> {
 		return favorites;
 	}
 	/**
-	 * 通过url获取FavoriteEntity
-	 * @param pageid
+	 * 通过revid获取FavoriteEntity
+	 * @param revid
 	 * @return
 	 */
-	public FavoriteEntity getFavoriteByUrl(String pageid)
+	public FavoriteEntity getFavoriteByRevid(String revid)
 	{
-		Cursor cursor = queryByParameter(FavoriteColumn.PAGEID, pageid);
+		Cursor cursor = queryByParameter(FavoriteColumn.REVID, revid);
 		return buildFavoriteEntity(cursor);
 	}
 	/**
@@ -73,11 +73,11 @@ public class FavoriteDao extends GeneralDao<FavoriteColumn> {
 	 * @param url
 	 * @return
 	 */
-	public boolean addFavorite(String pageid,String title,String url)
+	public boolean addFavorite(String revid,String title,String url)
 	{
-		if(TextUtils.isEmpty(pageid))
+		if(TextUtils.isEmpty(revid))
 		{
-			throw new IllegalArgumentException("Need a page id");
+			throw new IllegalArgumentException("Need a rev id");
 		}
 		if(TextUtils.isEmpty(title))
 		{
@@ -87,7 +87,7 @@ public class FavoriteDao extends GeneralDao<FavoriteColumn> {
 		{
 			throw new IllegalArgumentException("Need a url");
 		}
-		FavoriteEntity entity = getFavoriteByUrl(pageid);
+		FavoriteEntity entity = getFavoriteByRevid(revid);
 		long current = System.currentTimeMillis();
 		boolean isUpdate = false;
 		if(entity==null)
@@ -100,7 +100,7 @@ public class FavoriteDao extends GeneralDao<FavoriteColumn> {
 		{
 			isUpdate = true;
 		}
-		entity.setPageid(pageid);
+		entity.setRevid(revid);
 		entity.setTitle(title);
 		entity.setUrl(url);
 		entity.setModifyDate(current);
@@ -134,7 +134,7 @@ public class FavoriteDao extends GeneralDao<FavoriteColumn> {
 		entity.setAddDate(cursor.getLong(cursor.getColumnIndex(FavoriteColumn.DATE_ADD)));
 		entity.setModifyDate(cursor.getLong(cursor.getColumnIndex(FavoriteColumn.DATE_MODIFY)));
 		entity.setTitle(cursor.getString(cursor.getColumnIndex(FavoriteColumn.TITLE)));
-		entity.setPageid(cursor.getString(cursor.getColumnIndex(FavoriteColumn.PAGEID)));
+		entity.setRevid(cursor.getString(cursor.getColumnIndex(FavoriteColumn.REVID)));
 		entity.setUrl(cursor.getString(cursor.getColumnIndex(FavoriteColumn.URL)));
 		return entity;
 	}
@@ -172,9 +172,9 @@ public class FavoriteDao extends GeneralDao<FavoriteColumn> {
 		{
 			values.put(FavoriteColumn.DATE_MODIFY, entity.getModifyDate());
 		}
-		if(!TextUtils.isEmpty(entity.getPageid()))
+		if(!TextUtils.isEmpty(entity.getRevid()))
 		{
-			values.put(FavoriteColumn.PAGEID, entity.getPageid());
+			values.put(FavoriteColumn.REVID, entity.getRevid());
 		}
 		if(!TextUtils.isEmpty(entity.getUrl()))
 		{

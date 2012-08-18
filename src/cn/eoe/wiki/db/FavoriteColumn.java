@@ -19,10 +19,10 @@ public class FavoriteColumn extends DatabaseColumn {
     
     public static final String		TITLE			="title";
     public static final String		URL				="url";
-    public static final String		PAGEID			="pageid";
+    public static final String		REVID			="revid";
     
     public static final String[]	COLUMNS			= new String[]{
-    	_ID,TITLE,URL,PAGEID,DATE_ADD,DATE_MODIFY
+    	_ID,TITLE,URL,REVID,DATE_ADD,DATE_MODIFY
     };
     
     public static final Uri 		CONTENT_URI 	= Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
@@ -30,7 +30,7 @@ public class FavoriteColumn extends DatabaseColumn {
     static {
 		mColumnsMap.put(_ID, "integer primary key autoincrement not null");
 		mColumnsMap.put(TITLE, "text not null");
-		mColumnsMap.put(PAGEID, "text not null");
+		mColumnsMap.put(REVID, "text not null");
 		mColumnsMap.put(URL, "text not null");
 		mColumnsMap.put(DATE_ADD, "localtime");
 		mColumnsMap.put(DATE_MODIFY, "localtime");
