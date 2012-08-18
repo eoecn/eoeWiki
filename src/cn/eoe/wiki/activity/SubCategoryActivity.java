@@ -191,7 +191,7 @@ public class SubCategoryActivity extends CategoryActivity implements OnClickList
 				TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
 				if(floot>1)
 				{
-					tvChild.setText("●"+categorysChild.getName());
+					tvChild.setText("▪"+categorysChild.getName());
 				}
 				else
 				{
