@@ -4,15 +4,15 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SearchJudgeJson {
+public class SearchQueryContinusJson {
 	@JsonProperty("search")
-	private SearchJudgeChild search;
+	private SearchOffsetJson search;
 
-	public SearchJudgeChild getSearch() {
+	public SearchOffsetJson getSearch() {
 		return search;
 	}
 
-	public void setSearch(SearchJudgeChild search) {
+	public void setSearch(SearchOffsetJson search) {
 		this.search = search;
 	}
 
