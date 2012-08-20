@@ -1,21 +1,17 @@
 package cn.eoe.wiki.activity.adapter;
 
-import java.util.HashMap;
 import java.util.List;
 
-import cn.eoe.wiki.R;
-import cn.eoe.wiki.activity.SearchResultActivity;
-import cn.eoe.wiki.activity.WikiContentActivity;
-import cn.eoe.wiki.db.entity.ParamsEntity;
-
-import android.content.Context;
-import android.content.Intent;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import cn.eoe.wiki.R;
+import cn.eoe.wiki.activity.SearchResultActivity;
+import cn.eoe.wiki.json.SearchItemJson;
 /**
  * seach Adapter
  * @author <a href="mailto:kris1987@qq.com">Kris.lee</a>
@@ -26,75 +22,82 @@ import android.widget.TextView;
 public class SearchResultAdapter extends BaseAdapter {
 	
 	private SearchResultActivity 			mContext;
-	private List<HashMap<String, Object>> 	data;
-	private LayoutInflater 			mInflater;
+	private List<SearchItemJson>			mSearchResults;
+	private LayoutInflater 					mInflater;
 
 	public SearchResultAdapter(SearchResultActivity mContext,
-			List<HashMap<String, Object>> data) {
+			List<SearchItemJson> searchResults) {
 		this.mContext = mContext;
-		this.data = data;
+		this.mSearchResults = searchResults;
 		mInflater = LayoutInflater.from(mContext);
+	}
+	public void setSearchResults(List<SearchItemJson> searchResults)
+	{
+		this.mSearchResults = searchResults;
+		notifyDataSetChanged();
 	}
 	@Override
 	public int getCount() {
-		return 0;
+		return mSearchResults==null?0:mSearchResults.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return null;
+		return mSearchResults==null?null:mSearchResults.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
-		return 0;
+		return position;
 	}
+
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		convertView = mInflater.inflate(R.layout.newsitem, null);
-		TextView tvTitle = (TextView) convertView
-				.findViewById(R.id.news_title);
-		TextView tvContent = (TextView) convertView
-				.findViewById(R.id.news_from);
-
-		tvTitle.setText(data.get(position).get("title").toString());
-		tvTitle.setPadding(15, 0, 10, 0);
-		final String title = data.get(position).get("title").toString();
-		String[] title_array = title.split(" ");
-		StringBuffer title_search = new StringBuffer();
-		for (int i = 0; i < title_array.length; i++) {
-			if (i == title_array.length - 1) {
-				title_search = title_search.append(title_array[i]);
-			} else {
-				title_search = title_search.append(title_array[i]).append(
-						"_");
+		TagHolder hodler = null;
+		if(convertView==null)
+		{
+			convertView = mInflater.inflate(R.layout.search_result_item, null);
+			hodler = new TagHolder();
+			hodler.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
+			hodler.tvContent = (TextView) convertView.findViewById(R.id.tv_content);
+			hodler.layout = (LinearLayout)convertView.findViewById(R.id.layout);
+			convertView.setTag(hodler);
+		}
+		else
+		{
+			hodler = (TagHolder)convertView.getTag();
+		}
+		SearchItemJson item = mSearchResults.get(position);
+		hodler.tvTitle.setText(item.getTitle());
+		String content = item.getSnippet();
+		hodler.tvContent.setText(Html.fromHtml(content));
+		int count = mSearchResults.size();
+		if(count==1)
+		{
+			hodler.layout.setBackgroundResource(R.drawable.bg_item);
+		}
+		else
+		{
+			if(position==0)
+			{
+				hodler.layout.setBackgroundResource(R.drawable.bg_item_top);
+			}
+			else if(position==(count-1))
+			{
+				hodler.layout.setBackgroundResource(R.drawable.bg_item_bottom);
+			}
+			else
+			{
+				hodler.layout.setBackgroundResource(R.drawable.bg_item_nocorners);
 			}
 		}
-
-		final String url_toContent = "http://wiki.eoeandroid.com/api.php?action=parse&format=json&page="
-				+ title_search;
-		tvTitle.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(mContext,
-						WikiContentActivity.class);
-				ParamsEntity pe = new ParamsEntity();
-				pe.setFirstTitle("搜索");
-				pe.setSecondTitle(title);
-				pe.setUri(url_toContent);
-				intent.putExtra(WikiContentActivity.WIKI_CONTENT, pe);
-				mContext.getmMainActivity().showView(2, intent);
-			}
-		});
-
-		String content = data.get(position).get("snippet").toString();
-		content = content.replace("<span class='searchmatch'>", "");
-		content = content.replace("</span>", "");
-		tvContent.setText(content);
-		tvContent.setPadding(30, 0, 10, 0);
 		return convertView;
 	}
-
+	static class TagHolder
+	{
+		LinearLayout layout;
+		TextView tvTitle;
+		TextView tvContent;
+	}
 }

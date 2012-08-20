@@ -18,9 +18,13 @@
 	<string name="tip_search_title">Android-检索</string>
 	<string name="tip_no_category">杯具，没有可以显示的目录！</string>
 	<string name="tip_no_favorite">杯具，好像你还没有收藏有wiki哦！</string>
+	<string name="tip_no_search_result">杯具，好像搜索不到你想要内容。</string>
 	<string name="title_favorite">收藏夹</string>
 	<string name="title_update_recent">最近更新</string>
+	<string name="title_search_result">搜索结果</string>
+	<string name="tip_please_enter_search_text">请输入你要搜索的关键字</string>
 	<string name="tip_category_not_finish">你选择的wiki暂时还没有内容，请再给我们一首歌的时间...</string>
+	<string name="tip_exit">再按一次返回键退出程序</string>
 	
 	<!-- recommend text -->
 	<string name="content_recommand">源自开发者，服务开发者~第一款为开发者服务的好软件来啦! 快去体验吧：http://t.cn/zWH5QSv

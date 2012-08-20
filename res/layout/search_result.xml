@@ -8,20 +8,23 @@
         android:id="@+id/category_title"
         layout="@layout/sub_layer_title" />
 
-    <LinearLayout
-        android:id="@+id/layout_search_result"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical" 
-        android:layout_below="@+id/category_title"
+    <RelativeLayout android:layout_below="@+id/category_title"
+	    android:layout_width="match_parent"
+    	android:layout_height="match_parent"
     	android:layout_marginTop="2dip"
     	android:layout_marginLeft="5dip"
     	android:layout_marginRight="5dip">
-
-        <ListView
-            android:id="@+id/ListView"
-            style="@style/listStyle" />
-    </LinearLayout>
+		<ListView android:id="@+id/ListView"
+		    style="@style/listStyle"/>
+		<include android:id="@+id/layout_loading"
+		    layout="@layout/loading"
+		    android:visibility="gone"/>
+		<include layout="@layout/no_search_result"
+		    android:id="@+id/layout_no_search_result"
+		    android:visibility="gone"/>
+		<include layout="@layout/loading_error"
+		    android:id="@+id/layout_search_result_error"
+		    android:visibility="gone"/>
+	</RelativeLayout>
 
 </RelativeLayout>

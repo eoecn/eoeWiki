@@ -112,9 +112,9 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 		mProgressVisible = false;
 		
 		View viewError = mInflater.inflate(R.layout.loading_error, null);
-		LayoutParams errorParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-		errorParams.topMargin = WikiUtil.dip2px(mContext, 10);
-		viewError.setLayoutParams(errorParams);
+//		LayoutParams errorParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+//		errorParams.topMargin = WikiUtil.dip2px(mContext, 10);
+//		viewError.setLayoutParams(errorParams);
 		
 		TextView tvErrorTip =  (TextView)viewError.findViewById(R.id.tv_error_tip);
 		tvErrorTip.setText(showText);
@@ -142,8 +142,9 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 			//umeng event
 			MobclickAgent.onEvent(this, "home", "btn_search");
 			String searchText = mEditText.getText().toString();
+			mEditText.setText("");
 			if (TextUtils.isEmpty(searchText)) {
-				Toast.makeText(mContext, "请输入检索关键字", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mContext, R.string.tip_please_enter_search_text, Toast.LENGTH_SHORT).show();
 			} else {
 				Intent intent_toSearchResult = new Intent(mContext, SearchResultActivity.class);
 				intent_toSearchResult.putExtra(SearchResultActivity.KEY_SEARCH_TEXT, searchText);
@@ -268,9 +269,9 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 		else
 		{
 			View noCategoryView = mInflater.inflate(R.layout.no_category, null);
-			LayoutParams noCategoryParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-			noCategoryParams.topMargin = WikiUtil.dip2px(mContext, 10);
-			noCategoryView.setLayoutParams(noCategoryParams);
+//			LayoutParams noCategoryParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+//			noCategoryParams.topMargin = WikiUtil.dip2px(mContext, 10);
+//			noCategoryView.setLayoutParams(noCategoryParams);
 			mCategoryLayout.addView(noCategoryView);
 		}
 	}

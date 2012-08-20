@@ -77,7 +77,7 @@ public class FavoriteAdapter extends BaseAdapter{
 				{
 					text.setBackgroundResource(R.drawable.bg_item_top);
 				}
-				else if(position==(favorites.size()-1))
+				else if(position==(count-1))
 				{
 					text.setBackgroundResource(R.drawable.bg_item_bottom);
 				}

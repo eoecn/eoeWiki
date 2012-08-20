@@ -1,5 +1,8 @@
 package cn.eoe.wiki.activity;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.app.ActivityGroup;
 import android.app.LocalActivityManager;
 import android.content.Intent;
@@ -8,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.WikiApplication;
 import cn.eoe.wiki.utils.L;
@@ -32,6 +36,9 @@ public class MainActivity extends ActivityGroup {
 	private LocalActivityManager 	mActivityManager;
 
 	private SliderLayer 			mSliderLayers;
+	private boolean 				mReadyExit;
+	private Timer					mExitTimer;
+	private ExitTask				mExitTask;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +49,8 @@ public class MainActivity extends ActivityGroup {
 		setContentView(R.layout.main);
 
 		mActivityManager = getLocalActivityManager();
-
+		mExitTimer = new Timer();
+		
 		mSliderLayers = (SliderLayer) findViewById(R.id.animation_layout);
 		//umeng event
 		MobclickAgent.onEvent(this, "home", "enter");
@@ -115,11 +123,23 @@ public class MainActivity extends ActivityGroup {
 				if (index > 0) {
 					mSliderLayers.closeSidebar(index);
 				} else {
-					//发送一个广播，通知其它所有的页面，要结束该应用程序了。
-					//baseActivity里面接收这个广播，并作相应的处理。
-					//这也是为什么要求所有的activity都必需直接或者间隔继承于baseactivity的原因
-					sendBroadcast(new Intent(BaseActivity.ACTION_EXIT));
-					finish();
+					if(mReadyExit==false)
+					{
+						mReadyExit = true;
+						Toast.makeText(mMainActivity, R.string.tip_exit, Toast.LENGTH_SHORT).show();
+						if(mExitTask!=null)
+						{
+							mExitTask.cancel();
+						}
+						mExitTimer.schedule(new ExitTask(), 2000);  
+                    }
+					else {
+						//发送一个广播，通知其它所有的页面，要结束该应用程序了。
+						//baseActivity里面接收这个广播，并作相应的处理。
+						//这也是为什么要求所有的activity都必需直接或者间隔继承于baseactivity的原因
+						sendBroadcast(new Intent(BaseActivity.ACTION_EXIT));
+						finish();
+					}
 				}
 				return true;
 			}
@@ -131,4 +151,11 @@ public class MainActivity extends ActivityGroup {
 	{
 		return mSliderLayers;
 	}
+	class ExitTask extends TimerTask {  
+        
+        @Override 
+        public void run() {
+            mReadyExit = false;
+        }  
+    };
 }
