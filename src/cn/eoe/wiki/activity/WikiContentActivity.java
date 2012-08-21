@@ -5,9 +5,12 @@ import org.codehaus.jackson.type.TypeReference;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -26,6 +29,7 @@ import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.db.dao.FavoriteDao;
+import cn.eoe.wiki.db.entity.FavoriteEntity;
 import cn.eoe.wiki.http.HttpManager;
 import cn.eoe.wiki.http.ITransaction;
 import cn.eoe.wiki.json.WikiDetailErrorJson;
@@ -116,7 +120,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 	void initData(){
 		//TODO set the first parent title
-		//需要上层传过来
 		mTvFistCategoryName.setText(mParamsEntity.getFirstTitle());
 		//TODO set the second parent title
 		if("".equals(mParamsEntity.getSecondTitle())){
@@ -171,7 +174,38 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
         mWebView.getSettings().setSupportZoom(true);
         mWebView.getSettings().setBuiltInZoomControls(true);
         
-        mWebView.setOnTouchListener(new OnTouchListener() {
+        mWebView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+				first = System.currentTimeMillis();
+				if(first != 0l){
+					second = System.currentTimeMillis();
+					if(second - first < 500){
+						fullScreen();
+					}else{
+						first = 0l;
+					}
+				}
+				// TODO Auto-generated method stub
+				/*System.out.println("onclick");
+				count++;
+				if(count == 1){
+					first = System.currentTimeMillis();
+				}else if(count == 2){
+					second = System.currentTimeMillis();
+					System.out.println(second - first <= 500);
+					if(second - first <= 500){
+						fullScreen();
+						count = 0;
+						first = 0l;
+						second = 0l;
+					}
+				}*/
+			}
+		});
+        /*mWebView.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				System.out.println("I am here");
@@ -192,7 +226,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 				}
 				return false;
 			}
-		});
+		});*/
         
         mWebView.setWebViewClient(new WebViewClient(){
 
@@ -210,7 +244,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 			}
         	
         });
-		//要使用下面这种方式
         mWebView.setBackgroundColor(WikiUtil.getResourceColor(R.color.deep_grey, mContext));
 	}
 	
@@ -265,7 +298,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 	}
 
@@ -280,7 +312,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 			fullScreen();
 			break;
 		case R.id.btn_favorite:
-			//collectionFavorite();
+			collectionFavorite();
 			break;
 		case R.id.btn_share:
 			shareToFriend();
@@ -290,14 +322,31 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		}
 	}
 
-	/*private void collectionFavorite(){
-		FavoriteDao favoriteDao = new FavoriteDao(mContext);
-		favoriteDao.getFavoriteByUrl(m);
-		mWebView.seton
-		
-		favoriteDao.addFavorite(responseObject.getParse().getRevid(), responseObject.getParse().getDisplayTitle(), mParamsEntity.getUri());
-		Toast.makeText(mContext, getString(R.string.favorite_success), SHOWTIME).show();
-	}*/
+	private void collectionFavorite(){
+		new CollectionFavoriteTask().execute("");
+	}
+	
+	private class CollectionFavoriteTask extends AsyncTask<String, Integer, String>{
+
+		@Override
+		protected String doInBackground(String... params) {
+			FavoriteDao favoriteDao = new FavoriteDao(mContext);
+			FavoriteEntity fe = favoriteDao.getFavoriteByRevid(responseObject.getParse().getRevid());
+			if(fe != null){
+				favoriteDao.delete(fe.getId());
+				return getString(R.string.favorite_cancel);
+			}else{
+				favoriteDao.addFavorite(responseObject.getParse().getRevid(), responseObject.getParse().getDisplayTitle(), mParamsEntity.getUri());
+				return getString(R.string.favorite_success);
+			}
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			Toast.makeText(mContext, result, SHOWTIME).show();
+		}
+
+	}
 	
 	private void showProgressLayout()
 	{
@@ -360,5 +409,52 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		return false;
 	}
 
+	/*@Override
+	public boolean dispatchTouchEvent(MotionEvent event) {
+		System.out.println("I am here");
+		System.out.println("I am here"+count);
+		if(event.getAction() == KeyEvent.ACTION_DOWN){
+			count++;
+			if(count == 1){
+				first = System.currentTimeMillis();
+				System.out.println("I am here f"+first);
+			}else if(count == 2){
+				second = System.currentTimeMillis();
+				System.out.println(second - first < 500);
+				System.out.println("sss"+second);
+				if(second - first < 500){
+					fullScreen();
+				}
+				count = 0;
+				first = 0l;
+				second = 0l;
+			}
+		}
+		return super.dispatchTouchEvent(event);
+	}*/
+
+	/*@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		System.out.println("I am here");
+		System.out.println("I am here"+count);
+		if(event.getAction() == KeyEvent.ACTION_DOWN){
+			count++;
+			if(count == 1){
+				first = System.currentTimeMillis();
+				System.out.println("I am here f"+first);
+			}else if(count == 2){
+				second = System.currentTimeMillis();
+				System.out.println(second - first <= 500);
+				System.out.println("sss"+second);
+				if(second - first <= 500){
+					fullScreen();
+					count = 0;
+					first = 0l;
+					second = 0l;
+				}
+			}
+		}
+		return false;
+	}*/
 
 }
