@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 	<include android:id="@+id/category_title"
 	    layout="@layout/sub_layer_title"/>
-	<ScrollView style="@style/scrollStyle"
+	<!-- <ScrollView style="@style/scrollStyle"
     	android:layout_below="@+id/category_title"
     	android:layout_marginTop="10dip">
 		<LinearLayout android:layout_width="match_parent"
@@ -19,5 +19,24 @@
     			android:id="@+id/layout_category"
     			android:gravity="center_horizontal"></LinearLayout>
 	    </LinearLayout>
-	</ScrollView>
+	</ScrollView> -->
+	
+	  <RelativeLayout android:layout_below="@+id/category_title"
+	    android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:layout_margin="10dp">
+		<ListView android:id="@+id/ListView"
+		    style="@style/listStyle"/>
+		<include android:id="@+id/layout_loading"
+		    layout="@layout/loading"
+		    android:visibility="gone"/>
+		<include layout="@layout/no_search_result"
+		    android:id="@+id/layout_no_update_result"
+		    android:visibility="gone"/>
+		<include layout="@layout/loading_error"
+		    android:id="@+id/layout_update_result_error"
+		    android:visibility="gone"/>
+	</RelativeLayout>
+	
+	
 </RelativeLayout>
