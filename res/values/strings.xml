@@ -21,7 +21,7 @@
 	<string name="tip_no_search_result">杯具，好像搜索不到你想要内容。</string>
 	<string name="title_favorite">收藏夹</string>
 	<string name="title_update_recent">最近更新</string>
-	<string name="title_search_result">搜索结果</string>
+	<string name="title_search_result">搜索-%s</string>
 	<string name="tip_please_enter_search_text">请输入你要搜索的关键字</string>
 	<string name="tip_category_not_finish">你选择的wiki暂时还没有内容，请再给我们一首歌的时间...</string>
 	<string name="tip_exit">再按一次返回键退出程序</string>

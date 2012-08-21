@@ -113,7 +113,8 @@ public class SearchResultActivity extends SliderActivity implements OnClickListe
 	 */
 	void initData() {
 		isRefreshing = false;
-		mTvTitle.setText(R.string.title_search_result);
+//		String title = getString(R.string.title_search_result)+"-"+mSearchText;
+		mTvTitle.setText(getString(R.string.title_search_result,mSearchText));
 		
 		TextView blankHeaderView = new TextView(mContext);
 		blankHeaderView.setHeight(WikiUtil.dip2px(mContext, 10));

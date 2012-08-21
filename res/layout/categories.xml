@@ -53,7 +53,8 @@
 	    			android:singleLine="true"
 	    			android:layout_marginRight="5dip"
 	    			android:background="@drawable/search_border"
-	    			android:layout_centerVertical="true"/>
+	    			android:layout_centerVertical="true"
+	    			android:imeOptions="actionSearch"/>
 		    </RelativeLayout>
 		    
 	        <Button android:layout_width="match_parent"
