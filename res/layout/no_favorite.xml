@@ -8,5 +8,8 @@
 	android:clickable="true"
 	android:singleLine="true"
 	android:ellipsize="end"
-	android:padding="5dip"
+	android:paddingLeft="5dip"
+	android:paddingTop="15dip"
+	android:paddingRight="5dip"
+	android:paddingBottom="10dip"
 	android:gravity="center"/>

@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="10dip">
+    android:paddingLeft="10dip"
+    android:id="@+id/wiki_whole_detail">
 	<include android:id="@+id/wiki_detail_title"
 	    layout="@layout/sub_layer_title2"/>
 	<TextView android:layout_width="fill_parent"

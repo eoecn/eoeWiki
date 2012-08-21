@@ -8,16 +8,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import cn.eoe.wiki.R;
@@ -38,7 +41,7 @@ import com.umeng.fb.UMFeedbackService;
  * @data  2012-8-5
  * @version 1.0.0
  */
-public class MainCategoryActivity extends CategoryActivity implements OnClickListener{
+public class MainCategoryActivity extends CategoryActivity implements OnClickListener,OnEditorActionListener{
 	
 	private LinearLayout	mCategoryLayout;
 	private LayoutInflater 	mInflater;
@@ -77,6 +80,7 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 		mCategoryLayout = (LinearLayout)findViewById(R.id.layout_category);
 		mBtnSearch=(Button)findViewById(R.id.btn_search);
 		mEditText = (EditText) findViewById(R.id.et_search);
+		mEditText.setOnEditorActionListener(this);
 		
 		aboutDialog = new AboutDialog(this);
 		mLayoutAbout=(LinearLayout)findViewById(R.id.layout_about);
@@ -112,9 +116,9 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 		mProgressVisible = false;
 		
 		View viewError = mInflater.inflate(R.layout.loading_error, null);
-		LayoutParams errorParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-		errorParams.topMargin = WikiUtil.dip2px(mContext, 10);
-		viewError.setLayoutParams(errorParams);
+//		LayoutParams errorParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+//		errorParams.topMargin = WikiUtil.dip2px(mContext, 10);
+//		viewError.setLayoutParams(errorParams);
 		
 		TextView tvErrorTip =  (TextView)viewError.findViewById(R.id.tv_error_tip);
 		tvErrorTip.setText(showText);
@@ -130,6 +134,19 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 	}
 
 	@Override
+	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+		L.d("onEditorAction:"+actionId);
+		switch (actionId) {
+		case EditorInfo.IME_ACTION_SEARCH:
+			search();
+			break;
+
+		default:
+			break;
+		}
+		return true;
+	}
+	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_try_again:
@@ -139,16 +156,7 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 			getCategory(mCategoryUrl);
 			break;
 		case R.id.btn_search:
-			//umeng event
-			MobclickAgent.onEvent(this, "home", "btn_search");
-			String searchText = mEditText.getText().toString();
-			if (TextUtils.isEmpty(searchText)) {
-				Toast.makeText(mContext, "请输入检索关键字", Toast.LENGTH_SHORT).show();
-			} else {
-				Intent intent_toSearchResult = new Intent(mContext, SearchResultActivity.class);
-				intent_toSearchResult.putExtra(SearchResultActivity.KEY_SEARCH_TEXT, searchText);
-				getmMainActivity().showView(1, intent_toSearchResult);
-			}
+			search();
 			break;
 		case R.id.layout_about:
 			//umeng event
@@ -183,6 +191,23 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 			break;
 		default:
 			break;
+		}
+	}
+	
+	public void search()
+	{
+		//umeng event
+		MobclickAgent.onEvent(this, "home", "btn_search");
+		String searchText = mEditText.getText().toString();
+		L.d("search1:"+searchText);
+		mEditText.setText("");
+		if (TextUtils.isEmpty(searchText)) {
+			L.d("searchText:"+searchText);
+			Toast.makeText(mContext, R.string.tip_please_enter_search_text, Toast.LENGTH_SHORT).show();
+		} else {
+			Intent intent_toSearchResult = new Intent(mContext, SearchResultActivity.class);
+			intent_toSearchResult.putExtra(SearchResultActivity.KEY_SEARCH_TEXT, searchText);
+			getmMainActivity().showView(1, intent_toSearchResult);
 		}
 	}
 	
@@ -268,9 +293,9 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 		else
 		{
 			View noCategoryView = mInflater.inflate(R.layout.no_category, null);
-			LayoutParams noCategoryParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-			noCategoryParams.topMargin = WikiUtil.dip2px(mContext, 10);
-			noCategoryView.setLayoutParams(noCategoryParams);
+//			LayoutParams noCategoryParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+//			noCategoryParams.topMargin = WikiUtil.dip2px(mContext, 10);
+//			noCategoryView.setLayoutParams(noCategoryParams);
 			mCategoryLayout.addView(noCategoryView);
 		}
 	}
@@ -288,4 +313,5 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 		}
 		generateCategorys(mResponseObject, category);
 	}
+
 }

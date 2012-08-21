@@ -48,6 +48,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private static final String 	WIKI_URL_PRE = "http://wiki.eoeandroid.com/";
 	private static final String 	WIKI_URL_AFTER = "/api.php?action=parse&format=json&page=";
 	private boolean 				mIsFullScreen = false;
+	private boolean					mIsUnable	  = true;
 	private int 					count = 0;
 	private long 					first,second = 0l;
 	
@@ -63,6 +64,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private TextView				mTvFistCategoryName;
 	private TextView				mTvSecondCategoryName;
 	
+	private RelativeLayout			mWikiWholeDetail;
 	private RelativeLayout			mWikiDetailTitle;
 	private LinearLayout 			mLayoutFunctions;
 	private ScrollView 				mWikiScrollView;
@@ -174,37 +176,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
         mWebView.getSettings().setSupportZoom(true);
         mWebView.getSettings().setBuiltInZoomControls(true);
         
-        mWebView.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-				first = System.currentTimeMillis();
-				if(first != 0l){
-					second = System.currentTimeMillis();
-					if(second - first < 500){
-						fullScreen();
-					}else{
-						first = 0l;
-					}
-				}
-				// TODO Auto-generated method stub
-				/*System.out.println("onclick");
-				count++;
-				if(count == 1){
-					first = System.currentTimeMillis();
-				}else if(count == 2){
-					second = System.currentTimeMillis();
-					System.out.println(second - first <= 500);
-					if(second - first <= 500){
-						fullScreen();
-						count = 0;
-						first = 0l;
-						second = 0l;
-					}
-				}*/
-			}
-		});
         /*mWebView.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -307,9 +278,12 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		case R.id.btn_back:
 		case R.id.btn_parent_directory:
 			fallbackToPreLayer();
+			mBtnParentDirectory.setEnabled(false);
+			mWebView.setEnabled(false);
 			break;
 		case R.id.btn_fullscreen:
-			fullScreen();
+			Toast.makeText(mContext, "亲，请再给点时间，目前全屏在返回时有点小问题，请耐心等候，谢谢", 1000).show();
+			//fullScreen();
 			break;
 		case R.id.btn_favorite:
 			collectionFavorite();
@@ -411,17 +385,12 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 
 	/*@Override
 	public boolean dispatchTouchEvent(MotionEvent event) {
-		System.out.println("I am here");
-		System.out.println("I am here"+count);
 		if(event.getAction() == KeyEvent.ACTION_DOWN){
 			count++;
 			if(count == 1){
 				first = System.currentTimeMillis();
-				System.out.println("I am here f"+first);
 			}else if(count == 2){
 				second = System.currentTimeMillis();
-				System.out.println(second - first < 500);
-				System.out.println("sss"+second);
 				if(second - first < 500){
 					fullScreen();
 				}
@@ -432,29 +401,4 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		}
 		return super.dispatchTouchEvent(event);
 	}*/
-
-	/*@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		System.out.println("I am here");
-		System.out.println("I am here"+count);
-		if(event.getAction() == KeyEvent.ACTION_DOWN){
-			count++;
-			if(count == 1){
-				first = System.currentTimeMillis();
-				System.out.println("I am here f"+first);
-			}else if(count == 2){
-				second = System.currentTimeMillis();
-				System.out.println(second - first <= 500);
-				System.out.println("sss"+second);
-				if(second - first <= 500){
-					fullScreen();
-					count = 0;
-					first = 0l;
-					second = 0l;
-				}
-			}
-		}
-		return false;
-	}*/
-
 }

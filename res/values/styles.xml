@@ -20,6 +20,7 @@
     	<item name="android:scrollingCache">false</item>
     	<item name="android:cacheColorHint">@color/white</item>
     	<item name="android:dividerHeight">0dip</item>
+    	<item name="android:listSelector">@drawable/none_selector</item>
 	</style>
 	
 	<style name="scrollStyle">

@@ -4,16 +4,13 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SearchResultChild {
+public class SearchItemJson {
 	@JsonProperty("title")
 	private String title;
 
 	@JsonProperty("snippet")
 	private String snippet;
 
-	public SearchResultChild() {
-
-	}
 
 	public String getTitle() {
 		return title;

@@ -1,21 +1,35 @@
 package cn.eoe.wiki.json;
 
-import java.util.List;
-
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchResultJson {
-	@JsonProperty("search")
-	private List<SearchResultChild> search;
+	
+	@JsonProperty("query")
+	private SearchJson query;
 
-	public List<SearchResultChild> getSearch() {
-		return search;
+	@JsonProperty("query-continue")
+	private SearchQueryContinusJson queryContinue;
+
+	public SearchJson getQuery() {
+		return query;
 	}
 
-	public void setSearch(List<SearchResultChild> search) {
-		this.search = search;
+	public SearchQueryContinusJson getQueryContinue() {
+		return queryContinue;
+	}
+
+
+
+	public void setQueryContinue(SearchQueryContinusJson queryContinue) {
+		this.queryContinue = queryContinue;
+	}
+
+
+
+	public void setQuery(SearchJson query) {
+		this.query = query;
 	}
 
 }

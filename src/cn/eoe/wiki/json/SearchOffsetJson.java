@@ -4,7 +4,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SearchJudgeChild {
+public class SearchOffsetJson {
 	@JsonProperty("sroffset")
 	private int sroffset;
 
@@ -15,5 +15,4 @@ public class SearchJudgeChild {
 	public void setSroffset(int sroffset) {
 		this.sroffset = sroffset;
 	}
-
 }

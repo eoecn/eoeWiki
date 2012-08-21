@@ -114,6 +114,7 @@ public class FavoriteActivity extends SliderActivity implements OnClickListener,
 
 	@Override
 	public void onSidebarOpened() {
+		WikiUtil.hideSoftInput(mBtnBack);
 		L.e("favorite onSidebarOpened");
 		new LoadFavoriteFromDb().execute(currentPage+1);
 		getmMainActivity().getSliderLayer().removeSliderListener(this);
