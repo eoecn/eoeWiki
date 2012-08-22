@@ -38,6 +38,8 @@ import cn.eoe.wiki.db.entity.UpdateEntity;
 import cn.eoe.wiki.http.HttpManager;
 import cn.eoe.wiki.http.ITransaction;
 import cn.eoe.wiki.json.CategoryChild;
+import cn.eoe.wiki.json.RecentJson;
+import cn.eoe.wiki.json.RecentUpdateQueryContinusJson;
 import cn.eoe.wiki.json.RecentlyUpdatedJson;
 import cn.eoe.wiki.listener.RecentlyUpdatedListener;
 import cn.eoe.wiki.listener.SubCategoryListener;
@@ -52,7 +54,6 @@ import cn.eoe.wiki.view.SliderLayer.SliderListener;
  * @version 1.0.0
  */
 public class RecentlyUpdatedActivity extends SliderActivity implements OnClickListener, SliderListener, OnScrollListener,OnItemClickListener{
-//	public static final 	int		PAGE_COUNT 			= 20;
 	private static final String WIKI_URL_HOST = "http://wiki.eoeandroid.com/";
 	private static final String WIKI_URL_DETAIL = "api.php?action=parse&format=json&page=";
 	private static final String WIKI_URL_LOCATION = "api.php?action=query&list=recentchanges&rclimit=20&format=json";
@@ -60,6 +61,7 @@ public class RecentlyUpdatedActivity extends SliderActivity implements OnClickLi
 	final int HANDLER_LOAD_CONTENT_NET = 0;
 	final int HANDLER_DISPLAY_CONTENT = 1;
 	final int HANDLER_LOAD_ERROR = 2;
+	final int HANDLER_NO_CONTENT = 3;
 	
 	private List<RecentlyUpdatedJson> mUpdateResluts;
 	private RecentUpdateAdapter mAdapter;
@@ -73,8 +75,9 @@ public class RecentlyUpdatedActivity extends SliderActivity implements OnClickLi
 	private TextView		mTvParentName;
 	private View 			mLayoutProgress;
 	private ListView 		mListView;
+	private Button 			mBtnTryAgain;
 	
-	private int 			mOffset = 0;
+	private String 			mRcstart = "";
 	private boolean			isRefreshing;
 	private CategoryChild	mParentCategory;
 	private String			mParentName;
@@ -89,7 +92,6 @@ public class RecentlyUpdatedActivity extends SliderActivity implements OnClickLi
 		{
 			throw new NullPointerException("Must give a CategoryChild in the intent");
 		}
-
 		getmMainActivity().getSliderLayer().addSliderListener(this);
 		initComponent();
 		initData();
@@ -98,13 +100,16 @@ public class RecentlyUpdatedActivity extends SliderActivity implements OnClickLi
 	void initComponent() {
 		mListView = (ListView) findViewById(R.id.ListView);
 		mListView.setDividerHeight(0);
+		mBtnTryAgain = (Button) findViewById(R.id.btn_try_again);
 		mTvParentName = (TextView)findViewById(R.id.tv_title_parent);
 		mNoUpdateResult = findViewById(R.id.layout_no_update_result);
 		mLayoutError = findViewById(R.id.layout_update_result_error);
 		mLayoutLoading = (LinearLayout) findViewById(R.id.layout_loading);
 		mContentLayout = (LinearLayout)findViewById(R.id.layout_category);
 		mBtnBack=(ImageButton)findViewById(R.id.btn_back);
+		mBtnTryAgain.setOnClickListener(this);
 		mBtnBack.setOnClickListener(this);
+		
 	}
 
 	void initData() {
@@ -120,23 +125,18 @@ public class RecentlyUpdatedActivity extends SliderActivity implements OnClickLi
 		mListView.setVisibility(View.GONE);
 		mNoUpdateResult.setVisibility(View.GONE);
 		mLayoutError.setVisibility(View.GONE);                                                   
-	//	showProgressLayout();
 	}
-	
-//	protected void showProgressLayout()
-//	{
-//		View progressView = mInflater.inflate(R.layout.loading, null);
-//		mContentLayout.removeAllViews();
-//		mContentLayout.addView(progressView);
-//		mProgressVisible = true;
-//	}
-	
 	
 	public void getRecentUpdate(){
 		mLayoutProgress.setVisibility(View.VISIBLE);
-		mOffset+=20;
-		String url = WIKI_URL_HOST + WIKI_URL_LOCATION;
 		HashMap<String,String> requestData = new HashMap<String,String>();
+		
+		String url = WIKI_URL_HOST + WIKI_URL_LOCATION;
+		if(TextUtils.isEmpty(mRcstart)){
+			
+		}else{
+			requestData.put("rcstart", mRcstart);
+		}
 		requestData.put("format", "json");
 		HttpManager manager = new HttpManager(url,requestData,HttpManager.GET,getRecentlyUpdatedTransaction);
 		manager.start();
@@ -178,6 +178,13 @@ public class RecentlyUpdatedActivity extends SliderActivity implements OnClickLi
 				mNoUpdateResult.setVisibility(View.GONE);
 				mLayoutError.setVisibility(View.VISIBLE);
 				break;
+			case HANDLER_NO_CONTENT:
+				mLayoutLoading.setVisibility(View.GONE);
+				mLayoutProgress.setVisibility(View.GONE);
+				mListView.setVisibility(View.GONE);
+				mNoUpdateResult.setVisibility(View.VISIBLE);
+				mLayoutError.setVisibility(View.GONE);
+				break;
 			default:
 				break;
 			}
@@ -185,13 +192,11 @@ public class RecentlyUpdatedActivity extends SliderActivity implements OnClickLi
 	};
 	
 	public ITransaction getRecentlyUpdatedTransaction = new ITransaction() {
-		
 		@Override
 		public void transactionOver(String result) {
 			mapperJson(result,true);
 			L.d("get the category from the net");
 		}
-		
 		@Override
 		public void transactionException(int erroCode, String result, Exception e) {
 			mHandler.obtainMessage(HANDLER_LOAD_ERROR).sendToTarget();
@@ -200,81 +205,33 @@ public class RecentlyUpdatedActivity extends SliderActivity implements OnClickLi
 	
 	private void mapperJson(String result, boolean fromNet)
 	{
+		RecentJson recentJson;
 		try {
-			ObjectMapper mapper = new ObjectMapper();
-			JsonNode root = mapper.readValue(result, JsonNode.class);
-			
-			// 取最新更新项目
-			Iterator<JsonNode> it = root.get("query").get("recentchanges").getElements();
-			HashSet<Integer> set = new HashSet<Integer>();
-			// 用于标记重复项
-			while(it.hasNext()){
-				RecentlyUpdatedJson item = mObjectMapper.readValue(
-					it.next().toString(),
-					new TypeReference<RecentlyUpdatedJson>() {}
-				);
-				// 去除重复项
-				if(!set.contains(item.getPageid())){
-					mUpdateResluts.add(item);
-					set.add(item.getPageid());
+			recentJson = mObjectMapper.readValue(result,new TypeReference<RecentJson>(){});
+			List<RecentlyUpdatedJson> recentChilds = recentJson.getQuery().getQuery();
+			RecentUpdateQueryContinusJson queryContinus = recentJson.getQueryContinue();
+			if(queryContinus==null){
+				mRcstart = "";
+			}else{
+				mRcstart = queryContinus.getRecentchanges().getRcstart();
+			}
+			if(recentChilds!=null&&recentChilds.size()!=0){
+				HashSet<Integer> set = new HashSet<Integer>();
+				for(int i = 0;i < recentChilds.size();i++){
+					RecentlyUpdatedJson item = recentChilds.get(i);
+					if(!set.contains(item.getPageid())){
+						mUpdateResluts.add(item);
+						set.add(item.getPageid());
+					}
 				}
 			}
-			mHandler.obtainMessage(HANDLER_DISPLAY_CONTENT).sendToTarget();
+			if(mUpdateResluts.size()==0){
+				mHandler.obtainMessage(HANDLER_NO_CONTENT).sendToTarget();
+			}else{
+				mHandler.obtainMessage(HANDLER_DISPLAY_CONTENT).sendToTarget();
+			}
 		} catch (Exception e) {
 			L.e("getCategorysTransaction exception", e);
-		}
-	}
-	
-	private void generateRecentlyUpdated(List<RecentlyUpdatedJson> recentlyUpdatedJsons){
-		
-		mContentLayout.removeAllViews();
-		
-		LinearLayout contentLayout = new LinearLayout(mContext);
-		contentLayout.setOrientation(LinearLayout.VERTICAL);
-		LayoutParams titleParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-		int paddind = WikiUtil.dip2px(mContext, 1);
-		contentLayout.setPadding(paddind, paddind, paddind, paddind);
-		contentLayout.setLayoutParams(titleParams);
-		contentLayout.setBackgroundResource(R.drawable.bg_stroke_grey_blue);
-		mContentLayout.addView(contentLayout);
-		
-		TextView tv = (TextView)mInflater.inflate(R.layout.category_title, null);
-		tv.setText("最近更新");
-		tv.setBackgroundResource(R.drawable.bg_nostroke_grey_blue_top);
-		
-		contentLayout.addView(tv);
-		
-		for(int i=0; i<recentlyUpdatedJsons.size(); i++){
-			//add the line first
-			View lineView = new View(mContext);
-			LayoutParams blankParams = new LayoutParams(LayoutParams.MATCH_PARENT, WikiUtil.dip2px(mContext, 1));
-			lineView.setLayoutParams(blankParams);
-			lineView.setBackgroundResource(R.color.grey_stroke);
-			contentLayout.addView(lineView);
-			//add the text
-			RecentlyUpdatedJson item = recentlyUpdatedJsons.get(i);
-			
-			TextView tvChild = (TextView)mInflater.inflate(R.layout.category_item, null);
-			tvChild.setText(item.getTitle());
-			
-			tvChild.setOnClickListener(
-				new RecentlyUpdatedListener(
-					mContext.getString(R.string.title_update_recent), 
-					"", 
-					WIKI_URL_HOST + WIKI_URL_DETAIL + item.getTitle().replace(' ', '_'), 
-					this
-				)
-			);
-			if(i == recentlyUpdatedJsons.size() - 1)
-			{
-				tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_bottom);
-			}
-			else
-			{
-				tvChild.setBackgroundResource(R.drawable.bg_nostroke_white_blue_nocorners);
-			}
-//			mCategoryLayout.addView(tvChild);
-			contentLayout.addView(tvChild);
 		}
 	}
 	
@@ -286,11 +243,14 @@ public class RecentlyUpdatedActivity extends SliderActivity implements OnClickLi
 
 	@Override
 	public void onSidebarOpened() {
-		getRecentUpdate();
-		getmMainActivity().getSliderLayer().removeSliderListener(this);
-		
+		if(WikiUtil.getNetworkStatus(this)){
+			mLayoutLoading.setVisibility(View.VISIBLE);
+			getRecentUpdate();
+			getmMainActivity().getSliderLayer().removeSliderListener(this);
+		}else{
+			mHandler.obtainMessage(HANDLER_LOAD_ERROR).sendToTarget();
+		}
 	}
-
 	@Override
 	public void onSidebarClosed() {
 		
@@ -308,6 +268,10 @@ public class RecentlyUpdatedActivity extends SliderActivity implements OnClickLi
 			SliderLayer layer = getmMainActivity().getSliderLayer();
 			layer.closeSidebar(layer.openingLayerIndex());
 			break;
+		case R.id.btn_try_again:
+			mLayoutError.setVisibility(View.GONE);
+			onSidebarOpened();
+			break;
 		default:
 			break;
 		}
@@ -317,7 +281,6 @@ public class RecentlyUpdatedActivity extends SliderActivity implements OnClickLi
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		RecentlyUpdatedJson item = mUpdateResluts.get(position);
-	//	new RecentlyUpdatedListener(mContext.getString(R.string.title_update_recent), "", WIKI_URL_HOST + WIKI_URL_DETAIL + item.getTitle().replace(' ', '_'), this);
 		String title = item.getTitle();
 		title = title.replace(" ", "_");
 		String mSecondTitle = "";
@@ -336,7 +299,7 @@ public class RecentlyUpdatedActivity extends SliderActivity implements OnClickLi
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
 		if (scrollState == OnScrollListener.SCROLL_STATE_FLING || scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
 			if (view.getLastVisiblePosition() == view.getCount() - 1) {
-				if(!isRefreshing && mOffset> 0) {
+				if(!isRefreshing && !TextUtils.isEmpty(mRcstart)) {
 					isRefreshing = true;
 					L.i("isrefreshing-->" + isRefreshing);
 					getRecentUpdate();

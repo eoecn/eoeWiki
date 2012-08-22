@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
@@ -143,6 +145,22 @@ public class WikiUtil {
 			return;
 		InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.showSoftInput(view, 0);
+	}
+	
+	/**
+	 * Checks if the net is connected
+	 * 
+	 * @param context
+	 * @return true is connected
+	 */
+	public static boolean getNetworkStatus(Context context) {
+		NetworkInfo networkInfo = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE))
+				.getActiveNetworkInfo();
+		if (networkInfo == null || !networkInfo.isAvailable() || !networkInfo.isConnected()) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	public static int getSystemVersionCode() {

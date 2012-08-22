@@ -19,6 +19,7 @@
 	<string name="tip_no_category">杯具，没有可以显示的目录！</string>
 	<string name="tip_no_favorite">杯具，好像你还没有收藏有wiki哦！</string>
 	<string name="tip_no_search_result">杯具，好像搜索不到你想要内容。</string>
+	<string name="tip_no_recent_update_result">杯具,暂无最近更新的目录!</string>
 	<string name="title_favorite">收藏夹</string>
 	<string name="title_update_recent">最近更新</string>
 	<string name="title_search_result">搜索-%s</string>

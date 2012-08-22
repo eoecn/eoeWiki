@@ -6,15 +6,15 @@ import org.codehaus.jackson.annotate.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RecentJson {
 	@JsonProperty("query")
-	private RecentJson query;
+	private RecentChilds query;
 	@JsonProperty("query-continue")
 	private RecentUpdateQueryContinusJson queryContinue;
 
-	public RecentJson getQuery() {
+	public RecentChilds getQuery() {
 		return query;
 	}
 
-	public void setQuery(RecentJson query) {
+	public void setQuery(RecentChilds query) {
 		this.query = query;
 	}
 
