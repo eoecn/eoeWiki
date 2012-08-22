@@ -94,6 +94,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private boolean 				hasFavorite;
 	private long 					favoriteID;
 	private FavoriteDao				favoriteDao;
+	private boolean 				favoriting;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -318,55 +319,51 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	}
 
 	private void collectionFavorite(){
-		new CollectionFavoriteTask().execute();
-	}
-	
-	private class CollectionFavoriteTask extends AsyncTask<String, Integer, Boolean>{
-
-		@Override
-		protected Boolean doInBackground(String... params) {
-			if(hasFavorite){
-				if(favoriteDao.delete(favoriteID)>0)
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}else{
-				return favoriteDao.addFavorite(responseObject.getParse().getRevid(), responseObject.getParse().getDisplayTitle(), mParamsEntity.getUri());
-			}
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			if(result.booleanValue())
+		boolean ret = false;
+		if(hasFavorite){
+			if(favoriteDao.delete(favoriteID)>0)
 			{
-				if(hasFavorite)
-				{
-					Toast.makeText(mContext, R.string.favorite_cancel_success, Toast.LENGTH_SHORT).show();
-				}
-				else
-				{
-					Toast.makeText(mContext, R.string.favorite_success, Toast.LENGTH_SHORT).show();
-				}
-				hasFavorite=!hasFavorite;
-				mHandler.obtainMessage(HANDLER_REFRESH_FAVORITE_STATUS, Boolean.valueOf(hasFavorite)).sendToTarget();
+				L.e("delete true");
+				ret =  true;
 			}
 			else
 			{
-				if(hasFavorite)
-				{
-					Toast.makeText(mContext, R.string.favorite_cancel_failed, Toast.LENGTH_SHORT).show();
+				L.e("delete false");
+				ret = false;
+			}
+		}else{
+			ret = favoriteDao.addFavorite(responseObject.getParse().getRevid(), responseObject.getParse().getDisplayTitle(), mParamsEntity.getUri());
+		}
+		if(ret)
+		{
+			if(hasFavorite)
+			{
+				Toast.makeText(mContext, R.string.favorite_cancel_success, Toast.LENGTH_SHORT).show();
+			}
+			else
+			{
+				FavoriteEntity fe = favoriteDao.getFavoriteByRevid(responseObject.getParse().getRevid());
+				if(fe != null){
+					favoriteID = fe.getId();
 				}
-				else
-				{
-					Toast.makeText(mContext, R.string.favorite_failed, Toast.LENGTH_SHORT).show();
-				}
+				Toast.makeText(mContext, R.string.favorite_success, Toast.LENGTH_SHORT).show();
+			}
+			hasFavorite=!hasFavorite;
+			mHandler.obtainMessage(HANDLER_REFRESH_FAVORITE_STATUS, Boolean.valueOf(hasFavorite)).sendToTarget();
+		}
+		else
+		{
+			if(hasFavorite)
+			{
+				Toast.makeText(mContext, R.string.favorite_cancel_failed, Toast.LENGTH_SHORT).show();
+			}
+			else
+			{
+				Toast.makeText(mContext, R.string.favorite_failed, Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
+	
 	private class JudgeFavoriteTask extends AsyncTask<String, Integer, Boolean>{
 
 		@Override
