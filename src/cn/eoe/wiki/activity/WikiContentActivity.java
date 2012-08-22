@@ -383,7 +383,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		return false;
 	}
 
-	/*@Override
+	@Override
 	public boolean dispatchTouchEvent(MotionEvent event) {
 		if(event.getAction() == KeyEvent.ACTION_DOWN){
 			count++;
@@ -400,5 +400,5 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 			}
 		}
 		return super.dispatchTouchEvent(event);
-	}*/
+	}
 }
