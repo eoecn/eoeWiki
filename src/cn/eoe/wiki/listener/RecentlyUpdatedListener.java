@@ -3,9 +3,9 @@ package cn.eoe.wiki.listener;
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import cn.eoe.wiki.activity.ParamsEntity;
 import cn.eoe.wiki.activity.RecentlyUpdatedActivity;
 import cn.eoe.wiki.activity.WikiContentActivity;
-import cn.eoe.wiki.db.entity.ParamsEntity;
 
 public class RecentlyUpdatedListener implements OnClickListener {
 	private String mUri;

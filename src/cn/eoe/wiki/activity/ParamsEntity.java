@@ -1,4 +1,4 @@
-package cn.eoe.wiki.db.entity;
+package cn.eoe.wiki.activity;
 
 import android.os.Parcel;
 import android.os.Parcelable;

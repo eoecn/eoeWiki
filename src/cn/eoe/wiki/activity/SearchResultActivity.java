@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.codehaus.jackson.mrbean.MrBeanModule;
 import org.codehaus.jackson.type.TypeReference;
 
 import android.content.Intent;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,7 +26,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.activity.adapter.SearchResultAdapter;
-import cn.eoe.wiki.db.entity.ParamsEntity;
 import cn.eoe.wiki.http.HttpManager;
 import cn.eoe.wiki.http.ITransaction;
 import cn.eoe.wiki.json.SearchItemJson;

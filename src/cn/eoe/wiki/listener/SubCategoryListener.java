@@ -1,8 +1,8 @@
 package cn.eoe.wiki.listener;
 
+import cn.eoe.wiki.activity.ParamsEntity;
 import cn.eoe.wiki.activity.SubCategoryActivity;
 import cn.eoe.wiki.activity.WikiContentActivity;
-import cn.eoe.wiki.db.entity.ParamsEntity;
 import cn.eoe.wiki.utils.L;
 import android.content.Intent;
 import android.view.View;
@@ -25,6 +25,7 @@ public class SubCategoryListener implements OnClickListener{
 	
 	@Override
 	public void onClick(View v) {
+		// TODO Auto-generated method stub
 		if(mContext.getmMainActivity().getSliderLayer().isAnimationing())
 		{
 			return;

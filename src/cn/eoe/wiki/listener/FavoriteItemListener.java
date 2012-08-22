@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import cn.eoe.wiki.activity.FavoriteActivity;
+import cn.eoe.wiki.activity.ParamsEntity;
 import cn.eoe.wiki.activity.WikiContentActivity;
-import cn.eoe.wiki.db.entity.ParamsEntity;
 
 /**
  * 点击收藏夹的第一项，跳转到detail页面
