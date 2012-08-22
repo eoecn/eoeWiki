@@ -1,6 +1,9 @@
 package cn.eoe.wiki.activity;
 
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.codehaus.jackson.type.TypeReference;
 
 import android.content.Intent;
@@ -9,6 +12,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
+import android.util.MonthDisplayHelper;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
@@ -28,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import cn.eoe.wiki.R;
+import cn.eoe.wiki.activity.MainActivity.ExitTask;
 import cn.eoe.wiki.db.dao.FavoriteDao;
 import cn.eoe.wiki.db.entity.FavoriteEntity;
 import cn.eoe.wiki.http.HttpManager;
@@ -39,15 +45,15 @@ import cn.eoe.wiki.utils.WikiUtil;
 import cn.eoe.wiki.view.SliderLayer;
 import cn.eoe.wiki.view.SliderLayer.SliderListener;
 
-public class WikiContentActivity extends SliderActivity implements OnClickListener,SliderListener{
+public class WikiContentActivity extends SliderActivity implements OnClickListener,SliderListener,OnTouchListener{
 
-	private static final int		HANDLER_DISPLAY_WIKIDETAIL 	= 0x0001;
-	private static final int		HANDLER_GET_WIKIERROR 	= 0x0002;
+	private static final int		HANDLER_DISPLAY_WIKIDETAIL 		= 0x0001;
+	private static final int		HANDLER_GET_WIKIERROR 			= 0x0002;
 	private static final int		HANDLER_GET_WIKIDETAIL_ERROR 	= 0x0003;
-	private static final int		SHOWTIME = 1000;
+	private static final int		HANDLER_REFRESH_FAVORITE_STATUS	= 0x0004;
 	private static final String 	WIKI_URL_PRE = "http://wiki.eoeandroid.com/";
 	private static final String 	WIKI_URL_AFTER = "/api.php?action=parse&format=json&page=";
-	private boolean 				mIsFullScreen = false;
+//	private boolean 				mIsFullScreen = false;
 	private boolean					mIsUnable	  = true;
 	private int 					count = 0;
 	private long 					first,second = 0l;
@@ -78,6 +84,17 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	protected WikiDetailErrorJson	responseError = null;
 	private WebView 				mWebView;
 	
+	private boolean 				isFullScreen;//当前是否已经全屏
+	private float[]					lastTouch;	//记录上一次的坐标，现在未用到
+	private Timer					mDoubleClickTimer;//timer,用于判断双击计时 
+	private boolean 				isReadyDoubleClick;//是否已经第一次点击了
+	private DoubleClickTask			mDoubleClickTask;//双击过时任务
+	private boolean 				canFullScreen;
+	
+	private boolean 				hasFavorite;
+	private long 					favoriteID;
+	private FavoriteDao				favoriteDao;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -91,6 +108,10 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		if(mParamsEntity == null){
 			throw new NullPointerException("Must give a Wiki Uri in the intent");
 		}
+		lastTouch = new float[]{0,0};
+		isReadyDoubleClick = false;
+		mDoubleClickTimer = new Timer();
+		favoriteDao = new FavoriteDao(mContext);
 		getmMainActivity().getSliderLayer().addSliderListener(this);
 		initComponent();
 		initData();
@@ -121,10 +142,11 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	}
 	
 	void initData(){
+		isFullScreen = false;
 		//TODO set the first parent title
 		mTvFistCategoryName.setText(mParamsEntity.getFirstTitle());
 		//TODO set the second parent title
-		if("".equals(mParamsEntity.getSecondTitle())){
+		if(TextUtils.isEmpty(mParamsEntity.getSecondTitle())){
 			mTvSecondCategoryName.setVisibility(View.GONE);
 		}else{
 			mTvSecondCategoryName.setText(mParamsEntity.getSecondTitle());
@@ -145,12 +167,25 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 			switch (msg.what) {
 			case HANDLER_DISPLAY_WIKIDETAIL:
 				generateWiki((WikiDetailJson)msg.obj);
+				new JudgeFavoriteTask().execute();
 				break;
 			case HANDLER_GET_WIKIERROR:
 				generateWikiError((WikiDetailErrorJson)msg.obj);
 				break;
 			case HANDLER_GET_WIKIDETAIL_ERROR:
 				getWikiError(getString(R.string.tip_get_category_error));
+				break;
+			case HANDLER_REFRESH_FAVORITE_STATUS:
+				Boolean ret = (Boolean)msg.obj;
+				hasFavorite = ret.booleanValue();
+				L.d("HANDLER_REFRESH_FAVORITE_STATUS:"+hasFavorite);
+				if (hasFavorite) {
+					mBtnFavorite.setImageResource(R.drawable.ico_favorite);
+				}
+				else
+				{
+					mBtnFavorite.setImageResource(R.drawable.ico_favorite_not);
+				}
 				break;
 			default:
 				break;
@@ -163,6 +198,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		mWikiProcessLayout.removeAllViews();
 		mProgressVisible = false;
 		mWikiScrollView.setVisibility(View.VISIBLE);
+		canFullScreen = true;
 		String html = pWikiDetailJson.getParse().getText().getHtml();
 		String html1 = "<!DOCTYPE html PUBLIC "
                   + "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -176,28 +212,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
         mWebView.getSettings().setSupportZoom(true);
         mWebView.getSettings().setBuiltInZoomControls(true);
         
-        /*mWebView.setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				System.out.println("I am here");
-				if(event.getAction() == KeyEvent.ACTION_DOWN){
-					count++;
-					if(count == 1){
-						first = System.currentTimeMillis();
-					}else if(count == 2){
-						second = System.currentTimeMillis();
-						System.out.println(second - first <= 500);
-						if(second - first <= 500){
-							fullScreen();
-							count = 0;
-							first = 0l;
-							second = 0l;
-						}
-					}
-				}
-				return false;
-			}
-		});*/
+        mWebView.setOnTouchListener(this);
         
         mWebView.setWebViewClient(new WebViewClient(){
 
@@ -230,7 +245,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private void getWikiError(String pError){
 		mWikiProcessLayout.removeAllViews();
 		mProgressVisible = false;
-		
+		fullScreen(false);//关闭全屏
 		View viewError = mInflater.inflate(R.layout.loading_error, null);
 		LayoutParams errorParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		errorParams.topMargin = WikiUtil.dip2px(mContext, 10);
@@ -282,8 +297,14 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 			mWebView.setEnabled(false);
 			break;
 		case R.id.btn_fullscreen:
-			Toast.makeText(mContext, "亲，请再给点时间，目前全屏在返回时有点小问题，请耐心等候，谢谢", 1000).show();
-			//fullScreen();
+			if(canFullScreen)
+			{
+				fullScreen(true);
+			}
+			else
+			{
+				Toast.makeText(mContext, R.string.tip_cannt_full_screent, Toast.LENGTH_SHORT).show();
+			}
 			break;
 		case R.id.btn_favorite:
 			collectionFavorite();
@@ -297,51 +318,95 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	}
 
 	private void collectionFavorite(){
-		new CollectionFavoriteTask().execute("");
+		new CollectionFavoriteTask().execute();
 	}
 	
-	private class CollectionFavoriteTask extends AsyncTask<String, Integer, String>{
+	private class CollectionFavoriteTask extends AsyncTask<String, Integer, Boolean>{
 
 		@Override
-		protected String doInBackground(String... params) {
-			FavoriteDao favoriteDao = new FavoriteDao(mContext);
-			FavoriteEntity fe = favoriteDao.getFavoriteByRevid(responseObject.getParse().getRevid());
-			if(fe != null){
-				favoriteDao.delete(fe.getId());
-				return getString(R.string.favorite_cancel);
+		protected Boolean doInBackground(String... params) {
+			if(hasFavorite){
+				if(favoriteDao.delete(favoriteID)>0)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
 			}else{
-				favoriteDao.addFavorite(responseObject.getParse().getRevid(), responseObject.getParse().getDisplayTitle(), mParamsEntity.getUri());
-				return getString(R.string.favorite_success);
+				return favoriteDao.addFavorite(responseObject.getParse().getRevid(), responseObject.getParse().getDisplayTitle(), mParamsEntity.getUri());
 			}
 		}
 
 		@Override
-		protected void onPostExecute(String result) {
-			Toast.makeText(mContext, result, SHOWTIME).show();
+		protected void onPostExecute(Boolean result) {
+			if(result.booleanValue())
+			{
+				if(hasFavorite)
+				{
+					Toast.makeText(mContext, R.string.favorite_cancel_success, Toast.LENGTH_SHORT).show();
+				}
+				else
+				{
+					Toast.makeText(mContext, R.string.favorite_success, Toast.LENGTH_SHORT).show();
+				}
+				hasFavorite=!hasFavorite;
+				mHandler.obtainMessage(HANDLER_REFRESH_FAVORITE_STATUS, Boolean.valueOf(hasFavorite)).sendToTarget();
+			}
+			else
+			{
+				if(hasFavorite)
+				{
+					Toast.makeText(mContext, R.string.favorite_cancel_failed, Toast.LENGTH_SHORT).show();
+				}
+				else
+				{
+					Toast.makeText(mContext, R.string.favorite_failed, Toast.LENGTH_SHORT).show();
+				}
+			}
+		}
+	}
+	private class JudgeFavoriteTask extends AsyncTask<String, Integer, Boolean>{
+
+		@Override
+		protected Boolean doInBackground(String... params) {
+			FavoriteEntity fe = favoriteDao.getFavoriteByRevid(responseObject.getParse().getRevid());
+			if(fe != null){
+				favoriteID = fe.getId();
+				return true;
+			}else{
+				return false;
+			}
 		}
 
+		@Override
+		protected void onPostExecute(Boolean result) {
+			L.d("onPostExecute:"+result);
+			mHandler.obtainMessage(HANDLER_REFRESH_FAVORITE_STATUS, result).sendToTarget();
+		}
 	}
 	
 	private void showProgressLayout()
 	{
 		mWikiScrollView.setVisibility(View.GONE);
-		
+		canFullScreen = false;
 		View progressView = mInflater.inflate(R.layout.loading, null);
 		mWikiProcessLayout.removeAllViews();
 		mWikiProcessLayout.addView(progressView);
 		mProgressVisible = true;
 	}
 	
-	private void fullScreen(){
-		if(!mIsFullScreen){
+	private void fullScreen(boolean full){
+		if(full){
 			mWikiDetailTitle.setVisibility(View.GONE);
 			mLayoutFunctions.setVisibility(View.GONE);
-			Toast.makeText(WikiContentActivity.this, getString(R.string.screen_back), SHOWTIME).show();
-			mIsFullScreen = true;
+			Toast.makeText(WikiContentActivity.this, getString(R.string.screen_back), Toast.LENGTH_SHORT).show();
+			isFullScreen = true;
 		}else{
 			mWikiDetailTitle.setVisibility(View.VISIBLE);
 			mLayoutFunctions.setVisibility(View.VISIBLE);
-			mIsFullScreen = false;
+			isFullScreen = false;
 		}
 	}
 	
@@ -356,7 +421,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		String title = responseObject.getParse().getTitle();
 		String titleForUrl = title.replace(" ", "_");
 		intent.putExtra(Intent.EXTRA_TEXT,getString(R.string.content_share,new Object[]{title,WIKI_URL_PRE+titleForUrl}));
-		Intent it = Intent.createChooser(intent, "分享给好友");
+		Intent it = Intent.createChooser(intent, getString(R.string.share_chooser_title));
 		startActivity(it);
 	}
 	
@@ -383,22 +448,61 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		return false;
 	}
 
+
 	@Override
-	public boolean dispatchTouchEvent(MotionEvent event) {
-		if(event.getAction() == KeyEvent.ACTION_DOWN){
-			count++;
-			if(count == 1){
-				first = System.currentTimeMillis();
-			}else if(count == 2){
-				second = System.currentTimeMillis();
-				if(second - first < 500){
-					fullScreen();
+	public boolean onTouch(View v, MotionEvent event) {
+		if(isFullScreen)
+		{
+			int action = event.getAction();
+			switch (action) {
+			case MotionEvent.ACTION_DOWN:
+				lastTouch[0] = event.getX();
+				lastTouch[1] = event.getY();
+				L.e("ACTION_DOWN");
+				if(isReadyDoubleClick)
+				{
+					return true;
 				}
-				count = 0;
-				first = 0l;
-				second = 0l;
+				break;
+			case MotionEvent.ACTION_MOVE:
+				L.e("ACTION_MOVE");
+				if(isReadyDoubleClick)
+				{
+					return true;
+				}
+				break;
+			case MotionEvent.ACTION_UP:
+				L.e("ACTION_UP");
+				if(!isReadyDoubleClick)
+				{
+					//first
+					isReadyDoubleClick = true;
+					if(mDoubleClickTask!=null)
+					{
+						mDoubleClickTask.cancel();
+					}
+					mDoubleClickTask = new DoubleClickTask();
+					mDoubleClickTimer.schedule(mDoubleClickTask, 500);  
+				}
+				else
+				{
+					L.e("Double click");
+					fullScreen(false);
+					return true;
+				}
+				break;
+			default:
+				break;
 			}
 		}
-		return super.dispatchTouchEvent(event);
-	}
+		return false;
+	};
+	class DoubleClickTask extends TimerTask {  
+        
+        @Override 
+        public void run() {
+            isReadyDoubleClick = false;
+        }  
+    }
+
 }

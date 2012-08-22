@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="10dip"
+    android:clickable="true"
     android:id="@+id/wiki_whole_detail">
 	<include android:id="@+id/wiki_detail_title"
 	    layout="@layout/sub_layer_title2"/>
@@ -90,7 +91,7 @@
 		        <ImageButton android:id="@+id/btn_favorite" 
 		            android:layout_width="wrap_content"
 	    			android:layout_height="wrap_content"
-	    			android:src="@drawable/ico_favorite"
+	    			android:src="@drawable/ico_favorite_not"
 	    			android:background="@drawable/btn_function_bg"
 	    			android:paddingTop="3dip"
 	    			android:paddingBottom="3dip"

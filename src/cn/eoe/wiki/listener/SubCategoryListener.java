@@ -30,6 +30,7 @@ public class SubCategoryListener implements OnClickListener{
 		{
 			return;
 		}
+		L.e(mUri);
 		Intent intent = new Intent (mContext,WikiContentActivity.class);
 		ParamsEntity pe = new ParamsEntity();
 		pe.setFirstTitle(mFirstTitle);

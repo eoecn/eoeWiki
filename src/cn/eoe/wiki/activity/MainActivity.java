@@ -131,7 +131,8 @@ public class MainActivity extends ActivityGroup {
 						{
 							mExitTask.cancel();
 						}
-						mExitTimer.schedule(new ExitTask(), 2000);  
+						mExitTask = new ExitTask();
+						mExitTimer.schedule(mExitTask, 2000);  
                     }
 					else {
 						//发送一个广播，通知其它所有的页面，要结束该应用程序了。

@@ -26,11 +26,13 @@
 	<string name="tip_please_enter_search_text">请输入你要搜索的关键字</string>
 	<string name="tip_category_not_finish">你选择的wiki暂时还没有内容，请再给我们一首歌的时间...</string>
 	<string name="tip_exit">再按一次返回键退出程序</string>
+	<string name="tip_cannt_full_screent">抱歉，当前模式下不能全屏哦</string>
 	
 	<!-- recommend text -->
 	<string name="content_recommand">源自开发者，服务开发者~第一款为开发者服务的好软件来啦! 快去体验吧：http://t.cn/zWH5QSv
 		优亿百科(eoeWIKI)是android开发者必备软件，其依靠eoeAndroid开发社区，将高质量移动开发内容用百科的形势进行组织和展示，以方便大家能更快更好的学习移动开发的相关知识，尽快的成长~	</string>
 	<string name="recomment_chooser_title">推荐给好友</string>
+	<string name="share_chooser_title">分享给好友</string>
 	
 	<!-- about text -->
 	<string name="about_title">关于我们</string>
@@ -54,7 +56,9 @@
     <string name="no_such_article">槽糕，找不到该文章</string>
     <string name="unknow_error">未知错误！无法加载</string>
     <string name="favorite_success">收藏成功</string>
-    <string name="favorite_cancel">取消收藏成功</string>
+    <string name="favorite_failed">收藏失败</string>
+    <string name="favorite_cancel_success">取消收藏成功</string>
+    <string name="favorite_cancel_failed">取消收藏失败</string>
     
 	<string name="about_translators1">kris: 和eoer们一起合作，感觉非常的棒</string>
 	<string name="about_translators2">小手冰凉: wiki，让我学到了很多...</string>
