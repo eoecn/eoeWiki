@@ -70,7 +70,7 @@ public class MainActivity extends ActivityGroup {
 	}
 
 	public void showView(final int index, Intent intent) {
-		intent.putExtra("index", index);
+		intent.putExtra(SliderActivity.KEY_SLIDER_INDEX, index);
 		// 这里id是最关键的，不能重复。
 		// 如果看过一个wiki想快速加载，我们只能通过读取数据库来实现。
 		// 我们不想通过保存上一次的activity来作一个快速的显示，因为页面可能有一些的改动。

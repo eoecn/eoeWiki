@@ -21,7 +21,6 @@ import cn.eoe.wiki.listener.SubCategoryListener;
 import cn.eoe.wiki.listener.SubCategoryNoFinishListener;
 import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
-import cn.eoe.wiki.view.SliderLayer;
 import cn.eoe.wiki.view.SliderLayer.SliderListener;
 /**
  * 用来处理第二层分类的界面
@@ -246,8 +245,7 @@ public class SubCategoryActivity extends CategoryActivity implements OnClickList
 			getCategory(mParentCategory.getUri());
 			break;
 		case R.id.btn_back:
-			SliderLayer layer = getmMainActivity().getSliderLayer();
-			layer.closeSidebar(layer.openingLayerIndex());
+			closeSlider();
 			break;
 		default:
 			break;
@@ -255,23 +253,16 @@ public class SubCategoryActivity extends CategoryActivity implements OnClickList
 	}
 
 	@Override
-	public void onSidebarOpened() {
-		WikiUtil.hideSoftInput(mBtnBack);
+	public void onSlidebarOpened() {
 		if(!mProgressVisible)
 		{
 			showProgressLayout();
 		}
 		getCategory(mParentCategory.getUri());
-		getmMainActivity().getSliderLayer().removeSliderListener(this);
 	}
 
 	@Override
-	public void onSidebarClosed() {
+	public void onSlidebarClosed() {
 		
-	}
-
-	@Override
-	public boolean onContentTouchedWhenOpening() {
-		return false;
 	}
 }

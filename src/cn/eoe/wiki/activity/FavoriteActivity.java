@@ -22,8 +22,6 @@ import cn.eoe.wiki.db.dao.FavoriteDao;
 import cn.eoe.wiki.db.entity.FavoriteEntity;
 import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
-import cn.eoe.wiki.view.SliderLayer;
-import cn.eoe.wiki.view.SliderLayer.SliderListener;
 
 /**
  * displya the favorite page
@@ -32,7 +30,7 @@ import cn.eoe.wiki.view.SliderLayer.SliderListener;
  * @version 1.0.0
  *
  */
-public class FavoriteActivity extends SliderActivity implements OnClickListener,SliderListener,OnScrollListener{
+public class FavoriteActivity extends SliderActivity implements OnClickListener,OnScrollListener{
 	public static final 	int		PAGE_COUNT 			= 20;
 	private static final 	int		HANDLER_REFRESH 	= 0x0001;
 	private static final 	int		HANDLER_LOADING_MORE = 0x0002;
@@ -62,7 +60,6 @@ public class FavoriteActivity extends SliderActivity implements OnClickListener,
 		mFavoriteDao = new FavoriteDao(mContext);
 		mInflater = LayoutInflater.from(mContext);
 		mFavorites = new ArrayList<FavoriteEntity>();
-		getmMainActivity().getSliderLayer().addSliderListener(this);
 		initComponent();
 		initData();
 	}
@@ -100,8 +97,7 @@ public class FavoriteActivity extends SliderActivity implements OnClickListener,
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_back:
-			SliderLayer layer = getmMainActivity().getSliderLayer();
-			layer.closeSidebar(layer.openingLayerIndex());
+			closeSlider();
 			break;
 		default:
 			break;
@@ -113,15 +109,13 @@ public class FavoriteActivity extends SliderActivity implements OnClickListener,
 	}
 
 	@Override
-	public void onSidebarOpened() {
-		WikiUtil.hideSoftInput(mBtnBack);
+	public void onSlidebarOpened() {
 		L.e("favorite onSidebarOpened");
 		new LoadFavoriteFromDb().execute(currentPage+1);
-		getmMainActivity().getSliderLayer().removeSliderListener(this);
 	}
 
 	@Override
-	public void onSidebarClosed() {
+	public void onSlidebarClosed() {
 		
 	}
 	@Override
@@ -142,11 +136,6 @@ public class FavoriteActivity extends SliderActivity implements OnClickListener,
 			int visibleItemCount, int totalItemCount) {
 	}
 	
-	@Override
-	public boolean onContentTouchedWhenOpening() {
-		return false;
-	}
-	
 	private Handler mHandler = new Handler()
 	{
 
@@ -154,6 +143,7 @@ public class FavoriteActivity extends SliderActivity implements OnClickListener,
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case HANDLER_REFRESH:
+				L.d("Favorite Handler HANDLER_REFRESH");
 				isRefreshing = false;
 				mLayoutLoading.setVisibility(View.GONE);
 				mLayoutPrgogress.setVisibility(View.GONE);

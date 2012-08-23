@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,8 +32,6 @@ import cn.eoe.wiki.json.SearchQueryContinusJson;
 import cn.eoe.wiki.json.SearchResultJson;
 import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
-import cn.eoe.wiki.view.SliderLayer;
-import cn.eoe.wiki.view.SliderLayer.SliderListener;
 
 /**
  * 检索结果展示
@@ -43,7 +40,7 @@ import cn.eoe.wiki.view.SliderLayer.SliderListener;
  * @data 2012-8-11
  * @version 1.0.0
  */
-public class SearchResultActivity extends SliderActivity implements OnClickListener, SliderListener, OnScrollListener,OnItemClickListener {
+public class SearchResultActivity extends SliderActivity implements OnClickListener, OnScrollListener,OnItemClickListener {
 	public static final String KEY_SEARCH_TEXT 			= "search_text";
 	public static final 	int		PAGE_COUNT 			= 20;
 	private static final int HANDLER_DISPLAY_SEARCH 	= 0x0001;
@@ -82,8 +79,6 @@ public class SearchResultActivity extends SliderActivity implements OnClickListe
 		{
 			throw new NullPointerException("Must give a keyword in the intent");
 		}
-		/* 监听滑块滑动的动作 */
-		getmMainActivity().getSliderLayer().addSliderListener(this);
 		initComponent();
 		initData();
 	}
@@ -151,20 +146,13 @@ public class SearchResultActivity extends SliderActivity implements OnClickListe
 	 * 
 	 */
 	@Override
-	public void onSidebarOpened() {
-		WikiUtil.hideSoftInput(mBtnBack);
+	public void onSlidebarOpened() {
 		getSearchResult();
-		getmMainActivity().getSliderLayer().removeSliderListener(this);
 	}
 
 	@Override
-	public void onSidebarClosed() {
+	public void onSlidebarClosed() {
 
-	}
-
-	@Override
-	public boolean onContentTouchedWhenOpening() {
-		return false;
 	}
 
 	@Override
@@ -175,8 +163,7 @@ public class SearchResultActivity extends SliderActivity implements OnClickListe
 			getSearchResult();
 			break;
 		case R.id.btn_back:
-			SliderLayer layer = getmMainActivity().getSliderLayer();
-			layer.closeSidebar(layer.openingLayerIndex());
+			closeSlider();
 			break;
 		default:
 			break;

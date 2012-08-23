@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,16 +11,14 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.TextView.OnEditorActionListener;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.WikiConfig;
@@ -312,6 +309,16 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 			mCloseCategories.add(category);
 		}
 		generateCategorys(mResponseObject, category);
+	}
+
+	@Override
+	public void onSlidebarOpened() {
+		
+	}
+
+	@Override
+	public void onSlidebarClosed() {
+		
 	}
 
 }

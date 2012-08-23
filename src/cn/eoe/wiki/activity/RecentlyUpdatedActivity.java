@@ -34,15 +34,13 @@ import cn.eoe.wiki.json.RecentUpdateQueryContinusJson;
 import cn.eoe.wiki.json.RecentlyUpdatedJson;
 import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
-import cn.eoe.wiki.view.SliderLayer;
-import cn.eoe.wiki.view.SliderLayer.SliderListener;
 /**
  * 最新更新文章列表的Activity
  * @author <a href="mailto:realh3@gmail.com">Real Xu</a>
  * @data  2012-8-17
  * @version 1.0.0
  */
-public class RecentlyUpdatedActivity extends SliderActivity implements OnClickListener, SliderListener, OnScrollListener,OnItemClickListener{
+public class RecentlyUpdatedActivity extends SliderActivity implements OnClickListener, OnScrollListener,OnItemClickListener{
 	private static final String WIKI_URL_HOST = "http://wiki.eoeandroid.com/";
 	private static final String WIKI_URL_DETAIL = "api.php?action=parse&format=json&page=";
 	private static final String WIKI_URL_LOCATION = "api.php?action=query&list=recentchanges&rclimit=50&format=json";
@@ -81,7 +79,6 @@ public class RecentlyUpdatedActivity extends SliderActivity implements OnClickLi
 		{
 			throw new NullPointerException("Must give a CategoryChild in the intent");
 		}
-		getmMainActivity().getSliderLayer().addSliderListener(this);
 		initComponent();
 		initData();
 	}
@@ -133,7 +130,6 @@ public class RecentlyUpdatedActivity extends SliderActivity implements OnClickLi
 	
 	private Handler mHandler = new Handler(){
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
@@ -231,35 +227,28 @@ public class RecentlyUpdatedActivity extends SliderActivity implements OnClickLi
 	}
 
 	@Override
-	public void onSidebarOpened() {
+	public void onSlidebarOpened() {
 		if(WikiUtil.getNetworkStatus(this)){
 			mLayoutLoading.setVisibility(View.VISIBLE);
 			getRecentUpdate();
-			getmMainActivity().getSliderLayer().removeSliderListener(this);
 		}else{
 			mHandler.obtainMessage(HANDLER_LOAD_ERROR).sendToTarget();
 		}
 	}
 	@Override
-	public void onSidebarClosed() {
+	public void onSlidebarClosed() {
 		
-	}
-
-	@Override
-	public boolean onContentTouchedWhenOpening() {
-		return false;
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_back:
-			SliderLayer layer = getmMainActivity().getSliderLayer();
-			layer.closeSidebar(layer.openingLayerIndex());
+			closeSlider();
 			break;
 		case R.id.btn_try_again:
 			mLayoutError.setVisibility(View.GONE);
-			onSidebarOpened();
+			onSlidebarOpened();
 			break;
 		default:
 			break;
@@ -300,7 +289,6 @@ public class RecentlyUpdatedActivity extends SliderActivity implements OnClickLi
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem,
 			int visibleItemCount, int totalItemCount) {
-		// TODO Auto-generated method stub
 		
 	}
 

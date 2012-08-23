@@ -20,6 +20,7 @@ package cn.eoe.wiki.view;
 
 // update the package name to match your app
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -121,7 +122,6 @@ public class SliderLayer extends ViewGroup {
      * @param l
      */
     public void removeSliderListener(SliderListener l) {
-    	L.d("add a slider listener");
     	if( mListeners.contains(l))
     	{
     		mListeners.remove(l);
@@ -206,8 +206,9 @@ public class SliderLayer extends ViewGroup {
         public void onAnimationEnd(Animation animation) {
             iContent.clearAnimation();
             requestLayout();
-            for(SliderListener l:mListeners) {
-                l.onSidebarOpened();
+            List<SliderListener> result = set2List(mListeners);
+            for(SliderListener l:result) {
+                l.slidebarOpened();
             }
             isAnimationing = false;
         }
@@ -229,15 +230,29 @@ public class SliderLayer extends ViewGroup {
         public void onAnimationEnd(Animation animation) {
             iContent.clearAnimation();
             requestLayout();
-            for(SliderListener l:mListeners) {
-                l.onSidebarClosed();
+            List<SliderListener> result = set2List(mListeners);
+            for(SliderListener l:result) {
+                l.slidebarClosed();
             }
             isAnimationing = false;
         }
     }
+    
+    public List<SliderListener> set2List(Set<SliderListener> sets)
+    {
+    	if(sets==null)
+    	{
+    		return null;
+    	}
+    	List<SliderListener> result = new ArrayList<SliderListener>(sets.size());
+		for (SliderListener l : mListeners) {
+			result.add(l);
+		}
+    	return result;
+    }
     public interface SliderListener {
-        public void onSidebarOpened();
-        public void onSidebarClosed();
-        public boolean onContentTouchedWhenOpening();
+        public void slidebarOpened();
+        public void slidebarClosed();
+        public boolean contentTouchedWhenOpening();
     }
 }

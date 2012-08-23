@@ -23,11 +23,11 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.LinearLayout.LayoutParams;
 import cn.eoe.wiki.R;
 import cn.eoe.wiki.db.dao.FavoriteDao;
 import cn.eoe.wiki.db.entity.FavoriteEntity;
@@ -37,10 +37,8 @@ import cn.eoe.wiki.json.WikiDetailErrorJson;
 import cn.eoe.wiki.json.WikiDetailJson;
 import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
-import cn.eoe.wiki.view.SliderLayer;
-import cn.eoe.wiki.view.SliderLayer.SliderListener;
 
-public class WikiContentActivity extends SliderActivity implements OnClickListener,SliderListener,OnTouchListener{
+public class WikiContentActivity extends SliderActivity implements OnClickListener,OnTouchListener{
 
 	private static final int		HANDLER_DISPLAY_WIKIDETAIL 		= 0x0001;
 	private static final int		HANDLER_GET_WIKIERROR 			= 0x0002;
@@ -102,7 +100,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		isReadyDoubleClick = false;
 		mDoubleClickTimer = new Timer();
 		favoriteDao = new FavoriteDao(mContext);
-		getmMainActivity().getSliderLayer().addSliderListener(this);
 		initComponent();
 		initData();
 	}
@@ -282,9 +279,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		switch (v.getId()) {
 		case R.id.btn_back:
 		case R.id.btn_parent_directory:
-			fallbackToPreLayer();
-			mBtnParentDirectory.setEnabled(false);
-			mWebView.setEnabled(false);
+			closeSlider();
 			break;
 		case R.id.btn_fullscreen:
 			if(canFullScreen)
@@ -396,11 +391,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		}
 	}
 	
-	private void fallbackToPreLayer(){
-		SliderLayer layer = getmMainActivity().getSliderLayer();
-		layer.closeSidebar(layer.openingLayerIndex());
-	}
-	
 	private void shareToFriend(){
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/plain");
@@ -412,7 +402,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	}
 	
 	@Override
-	public void onSidebarOpened() {
+	public void onSlidebarOpened() {
 		if(!mProgressVisible)
 		{
 			showProgressLayout();
@@ -423,15 +413,9 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 
 	@Override
-	public void onSidebarClosed() {
+	public void onSlidebarClosed() {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public boolean onContentTouchedWhenOpening() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 
