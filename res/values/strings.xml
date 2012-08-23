@@ -30,7 +30,7 @@
 	
 	<!-- recommend text -->
 	<string name="content_recommand">源自开发者，服务开发者~第一款为开发者服务的好软件来啦! 快去体验吧：http://t.cn/zWH5QSv
-		优亿百科(eoeWIKI)是android开发者必备软件，其依靠eoeAndroid开发社区，将高质量移动开发内容用百科的形势进行组织和展示，以方便大家能更快更好的学习移动开发的相关知识，尽快的成长~	</string>
+		移动开发百科是android开发者必备软件，其依靠eoeAndroid开发社区，将高质量移动开发内容用百科的形势进行组织和展示，以方便大家能更快更好的学习移动开发的相关知识，尽快的成长~	</string>
 	<string name="recomment_chooser_title">推荐给好友</string>
 	<string name="share_chooser_title">分享给好友</string>
 	
@@ -47,12 +47,12 @@
 	<string name="contact_email">邮箱: eoeandroid@eoemobile.com</string>
 	<string name="btn_feedback_text">我要反馈</string>
 	<string name="btn_cancel_text">关闭</string>
-	<string name="about_goals_content">优亿百科(eoeWIKI)是一款移动开发知识百科软件，依靠优亿开发者社区，将高质量移动开发内容用百科的形势进行组织和展示，以方便大家能更快更好的学习移动开发的相关知识，尽快的成长。	</string>
-	<string name="about_story_content">eoe的理念是\'让移动开发更简单\',如何让移动开发更简单是我们不断思考和探索的，我们认为有组织、有体系的内容对开发者的学习和成长是最有价值的，于是大家都希望有这么一款应用让我们零碎的时间里学习到最有价值的知识，于是优亿百科诞生了。</string>
-	<string name="about_thanks_content">优亿百科是由社区组织策划，社区会员共同参与贡献的移动开发知识大百科，客户端产品由社区eoeAppLabs组开发和维护，谢谢所有人的付出和贡献，有你们，eoe更精彩!</string>
+	<string name="about_goals_content">移动开发百科是一款移动开发知识百科软件，依靠eoe开发者社区，将高质量移动开发内容用百科的形势进行组织和展示，以方便大家能更快更好的学习移动开发的相关知识，尽快的成长。	</string>
+	<string name="about_story_content">eoe的理念是\'让移动开发更简单\',如何让移动开发更简单是我们不断思考和探索的，我们认为有组织、有体系的内容对开发者的学习和成长是最有价值的，于是大家都希望有这么一款应用让我们零碎的时间里学习到最有价值的知识，于是移动开发百科诞生了。</string>
+	<string name="about_thanks_content">移动开发百科是由社区组织策划，社区会员共同参与贡献的移动开发知识大百科，客户端产品由社区eoeAppLabs组开发和维护，谢谢所有人的付出和贡献，有你们，eoe更精彩!</string>
 
 	<string name="screen_back">双击屏幕返回</string>
-    <string name="content_share">这篇文章挺好，推荐给你看看：%1$s | %2$s （来自：优亿百科）</string>
+    <string name="content_share">这篇文章挺好，推荐给你看看：%1$s | %2$s （来自：移动开发百科）</string>
     <string name="no_such_article">槽糕，找不到该文章</string>
     <string name="unknow_error">未知错误！无法加载</string>
     <string name="favorite_success">收藏成功</string>

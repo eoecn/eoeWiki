@@ -45,7 +45,7 @@ import cn.eoe.wiki.view.SliderLayer.SliderListener;
 public class RecentlyUpdatedActivity extends SliderActivity implements OnClickListener, SliderListener, OnScrollListener,OnItemClickListener{
 	private static final String WIKI_URL_HOST = "http://wiki.eoeandroid.com/";
 	private static final String WIKI_URL_DETAIL = "api.php?action=parse&format=json&page=";
-	private static final String WIKI_URL_LOCATION = "api.php?action=query&list=recentchanges&rclimit=20&format=json";
+	private static final String WIKI_URL_LOCATION = "api.php?action=query&list=recentchanges&rclimit=50&format=json";
 	
 	final int HANDLER_LOAD_CONTENT_NET = 0;
 	final int HANDLER_DISPLAY_CONTENT = 1;
