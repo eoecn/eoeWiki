@@ -130,6 +130,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 	void initData(){
 		isFullScreen = false;
+		mBtnFavorite.setEnabled(false);
 		//TODO set the first parent title
 		mTvFistCategoryName.setText(mParamsEntity.getFirstTitle());
 		//TODO set the second parent title
@@ -185,6 +186,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 				getWikiError(getString(R.string.tip_get_category_error));
 				break;
 			case HANDLER_REFRESH_FAVORITE_STATUS:
+				mBtnFavorite.setEnabled(true);
 				Boolean ret = (Boolean)msg.obj;
 				hasFavorite = ret.booleanValue();
 				L.d("HANDLER_REFRESH_FAVORITE_STATUS:"+hasFavorite);
