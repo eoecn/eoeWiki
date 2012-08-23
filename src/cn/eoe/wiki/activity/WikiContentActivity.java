@@ -13,10 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.MonthDisplayHelper;
-import android.view.GestureDetector;
-import android.view.GestureDetector.OnGestureListener;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,7 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import cn.eoe.wiki.R;
-import cn.eoe.wiki.activity.MainActivity.ExitTask;
 import cn.eoe.wiki.db.dao.FavoriteDao;
 import cn.eoe.wiki.db.entity.FavoriteEntity;
 import cn.eoe.wiki.http.HttpManager;
@@ -53,10 +48,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private static final int		HANDLER_REFRESH_FAVORITE_STATUS	= 0x0004;
 	private static final String 	WIKI_URL_PRE = "http://wiki.eoeandroid.com/";
 	private static final String 	WIKI_URL_AFTER = "/api.php?action=parse&format=json&page=";
-//	private boolean 				mIsFullScreen = false;
-	private boolean					mIsUnable	  = true;
-	private int 					count = 0;
-	private long 					first,second = 0l;
 	
 	private RelativeLayout			mWikiProcessLayout;
 	private LayoutInflater 			mInflater;
@@ -70,7 +61,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private TextView				mTvFistCategoryName;
 	private TextView				mTvSecondCategoryName;
 	
-	private RelativeLayout			mWikiWholeDetail;
 	private RelativeLayout			mWikiDetailTitle;
 	private LinearLayout 			mLayoutFunctions;
 	private ScrollView 				mWikiScrollView;
@@ -94,7 +84,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private boolean 				hasFavorite;
 	private long 					favoriteID;
 	private FavoriteDao				favoriteDao;
-	private boolean 				favoriting;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +141,28 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		}else{
 			mTvSecondCategoryName.setText(mParamsEntity.getSecondTitle());
 		}
+		mWebView.getSettings().setSupportZoom(true);
+        mWebView.getSettings().setBuiltInZoomControls(true);
+        
+//        mWebView.setOnTouchListener(this);
+        
+        mWebView.setWebViewClient(new WebViewClient(){
+
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				if(url.startsWith("http://") || url.startsWith("www.")){
+					Uri uri = Uri.parse(url);  
+					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+					startActivity(intent);
+					return true;
+				}
+				mParamsEntity.setUri(WIKI_URL_PRE+WIKI_URL_AFTER+url.substring(1));
+				getWikiDetail();
+				return true;
+			}
+        	
+        });
+        mWebView.setBackgroundColor(WikiUtil.getResourceColor(R.color.deep_grey, mContext));
 	}
 	
 	void getWikiDetail()
@@ -210,29 +221,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
                   + html.replaceAll("<span class=\"editsection\">(.*?)</span>", "") + "</body></html>";
 		
 		mWebView.loadDataWithBaseURL("about:blank", html1,  "text/html","utf-8", null);
-
-        mWebView.getSettings().setSupportZoom(true);
-        mWebView.getSettings().setBuiltInZoomControls(true);
-        
-        mWebView.setOnTouchListener(this);
-        
-        mWebView.setWebViewClient(new WebViewClient(){
-
-			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				if(url.startsWith("http://") || url.startsWith("www.")){
-					Uri uri = Uri.parse(url);  
-					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-					startActivity(intent);
-					return true;
-				}
-				mParamsEntity.setUri(WIKI_URL_PRE+WIKI_URL_AFTER+url.substring(1));
-				getWikiDetail();
-				return true;
-			}
-        	
-        });
-        mWebView.setBackgroundColor(WikiUtil.getResourceColor(R.color.deep_grey, mContext));
 	}
 	
 	private void generateWikiError(WikiDetailErrorJson pWikiDetailErrorJson){
@@ -397,12 +385,12 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 	private void fullScreen(boolean full){
 		if(full){
-			mWikiDetailTitle.setVisibility(View.GONE);
+//			mWikiDetailTitle.setVisibility(View.GONE);
 			mLayoutFunctions.setVisibility(View.GONE);
 			Toast.makeText(WikiContentActivity.this, getString(R.string.screen_back), Toast.LENGTH_SHORT).show();
 			isFullScreen = true;
 		}else{
-			mWikiDetailTitle.setVisibility(View.VISIBLE);
+//			mWikiDetailTitle.setVisibility(View.VISIBLE);
 			mLayoutFunctions.setVisibility(View.VISIBLE);
 			isFullScreen = false;
 		}
@@ -449,7 +437,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		if(isFullScreen)
+		/*if(isFullScreen)
 		{
 			int action = event.getAction();
 			switch (action) {
@@ -492,9 +480,60 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 			default:
 				break;
 			}
-		}
+		}*/
 		return false;
 	};
+	
+	
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		if(isFullScreen)
+		{
+			int action = ev.getAction();
+			switch (action) {
+			case MotionEvent.ACTION_DOWN:
+				lastTouch[0] = ev.getX();
+				lastTouch[1] = ev.getY();
+				L.e("ACTION_DOWN");
+				if(isReadyDoubleClick)
+				{
+					return true;
+				}
+				break;
+			case MotionEvent.ACTION_MOVE:
+				L.e("ACTION_MOVE");
+				if(isReadyDoubleClick)
+				{
+					return true;
+				}
+				break;
+			case MotionEvent.ACTION_UP:
+				L.e("ACTION_UP");
+				if(!isReadyDoubleClick)
+				{
+					//first
+					isReadyDoubleClick = true;
+					if(mDoubleClickTask!=null)
+					{
+						mDoubleClickTask.cancel();
+					}
+					mDoubleClickTask = new DoubleClickTask();
+					mDoubleClickTimer.schedule(mDoubleClickTask, 500);  
+				}
+				else
+				{
+					L.e("Double click");
+					fullScreen(false);
+					return true;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		return super.dispatchTouchEvent(ev);
+	}
+
 	class DoubleClickTask extends TimerTask {  
         
         @Override 
