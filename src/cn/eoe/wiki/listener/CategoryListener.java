@@ -1,5 +1,7 @@
 package cn.eoe.wiki.listener;
 
+import com.umeng.analytics.MobclickAgent;
+
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,6 +25,7 @@ public class CategoryListener implements OnClickListener {
 	
 	public CategoryListener(CategoryActivity context,CategoryChild category,String parentName)
 	{
+		
 		this.context = context;
 		this.category = category;
 		this.parentName = parentName;
@@ -35,6 +38,7 @@ public class CategoryListener implements OnClickListener {
 			return;
 		}
 		L.e("category click:"+category.getUri());
+		MobclickAgent.onEvent(context, "home", "click-"+category.getName());
 		Intent intent = new Intent (context,SubCategoryActivity.class);
 		intent.putExtra(SubCategoryActivity.KEY_CATEGORY, category);
 		intent.putExtra(SubCategoryActivity.KEY_PARENT_TITLE, parentName);

@@ -17,9 +17,10 @@ public class SubCategoryListener implements OnClickListener{
 	private String mFirstTitle;
 	private String mSecondTitle;
 	private SubCategoryActivity mContext;
+	private String mName;
 	
-	public SubCategoryListener(String pFirstTitle,String pSecondTitle,String pUri,SubCategoryActivity pContext){
-		
+	public SubCategoryListener(String mName,String pFirstTitle,String pSecondTitle,String pUri,SubCategoryActivity pContext){
+		this.mName = mName;
 		mUri = pUri;
 		mFirstTitle = pFirstTitle;
 		mSecondTitle = pSecondTitle;
@@ -34,6 +35,7 @@ public class SubCategoryListener implements OnClickListener{
 			return;
 		}
 		L.e(mUri);
+		MobclickAgent.onEvent(mContext, "sub-category", "click-"+mName);
 		Intent intent = new Intent (mContext,WikiContentActivity.class);
 		ParamsEntity pe = new ParamsEntity();
 		pe.setFirstTitle(mFirstTitle);

@@ -21,7 +21,7 @@ public class CategoryTitleListener implements OnClickListener {
 	
 	public CategoryTitleListener(MainCategoryActivity context,CategoryChild category)
 	{
-		MobclickAgent.onEvent(context, "home", "item_click");
+		
 		this.context = context;
 		this.category = category;
 	}
