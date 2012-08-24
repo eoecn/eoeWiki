@@ -23,8 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity"/>
-        <activity android:name=".activity.AboutActivity"/>
+        <activity android:name=".activity.MainActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.AboutActivity" />
         <activity android:name=".activity.MainCategoryActivity"/>
         <activity android:name=".activity.SubCategoryActivity"/>
         <activity android:name=".activity.RecommendActivity"/>

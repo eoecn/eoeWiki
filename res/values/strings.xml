@@ -27,6 +27,8 @@
 	<string name="tip_category_not_finish">你选择的wiki暂时还没有内容，请再给我们一首歌的时间...</string>
 	<string name="tip_exit">再按一次返回键退出程序</string>
 	<string name="tip_cannt_full_screent">抱歉，当前模式下不能全屏哦</string>
+	<string name="tip_cannt_share">抱歉，当前模式下不能分享</string>
+	<string name="tip_cannt_favorite">抱歉，当前模式下不能收藏</string>
 	
 	<!-- recommend text -->
 	<string name="content_recommand">源自开发者，服务开发者~第一款为开发者服务的好软件来啦! 快去体验吧：http://t.cn/zWH5QSv

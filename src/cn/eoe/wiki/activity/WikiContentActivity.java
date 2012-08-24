@@ -38,7 +38,7 @@ import cn.eoe.wiki.json.WikiDetailJson;
 import cn.eoe.wiki.utils.L;
 import cn.eoe.wiki.utils.WikiUtil;
 
-public class WikiContentActivity extends SliderActivity implements OnClickListener,OnTouchListener{
+public class WikiContentActivity extends SliderActivity implements OnClickListener{
 
 	private static final int		HANDLER_DISPLAY_WIKIDETAIL 		= 0x0001;
 	private static final int		HANDLER_GET_WIKIERROR 			= 0x0002;
@@ -78,6 +78,8 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private boolean 				isReadyDoubleClick;//是否已经第一次点击了
 	private DoubleClickTask			mDoubleClickTask;//双击过时任务
 	private boolean 				canFullScreen;
+	private boolean 				canShare;
+	private boolean 				canFavorite;
 	
 	private boolean 				hasFavorite;
 	private long 					favoriteID;
@@ -130,7 +132,8 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	
 	void initData(){
 		isFullScreen = false;
-		mBtnFavorite.setEnabled(false);
+		canShare = false;
+		canFavorite = false;
 		//TODO set the first parent title
 		mTvFistCategoryName.setText(mParamsEntity.getFirstTitle());
 		//TODO set the second parent title
@@ -186,7 +189,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 				getWikiError(getString(R.string.tip_get_category_error));
 				break;
 			case HANDLER_REFRESH_FAVORITE_STATUS:
-				mBtnFavorite.setEnabled(true);
 				Boolean ret = (Boolean)msg.obj;
 				hasFavorite = ret.booleanValue();
 				L.d("HANDLER_REFRESH_FAVORITE_STATUS:"+hasFavorite);
@@ -210,6 +212,8 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		mProgressVisible = false;
 		mWikiScrollView.setVisibility(View.VISIBLE);
 		canFullScreen = true;
+		canShare = true;
+		canFavorite =true;
 		String html = pWikiDetailJson.getParse().getText().getHtml();
 		String html1 = "<!DOCTYPE html PUBLIC "
                   + "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -234,6 +238,10 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	private void getWikiError(String pError){
 		mWikiProcessLayout.removeAllViews();
 		mProgressVisible = false;
+		canFullScreen = false;
+		canShare = false;
+		canFavorite = false;
+		responseObject = null;
 		fullScreen(false);//关闭全屏
 		View viewError = mInflater.inflate(R.layout.loading_error, null);
 		LayoutParams errorParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
@@ -294,10 +302,24 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 			}
 			break;
 		case R.id.btn_favorite:
-			collectionFavorite();
+			if(canFavorite)
+			{
+				collectionFavorite();
+			}
+			else
+			{
+				Toast.makeText(mContext, R.string.tip_cannt_favorite, Toast.LENGTH_SHORT).show();
+			}
 			break;
 		case R.id.btn_share:
-			shareToFriend();
+			if(canShare)
+			{
+				shareToFriend();
+			}
+			else
+			{
+				Toast.makeText(mContext, R.string.tip_cannt_share, Toast.LENGTH_SHORT).show();
+			}
 			break;
 		default:
 			break;
@@ -305,6 +327,10 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	}
 
 	private void collectionFavorite(){
+		if(responseObject==null)
+		{
+			return;
+		}
 		boolean ret = false;
 		if(hasFavorite){
 			if(favoriteDao.delete(favoriteID)>0)
@@ -394,6 +420,10 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	}
 	
 	private void shareToFriend(){
+		if(responseObject==null)
+		{
+			return;
+		}
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/plain");
 		String title = responseObject.getParse().getTitle();
@@ -419,56 +449,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		// TODO Auto-generated method stub
 		
 	}
-
-
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		/*if(isFullScreen)
-		{
-			int action = event.getAction();
-			switch (action) {
-			case MotionEvent.ACTION_DOWN:
-				lastTouch[0] = event.getX();
-				lastTouch[1] = event.getY();
-				L.e("ACTION_DOWN");
-				if(isReadyDoubleClick)
-				{
-					return true;
-				}
-				break;
-			case MotionEvent.ACTION_MOVE:
-				L.e("ACTION_MOVE");
-				if(isReadyDoubleClick)
-				{
-					return true;
-				}
-				break;
-			case MotionEvent.ACTION_UP:
-				L.e("ACTION_UP");
-				if(!isReadyDoubleClick)
-				{
-					//first
-					isReadyDoubleClick = true;
-					if(mDoubleClickTask!=null)
-					{
-						mDoubleClickTask.cancel();
-					}
-					mDoubleClickTask = new DoubleClickTask();
-					mDoubleClickTimer.schedule(mDoubleClickTask, 500);  
-				}
-				else
-				{
-					L.e("Double click");
-					fullScreen(false);
-					return true;
-				}
-				break;
-			default:
-				break;
-			}
-		}*/
-		return false;
-	};
 	
 	
 	@Override
