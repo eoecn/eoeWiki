@@ -6,6 +6,8 @@ import java.util.TimerTask;
 
 import org.codehaus.jackson.type.TypeReference;
 
+import com.umeng.analytics.MobclickAgent;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -89,6 +91,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.wiki_detail);
+		MobclickAgent.onEvent(this, "content-detail", "enter");
 		mInflater = LayoutInflater.from(mContext);
 		Intent intent = getIntent();
 		if(intent == null){
@@ -289,9 +292,11 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		switch (v.getId()) {
 		case R.id.btn_back:
 		case R.id.btn_parent_directory:
+			MobclickAgent.onEvent(this, "content-detail", "btn_parentDirectory");
 			closeSlider();
 			break;
 		case R.id.btn_fullscreen:
+			MobclickAgent.onEvent(this, "content-detail", "btn_fullScreen");
 			if(canFullScreen)
 			{
 				fullScreen(true);
@@ -302,6 +307,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 			}
 			break;
 		case R.id.btn_favorite:
+			MobclickAgent.onEvent(this, "content-detail", "btn_favorite");
 			if(canFavorite)
 			{
 				collectionFavorite();
@@ -312,6 +318,7 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 			}
 			break;
 		case R.id.btn_share:
+			MobclickAgent.onEvent(this, "content-detail", "btn_share");
 			if(canShare)
 			{
 				shareToFriend();

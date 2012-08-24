@@ -158,6 +158,7 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 		case R.id.layout_about:
 			//umeng event
 			MobclickAgent.onEvent(this, "home", "btn_about");
+			MobclickAgent.onEvent(this, "about", "enter");
 			aboutDialog.show();
 			break;
 		case R.id.layout_recommand:

@@ -1,5 +1,7 @@
 package cn.eoe.wiki.listener;
 
+import com.umeng.analytics.MobclickAgent;
+
 import cn.eoe.wiki.activity.ParamsEntity;
 import cn.eoe.wiki.activity.SubCategoryActivity;
 import cn.eoe.wiki.activity.WikiContentActivity;
@@ -17,6 +19,7 @@ public class SubCategoryListener implements OnClickListener{
 	private SubCategoryActivity mContext;
 	
 	public SubCategoryListener(String pFirstTitle,String pSecondTitle,String pUri,SubCategoryActivity pContext){
+		
 		mUri = pUri;
 		mFirstTitle = pFirstTitle;
 		mSecondTitle = pSecondTitle;

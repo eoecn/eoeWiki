@@ -1,5 +1,6 @@
 package cn.eoe.wiki.view;
 
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.UMFeedbackService;
 
 import cn.eoe.wiki.R;
@@ -28,6 +29,7 @@ public class AboutDialog extends Dialog {
 		
 		@Override
 		public void onClick(View v) {
+			MobclickAgent.onEvent(con, "about", "btn_cancel");
 			dismiss();
 		}
 	};
@@ -35,6 +37,7 @@ public class AboutDialog extends Dialog {
 		
 		@Override
 		public void onClick(View v) {
+			MobclickAgent.onEvent(con, "about", "btn_feedback");
 			dismiss();
 			UMFeedbackService.openUmengFeedbackSDK(con);
 		}

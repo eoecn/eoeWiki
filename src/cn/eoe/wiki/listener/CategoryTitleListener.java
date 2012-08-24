@@ -1,5 +1,7 @@
 package cn.eoe.wiki.listener;
 
+import com.umeng.analytics.MobclickAgent;
+
 import android.view.View;
 import android.view.View.OnClickListener;
 import cn.eoe.wiki.activity.CategoryActivity;
@@ -19,6 +21,7 @@ public class CategoryTitleListener implements OnClickListener {
 	
 	public CategoryTitleListener(MainCategoryActivity context,CategoryChild category)
 	{
+		MobclickAgent.onEvent(context, "home", "item_click");
 		this.context = context;
 		this.category = category;
 	}

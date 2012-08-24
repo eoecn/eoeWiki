@@ -2,6 +2,8 @@ package cn.eoe.wiki.activity;
 
 import java.util.List;
 
+import com.umeng.analytics.MobclickAgent;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -46,6 +48,7 @@ public class SubCategoryActivity extends CategoryActivity implements OnClickList
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.sub_categorys);
+		MobclickAgent.onEvent(this, "sub-category", "enter");
 		mInflater = LayoutInflater.from(mContext);
 		Intent intent  = getIntent();
 		if(intent==null)
