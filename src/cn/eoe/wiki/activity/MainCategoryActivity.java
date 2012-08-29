@@ -32,6 +32,7 @@ import cn.eoe.wiki.view.AboutDialog;
 
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.UMFeedbackService;
+import com.umeng.update.UmengUpdateAgent;
 /**
  * 用来处理最外层分类的界面
  * @author <a href="mailto:kris1987@qq.com">Kris.lee</a>
@@ -64,6 +65,8 @@ public class MainCategoryActivity extends CategoryActivity implements OnClickLis
 		mCloseCategories = new HashSet<CategoryChild>();
 		initComponent();
 		initData();
+		UmengUpdateAgent.update(getParent());
+		
 	}
 
 	@Override

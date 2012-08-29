@@ -20,6 +20,7 @@ import cn.eoe.wiki.view.SliderEntity;
 import cn.eoe.wiki.view.SliderLayer;
 
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.update.UmengUpdateAgent;
 
 /**
  * 应用程序的主界面
@@ -47,7 +48,7 @@ public class MainActivity extends ActivityGroup {
 		mMainActivity = this;
 		mWikiApplication.setMainActivity(mMainActivity);
 		setContentView(R.layout.main);
-
+		
 		mActivityManager = getLocalActivityManager();
 		mExitTimer = new Timer();
 		

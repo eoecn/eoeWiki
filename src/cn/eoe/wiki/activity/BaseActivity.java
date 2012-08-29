@@ -29,7 +29,7 @@ public class BaseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		MobclickAgent.updateOnlineConfig(this);
 		MobclickAgent.onError(this);
-		UmengUpdateAgent.update(this);
+		
 		mContext = this;
 		mWikiApplication = WikiApplication.getApplication();
 		mObjectMapper = new ObjectMapper();
