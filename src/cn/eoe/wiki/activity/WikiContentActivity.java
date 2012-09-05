@@ -447,7 +447,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 			showProgressLayout();
 		}
 		getWikiDetail();
-		getmMainActivity().getSliderLayer().removeSliderListener(this);
 	}
 	
 
