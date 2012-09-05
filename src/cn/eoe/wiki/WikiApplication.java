@@ -1,6 +1,12 @@
 package cn.eoe.wiki;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import android.app.Application;
+import android.text.TextUtils;
 import cn.eoe.wiki.activity.MainActivity;
 import cn.eoe.wiki.utils.L;
 /**
@@ -12,6 +18,7 @@ import cn.eoe.wiki.utils.L;
  */
 public class WikiApplication extends Application {
 	public static 	WikiApplication		application;
+	public static 	StringBuilder			wikiHtml;
 	public 	 		MainActivity		mainActivity;
 	
 	public static WikiApplication getApplication()
@@ -50,4 +57,23 @@ public class WikiApplication extends Application {
 		L.e("onTerminate");
 	}
 
+	public static StringBuilder getWikiHtml()
+	{
+		if(wikiHtml == null)
+		{
+			try {
+				InputStream inputStream =  getApplication().getResources().openRawResource(R.raw.html);
+				BufferedReader r = new BufferedReader(new InputStreamReader(inputStream)); 
+				wikiHtml = new StringBuilder(); 
+				String line; 
+				while ((line = r.readLine()) != null) { 
+					wikiHtml.append(line); 
+				}
+			} catch (Exception e) {
+				L.e("read html file exception:"+e.getMessage());
+				throw new NullPointerException("can not read the html file");
+			}
+		}
+		return wikiHtml;
+	}
 }

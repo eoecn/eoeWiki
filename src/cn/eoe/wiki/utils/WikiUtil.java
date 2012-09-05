@@ -1,19 +1,15 @@
 package cn.eoe.wiki.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import cn.eoe.wiki.Constants;
 
 /**
  * 工具类，主要是提供一些与wiki有密切关系的类。
@@ -26,6 +22,16 @@ public class WikiUtil {
 	public static  		int 	VERSION_CODE		= 0;
 	public static 		String  VERSION_NAME		= null;
 	public static 		String  PACKAGE_NAME		= null;
+	
+	public static		Set<String>		SUFFIXSET	= new HashSet<String>();
+	static
+	{
+		SUFFIXSET.add("png");
+		SUFFIXSET.add("jpg");
+		SUFFIXSET.add("bmp");
+		SUFFIXSET.add("gif");
+		SUFFIXSET.add("jpeg");
+	}
 
 
 	/**
@@ -167,8 +173,38 @@ public class WikiUtil {
 		return android.os.Build.VERSION.SDK_INT;
 	}
 
+	/**
+	 * 获取得资源文件里面的颜色值
+	 * @param resId
+	 * @param context
+	 * @return
+	 */
 	public static int getResourceColor(int resId, Context context)
 	{
 		return context.getResources().getColor(resId);
+	}
+	/**
+	 * 判断是不是一个图片的url
+	 * @param url
+	 * @return
+	 */
+	public static boolean isImageUrl(String url)
+	{
+		if(TextUtils.isEmpty(url))
+			return false;
+		String suffix = null;
+		int index = url.lastIndexOf(".");
+		int length = url.length();
+		if(index>0&& index<(length-1))//必需为XXX.suffix这样
+		{
+			suffix = url.substring(index+1, url.length());
+		}
+		if(!TextUtils.isEmpty(suffix))
+		{
+			L.d("suffix is "+suffix);
+			if(SUFFIXSET.contains(suffix.toLowerCase()))
+				return true;
+		}
+		return false;
 	}
 }

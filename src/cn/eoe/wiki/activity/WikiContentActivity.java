@@ -31,6 +31,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import cn.eoe.wiki.R;
+import cn.eoe.wiki.WikiApplication;
 import cn.eoe.wiki.db.dao.FavoriteDao;
 import cn.eoe.wiki.db.entity.FavoriteEntity;
 import cn.eoe.wiki.http.HttpManager;
@@ -147,14 +148,14 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		}
 		mWebView.getSettings().setSupportZoom(true);
         mWebView.getSettings().setBuiltInZoomControls(true);
-        
-//        mWebView.setOnTouchListener(this);
-        
         mWebView.setWebViewClient(new WebViewClient(){
 
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				if(url.startsWith("http://") || url.startsWith("www.")){
+				L.e("url:"+url);
+				if(WikiUtil.isImageUrl(url))
+					return true;
+				if(url.startsWith("http://")||url.startsWith("https://") || url.startsWith("www.")){
 					Uri uri = Uri.parse(url);  
 					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 					startActivity(intent);
@@ -218,15 +219,13 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 		canShare = true;
 		canFavorite =true;
 		String html = pWikiDetailJson.getParse().getText().getHtml();
-		String html1 = "<!DOCTYPE html PUBLIC "
-                  + "-//W3C//DTD XHTML 1.0 Transitional//EN"
-                  + "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
-                  + ">" + "<html xmlns=" + "http://www.w3.org/1999/xhtml" + ">"
-                  + "<head>" + "<meta http-equiv=" + "Content-Type" + " content="
-                  + "text/html; charset=utf-8" + "/>" + "<body>"
-                  + html.replaceAll("<span class=\"editsection\">(.*?)</span>", "") + "</body></html>";
-		
-		mWebView.loadDataWithBaseURL("about:blank", html1,  "text/html","utf-8", null);
+		String htmlContent = WikiApplication.getWikiHtml().toString().replace("_HTML_", removeEditWord(html));
+		mWebView.loadDataWithBaseURL("about:blank", htmlContent,  "text/html","utf-8", null);
+	}
+	
+	private String removeEditWord(String html)
+	{
+		return html.replaceAll("<span class=\"editsection\">(.*?)</span>", "");
 	}
 	
 	private void generateWikiError(WikiDetailErrorJson pWikiDetailErrorJson){
@@ -452,7 +451,6 @@ public class WikiContentActivity extends SliderActivity implements OnClickListen
 
 	@Override
 	public void onSlidebarClosed() {
-		// TODO Auto-generated method stub
 		
 	}
 	
