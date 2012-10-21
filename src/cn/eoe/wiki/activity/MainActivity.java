@@ -159,5 +159,5 @@ public class MainActivity extends ActivityGroup {
         public void run() {
             mReadyExit = false;
         }  
-    };
+    }
 }
